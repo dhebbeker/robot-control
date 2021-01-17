@@ -44,13 +44,18 @@ connections
  - input circuit for odometry sensors: ![input with NPN bipolar transistor](doc/assets/images/odo-input.png)
  - help to connect odometry sensors: ![visual aid](doc/assets/images/odo-input-pins.png)
 
-| NodeMCU pin | signal on base board    | signal at robot|
-| ----------- | ----------------------- | -------------- |
-| D6          | *blue*: emitter BD235/1 | PB2@I2         |
-| D7          | *green*: emitter BD235/2| PB3@I2         |
-| D5          | *yellow*                | PORT 5         |
-| D3          | *white*                 | PORT 6         |
-| D1          | *brown*                 | D/A 1          |
-| D2          | *orange*                | D/A 2          |
+| NodeMCU pin | signal on base board    | signal at CCRP5 |
+| ----------- | ----------------------- | --------------- |
+| D6          | *blue*: emitter BD235/1 | PB2@I2          |
+| D7          | *green*: emitter BD235/2| PB3@I2          |
+| D5          | *yellow*                | PORT 5          |
+| D3          | *white*                 | PORT 6          |
+| D1          | *brown*                 | D/A 1           |
+| D2          | *orange*                | D/A 2           |
 
 The signals `D/A 1` and `D/A 2` have been disconnected from the pins of the CCRP5's main microcontroller (IC7) because the pins are configured as drain. This interferes with the control of the NodeMCU and causes an 80mA current. The signals have been disconnected by un-soldering and lifting of the microcontroller's pins.
+
+Software
+========
+
+The source code is written in C++. It is compiled and programmed with the [Arduino IDE](https://www.arduino.cc/en/Main/Software). The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed.
