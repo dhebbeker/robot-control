@@ -53,6 +53,23 @@ connections
 | D1          | *brown*                 | D/A 1           |
 | D2          | *orange*                | D/A 2           |
 
+| Label | GPIO   | Input        | Output                | Notes                                                           |
+|-------|--------|--------------|-----------------------|-----------------------------------------------------------------|
+| D0    | GPIO16 | no interrupt | no PWM or I2C support | HIGH at bootused to wake up from deep sleep                     |
+| D1    | GPIO5  | OK           | OK                    | often used as SCL (I2C)                                         |
+| D2    | GPIO4  | OK           | OK                    | often used as SDA (I2C)                                         |
+| D3    | GPIO0  | pulled up    | OK                    | connected to FLASH button, boot fails if pulled LOW             |
+| D4    | GPIO2  | pulled up    | OK                    | HIGH at bootconnected to on-board LED, boot fails if pulled LOW |
+| D5    | GPIO14 | OK           | OK                    | SPI (SCLK)                                                      |
+| D6    | GPIO12 | OK           | OK                    | SPI (MISO)                                                      |
+| D7    | GPIO13 | OK           | OK                    | SPI (MOSI)                                                      |
+| D8    | GPIO15 | pulled to GND| OK                    | SPI (CS); Boot fails if pulled HIGH                             |
+| RX    | GPIO3  | OK           | RX pin                | HIGH at boot                                                    |
+| TX    | GPIO1  | TX pin       | OK                    | HIGH at boot; debug output at boot, boot fails if pulled LOW    |
+| A0    | ADC0   | Analog Input | X                     |                                                                 |
+
+Table above is adapted from [this reference](https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/#table).
+
 The signals `D/A 1` and `D/A 2` have been disconnected from the pins of the CCRP5's main microcontroller (IC7) because the pins are configured as drain. This interferes with the control of the NodeMCU and causes an 80mA current. The signals have been disconnected by un-soldering and lifting of the microcontroller's pins.
 
 Software
