@@ -44,29 +44,20 @@ connections
  - input circuit for odometry sensors: ![input with NPN bipolar transistor](doc/assets/images/odo-input.png)
  - help to connect odometry sensors: ![visual aid](doc/assets/images/odo-input-pins.png)
 
-| NodeMCU pin | signal on base board    | signal at CCRP5 |
-| ----------- | ----------------------- | --------------- |
-| D6          | *blue*: emitter BD235/1 | PB2@I2          |
-| D7          | *green*: emitter BD235/2| PB3@I2          |
-| D5          | *yellow*                | PORT 5          |
-| D3          | *white*                 | PORT 6          |
-| D1          | *brown*                 | D/A 1           |
-| D2          | *orange*                | D/A 2           |
-
-| Label | GPIO   | Input        | Output                | Notes                                                           |
-|-------|--------|--------------|-----------------------|-----------------------------------------------------------------|
-| D0    | GPIO16 | no interrupt | no PWM or I2C support | HIGH at bootused to wake up from deep sleep                     |
-| D1    | GPIO5  | OK           | OK                    | often used as SCL (I2C)                                         |
-| D2    | GPIO4  | OK           | OK                    | often used as SDA (I2C)                                         |
-| D3    | GPIO0  | pulled up    | OK                    | connected to FLASH button, boot fails if pulled LOW             |
-| D4    | GPIO2  | pulled up    | OK                    | HIGH at bootconnected to on-board LED, boot fails if pulled LOW |
-| D5    | GPIO14 | OK           | OK                    | SPI (SCLK)                                                      |
-| D6    | GPIO12 | OK           | OK                    | SPI (MISO)                                                      |
-| D7    | GPIO13 | OK           | OK                    | SPI (MOSI)                                                      |
-| D8    | GPIO15 | pulled to GND| OK                    | SPI (CS); Boot fails if pulled HIGH                             |
-| RX    | GPIO3  | OK           | RX pin                | HIGH at boot                                                    |
-| TX    | GPIO1  | TX pin       | OK                    | HIGH at boot; debug output at boot, boot fails if pulled LOW    |
-| A0    | ADC0   | Analog Input | X                     |                                                                 |
+| NodeMCU | ESP8266 | Input        | Output         | signal on base board     | CCRP5   | function       | Notes                                                            |
+|---------|---------|--------------|----------------|--------------------------|---------|----------------|------------------------------------------------------------------|
+| D0      | GPIO16  | no interrupt | no PWM nor I2C |                          |         |                | HIGH at boot; used to wake up from deep sleep                    |
+| D1      | GPIO5   | OK           | OK             | *brown*                  | D/A 1   | left motor     | often used as SCL (I2C)                                          |
+| D2      | GPIO4   | OK           | OK             | *orange*                 | D/A 2   | right motor    | often used as SDA (I2C)                                          |
+| D3      | GPIO0   | pulled up    | OK             | *white*                  | PORT 6  | left direction | connected to FLASH button, boot fails if pulled LOW              |
+| D4      | GPIO2   | pulled up    | OK             |                          |         |                | HIGH at boot; connected to on-board LED, boot fails if pulled LOW|
+| D5      | GPIO14  | OK           | OK             | *yellow*                 | PORT 5  | right direction| SPI (SCLK)                                                       |
+| D6      | GPIO12  | OK           | OK             | *blue*: emitter BD235/1  | PB2@I2  | left odometry  | SPI (MISO)                                                       |
+| D7      | GPIO13  | OK           | OK             | *green*: emitter BD235/2 | PB3@I2  | right odomenty | SPI (MOSI)                                                       |
+| D8      | GPIO15  | pulled to GND| OK             |                          |         |                | SPI (CS); Boot fails if pulled HIGH                              |
+| RX      | GPIO3   | OK           | RX pin         |                          |         |                | HIGH at boot                                                     |
+| TX      | GPIO1   | TX pin       | OK             |                          |         |                | HIGH at boot; debug output at boot, boot fails if pulled LOW     |
+| A0      | ADC0    | Analog Input | X              |                          |         |                |                                                                  |
 
 Table above is adapted from [this reference](https://randomnerdtutorials.com/esp8266-pinout-reference-gpios/#table).
 
