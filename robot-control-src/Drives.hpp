@@ -1,9 +1,9 @@
 #if !defined(DRIVES_HPP)
 #define DRIVES_HPP
 
+#include "board.hpp"
 #include <cstdint>
 #include <cmath>
-#include "board.hpp"
 
 namespace drives
 {

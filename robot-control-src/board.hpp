@@ -1,7 +1,7 @@
 #if !defined(BOARD_HPP)
 #define BOARD_HPP
-
 #include <Arduino.h>
+#undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
 #include <cmath>
 
 typedef decltype(millis()) Milliseconds;
