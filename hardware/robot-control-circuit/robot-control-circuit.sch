@@ -91,34 +91,32 @@ Wire Wire Line
 	7300 3300 6850 3300
 Text Label 6850 3300 0    50   ~ 0
 I2C-1_SCL
-Text Label 6850 4100 0    50   ~ 0
-VDD
+Text Label 6600 4100 0    50   ~ 0
+IO-EXP-1_!RESET
 Wire Wire Line
-	7300 4100 6850 4100
-Wire Wire Line
-	7050 850  6650 850 
-Text Label 6650 850  0    50   ~ 0
+	7300 850  6900 850 
+Text Label 6900 850  0    50   ~ 0
 ODO_LEFT_HV
-Text Label 7350 650  0    50   ~ 0
+Text Label 7600 650  0    50   ~ 0
 VDD
 $Comp
 L Transistor_BJT:BD235 Q2
 U 1 1 60837503
-P 7250 1750
-F 0 "Q2" H 7442 1796 50  0000 L CNN
-F 1 "BD235" H 7442 1705 50  0000 L CNN
-F 2 "Package_TO_SOT_THT:TO-126-3_Vertical" H 7450 1675 50  0001 L CIN
-F 3 "http://www.fairchildsemi.com/ds/BD/BD233.pdf" H 7250 1750 50  0001 L CNN
-	1    7250 1750
+P 7500 1750
+F 0 "Q2" H 7692 1796 50  0000 L CNN
+F 1 "BD235" H 7692 1705 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-126-3_Vertical" H 7700 1675 50  0001 L CIN
+F 3 "http://www.fairchildsemi.com/ds/BD/BD233.pdf" H 7500 1750 50  0001 L CNN
+	1    7500 1750
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7050 1750 6650 1750
-Text Label 6650 1750 0    50   ~ 0
+	7300 1750 6900 1750
+Text Label 6900 1750 0    50   ~ 0
 ODO_RIGHT_HV
-Text Label 7350 1550 0    50   ~ 0
+Text Label 7600 1550 0    50   ~ 0
 VDD
-Text Label 7350 1950 0    50   ~ 0
+Text Label 7600 1950 0    50   ~ 0
 ODO_RIGHT_LV
 $Comp
 L Connector:Conn_01x20_Female J1
@@ -208,43 +206,43 @@ Text Label 9550 2350 0    50   ~ 0
 VCC
 Text Label 9550 2450 0    50   ~ 0
 VCC
-Text Label 7350 1350 0    50   ~ 0
+Text Label 7600 1350 0    50   ~ 0
 GND
 $Comp
 L Device:R R12
 U 1 1 60873497
-P 7350 1200
-F 0 "R12" H 7420 1246 50  0000 L CNN
-F 1 "1 k" H 7420 1155 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 7280 1200 50  0001 C CNN
-F 3 "~" H 7350 1200 50  0001 C CNN
-	1    7350 1200
+P 7600 1200
+F 0 "R12" H 7670 1246 50  0000 L CNN
+F 1 "1 k" H 7670 1155 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 7530 1200 50  0001 C CNN
+F 3 "~" H 7600 1200 50  0001 C CNN
+	1    7600 1200
 	1    0    0    -1  
 $EndComp
-Text Label 7350 1050 0    50   ~ 0
+Text Label 7600 1050 0    50   ~ 0
 ODO_LEFT_LV
 $Comp
 L Transistor_BJT:BD235 Q1
 U 1 1 6082C578
-P 7250 850
-F 0 "Q1" H 7442 896 50  0000 L CNN
-F 1 "BD235" H 7442 805 50  0000 L CNN
-F 2 "Package_TO_SOT_THT:TO-126-3_Vertical" H 7450 775 50  0001 L CIN
-F 3 "http://www.fairchildsemi.com/ds/BD/BD233.pdf" H 7250 850 50  0001 L CNN
-	1    7250 850 
+P 7500 850
+F 0 "Q1" H 7692 896 50  0000 L CNN
+F 1 "BD235" H 7692 805 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-126-3_Vertical" H 7700 775 50  0001 L CIN
+F 3 "http://www.fairchildsemi.com/ds/BD/BD233.pdf" H 7500 850 50  0001 L CNN
+	1    7500 850 
 	1    0    0    -1  
 $EndComp
-Text Label 7350 2250 0    50   ~ 0
+Text Label 7600 2250 0    50   ~ 0
 GND
 $Comp
 L Device:R R13
 U 1 1 608780F0
-P 7350 2100
-F 0 "R13" H 7420 2146 50  0000 L CNN
-F 1 "1 k" H 7420 2055 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 7280 2100 50  0001 C CNN
-F 3 "~" H 7350 2100 50  0001 C CNN
-	1    7350 2100
+P 7600 2100
+F 0 "R13" H 7670 2146 50  0000 L CNN
+F 1 "1 k" H 7670 2055 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 7530 2100 50  0001 C CNN
+F 3 "~" H 7600 2100 50  0001 C CNN
+	1    7600 2100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -320,33 +318,31 @@ VDD
 $Comp
 L Device:R R10
 U 1 1 608C0D8C
-P 6000 2000
-F 0 "R10" V 5793 2000 50  0000 C CNN
-F 1 "4.7 k" V 5884 2000 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5930 2000 50  0001 C CNN
-F 3 "~" H 6000 2000 50  0001 C CNN
-	1    6000 2000
+P 6350 2000
+F 0 "R10" V 6300 1800 50  0000 C CNN
+F 1 "4.7 k" V 6350 2000 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 6280 2000 50  0001 C CNN
+F 3 "~" H 6350 2000 50  0001 C CNN
+	1    6350 2000
 	0    1    1    0   
 $EndComp
-Text Label 6150 2000 0    50   ~ 0
+Text Label 6500 2000 0    50   ~ 0
 VDD
 $Comp
 L Device:R R11
 U 1 1 608C16C6
-P 6000 2100
-F 0 "R11" V 6100 2250 50  0000 C CNN
-F 1 "4.7 k" V 6100 2100 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5930 2100 50  0001 C CNN
-F 3 "~" H 6000 2100 50  0001 C CNN
-	1    6000 2100
+P 6350 2100
+F 0 "R11" V 6300 1900 50  0000 C CNN
+F 1 "4.7 k" V 6350 2100 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 6280 2100 50  0001 C CNN
+F 3 "~" H 6350 2100 50  0001 C CNN
+	1    6350 2100
 	0    1    1    0   
 $EndComp
-Text Label 6150 2100 0    50   ~ 0
+Text Label 6500 2100 0    50   ~ 0
 VDD
 Wire Wire Line
 	2200 950  1550 950 
-Wire Wire Line
-	5350 2100 5850 2100
 Text Label 8700 4100 0    50   ~ 0
 VL53L1-1_INT
 Text Label 8700 4200 0    50   ~ 0
@@ -427,7 +423,6 @@ Wire Wire Line
 	7300 3800 6650 3800
 Wire Wire Line
 	7300 3900 6650 3900
-NoConn ~ 5350 1700
 NoConn ~ 1100 7600
 NoConn ~ 1100 7500
 NoConn ~ 1100 7400
@@ -734,8 +729,6 @@ Wire Wire Line
 	9450 4000 9150 4000
 Text Label 9150 4000 0    50   ~ 0
 GND
-Wire Wire Line
-	5850 2000 5350 2000
 Text Label 5350 2000 0    50   ~ 0
 I2C-1_SCL
 Text Label 5350 1800 0    50   ~ 0
@@ -745,32 +738,28 @@ MOTOR_OUT_RIGHT
 $Comp
 L Device:R R15
 U 1 1 6085161B
-P 6000 1900
-F 0 "R15" V 5793 1900 50  0000 C CNN
-F 1 "10 k" V 5884 1900 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5930 1900 50  0001 C CNN
-F 3 "~" H 6000 1900 50  0001 C CNN
-	1    6000 1900
+P 6350 1900
+F 0 "R15" V 6300 1700 50  0000 C CNN
+F 1 "10 k" V 6350 1900 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 6280 1900 50  0001 C CNN
+F 3 "~" H 6350 1900 50  0001 C CNN
+	1    6350 1900
 	0    1    1    0   
 $EndComp
 $Comp
 L Device:R R14
 U 1 1 60851A93
-P 6000 1800
-F 0 "R14" V 5793 1800 50  0000 C CNN
-F 1 "10 k" V 5884 1800 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5930 1800 50  0001 C CNN
-F 3 "~" H 6000 1800 50  0001 C CNN
-	1    6000 1800
+P 6350 1800
+F 0 "R14" V 6300 1600 50  0000 C CNN
+F 1 "10 k" V 6350 1800 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 6280 1800 50  0001 C CNN
+F 3 "~" H 6350 1800 50  0001 C CNN
+	1    6350 1800
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	5350 1800 5850 1800
-Wire Wire Line
-	5850 1900 5350 1900
-Text Label 6150 1800 0    50   ~ 0
+Text Label 6500 1800 0    50   ~ 0
 GND
-Text Label 6150 1900 0    50   ~ 0
+Text Label 6500 1900 0    50   ~ 0
 GND
 Text Label 8750 3200 0    50   ~ 0
 MOTOR_DIR_LEFT
@@ -831,4 +820,61 @@ NoConn ~ 3750 2600
 NoConn ~ 3750 2700
 NoConn ~ 3750 3000
 NoConn ~ 2200 7700
+$Comp
+L Transistor_BJT:BC548 Q3
+U 1 1 608DF190
+P 5900 1150
+F 0 "Q3" H 6091 1196 50  0000 L CNN
+F 1 "BC548" H 6091 1105 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline_Wide" H 6100 1075 50  0001 L CIN
+F 3 "http://www.fairchildsemi.com/ds/BC/BC547.pdf" H 5900 1150 50  0001 L CNN
+	1    5900 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R16
+U 1 1 608F20F5
+P 5550 1150
+F 0 "R16" V 5343 1150 50  0000 C CNN
+F 1 "10 k" V 5434 1150 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5480 1150 50  0001 C CNN
+F 3 "~" H 5550 1150 50  0001 C CNN
+	1    5550 1150
+	0    1    1    0   
+$EndComp
+Text Label 6000 1350 0    50   ~ 0
+GND
+Text Label 6000 650  0    50   ~ 0
+VDD
+$Comp
+L Device:R R17
+U 1 1 608E65DA
+P 6000 800
+F 0 "R17" H 6070 846 50  0000 L CNN
+F 1 "10 k" H 6070 755 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 5930 800 50  0001 C CNN
+F 3 "~" H 6000 800 50  0001 C CNN
+	1    6000 800 
+	1    0    0    -1  
+$EndComp
+Text Label 6000 950  0    50   ~ 0
+IO-EXP-1_!RESET
+Wire Wire Line
+	5350 1700 5350 1150
+Wire Wire Line
+	5350 1150 5400 1150
+Text Label 5350 1500 0    50   ~ 0
+IO-EXP-1_RESET
+Wire Wire Line
+	5350 1800 6200 1800
+Wire Wire Line
+	5350 1900 6200 1900
+Wire Wire Line
+	5350 2000 6200 2000
+Wire Wire Line
+	5350 2100 6200 2100
+Text Notes 4050 1100 0    50   ~ 0
+GPIO16 is high at boot. This shall \nput the IO expander in reset \ncondition and disable its interrupt \noutputs. If the interrupt output \nINTB is high at boot (at GPIO15), \nthen the device will not boot.
+Wire Wire Line
+	6600 4100 7300 4100
 $EndSCHEMATC
