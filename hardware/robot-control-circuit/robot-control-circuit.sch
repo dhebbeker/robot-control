@@ -877,4 +877,68 @@ Text Notes 4050 1100 0    50   ~ 0
 GPIO16 is high at boot. This shall \nput the IO expander in reset \ncondition and disable its interrupt \noutputs. If the interrupt output \nINTB is high at boot (at GPIO15), \nthen the device will not boot.
 Wire Wire Line
 	6600 4100 7300 4100
+$Comp
+L Device:C C1
+U 1 1 608E87F3
+P 6300 2500
+F 0 "C1" H 6415 2584 50  0000 L CNN
+F 1 "100 n" H 6415 2493 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L4.6mm_W2.0mm_P2.50mm_MKS02_FKP02" H 6338 2350 50  0001 C CNN
+F 3 "~" H 6300 2500 50  0001 C CNN
+F 4 "must be close to microcontroller" H 6415 2409 40  0000 L CNN "Placement Notes"
+	1    6300 2500
+	1    0    0    -1  
+$EndComp
+Text Label 6300 2350 0    50   ~ 0
+IO-EXP-1_INTA
+Text Label 6300 2650 2    50   ~ 0
+GND
+$Comp
+L Device:C C2
+U 1 1 6092430C
+P 6300 2950
+F 0 "C2" H 6415 3034 50  0000 L CNN
+F 1 "100 n" H 6415 2943 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L4.6mm_W2.0mm_P2.50mm_MKS02_FKP02" H 6338 2800 50  0001 C CNN
+F 3 "~" H 6300 2950 50  0001 C CNN
+F 4 "must be close to microcontroller" H 6415 2859 40  0000 L CNN "Placement Notes"
+	1    6300 2950
+	1    0    0    -1  
+$EndComp
+Text Label 6300 2800 0    50   ~ 0
+IO-EXP-1_INTB
+Text Label 6300 3100 2    50   ~ 0
+GND
+$Comp
+L Device:CP C3
+U 1 1 6092D427
+P 9750 4800
+F 0 "C3" H 9868 4884 50  0000 L CNN
+F 1 "10 µ" H 9868 4793 50  0000 L CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 9788 4650 50  0001 C CNN
+F 3 "~" H 9750 4800 50  0001 C CNN
+F 4 "must be close to io-expander" H 9868 4709 40  0000 L CNN "Placement Notes"
+	1    9750 4800
+	1    0    0    -1  
+$EndComp
+Text Label 9750 4650 0    50   ~ 0
+VDD
+Text Label 9750 4950 2    50   ~ 0
+GND
+$Comp
+L Device:C C4
+U 1 1 6093BDBA
+P 9750 4350
+F 0 "C4" H 9865 4434 50  0000 L CNN
+F 1 "100 n" H 9865 4343 50  0000 L CNN
+F 2 "Capacitor_THT:C_Rect_L4.6mm_W2.0mm_P2.50mm_MKS02_FKP02" H 9788 4200 50  0001 C CNN
+F 3 "~" H 9750 4350 50  0001 C CNN
+F 4 "must be close to io-expander" H 9865 4259 40  0000 L CNN "Placement Notes"
+	1    9750 4350
+	1    0    0    -1  
+$EndComp
+Text Label 9750 4200 0    50   ~ 0
+VDD
+Text Label 9750 4500 2    50   ~ 0
+GND
 $EndSCHEMATC
