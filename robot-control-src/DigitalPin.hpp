@@ -1,11 +1,11 @@
-#ifndef ROBOT_CONTROL_SRC_PIN_HPP_
-#define ROBOT_CONTROL_SRC_PIN_HPP_
+#ifndef ROBOT_CONTROL_SRC_DIGITALPIN_HPP_
+#define ROBOT_CONTROL_SRC_DIGITALPIN_HPP_
 
 #include "GpioInterface.hpp"
 #include <Arduino.h>
 
 template<std::uint8_t pin>
-class Pin: public GpioInterface {
+class DigitalPin: public GpioInterface {
 public:
 	virtual int read() override
 	{
@@ -33,4 +33,4 @@ public:
 	}
 };
 
-#endif /* ROBOT_CONTROL_SRC_PIN_HPP_ */
+#endif /* ROBOT_CONTROL_SRC_DIGITALPIN_HPP_ */
