@@ -4,9 +4,11 @@
 #include "GpioInterface.hpp"
 #include <Arduino.h>
 
-template<std::uint8_t pin>
+template<std::uint8_t PIN>
 class DigitalPin: public GpioInterface {
 public:
+	static constexpr std::uint8_t pin = PIN;
+
 	virtual int read() override
 	{
 		return readS();
@@ -32,5 +34,12 @@ public:
 		digitalWrite(pin, value);
 	}
 };
+
+template<std::uint8_t PIN>
+void attachInterrupt(const DigitalPin<PIN>& gpio, void (* const interruptServiceRoutine)(void), const int mode)
+{
+	attachInterrupt(digitalPinToInterrupt(gpio.pin), interruptServiceRoutine, mode);
+}
+
 
 #endif /* ROBOT_CONTROL_SRC_DIGITALPIN_HPP_ */

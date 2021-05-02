@@ -9,7 +9,7 @@ public:
 	virtual int read() = 0;
 	virtual void setMode(const std::uint8_t mode) = 0;
 
-	virtual ~GpioInterface() = 0;
+	virtual ~GpioInterface() {};
 };
 
 void digitalWrite(GpioInterface& gpio, const std::uint8_t value);
