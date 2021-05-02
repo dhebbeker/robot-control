@@ -91,8 +91,8 @@ Wire Wire Line
 	7300 3300 6850 3300
 Text Label 6850 3300 0    50   ~ 0
 I2C-1_SCL
-Text Label 6600 4100 0    50   ~ 0
-IO-EXP-1_!RESET
+Text Label 7150 4100 0    50   ~ 0
+VDD
 Wire Wire Line
 	7300 850  6900 850 
 Text Label 6900 850  0    50   ~ 0
@@ -412,9 +412,9 @@ Wire Wire Line
 Text Label 5350 4400 0    50   ~ 0
 VCC
 Text Label 5350 2600 0    50   ~ 0
-IO-EXP-1_INTA
-Text Label 5350 2700 0    50   ~ 0
 IO-EXP-1_INTB
+Text Label 5350 2700 0    50   ~ 0
+IO-EXP-1_!INTA
 Text Label 6650 3800 0    50   ~ 0
 IO-EXP-1_INTA
 Text Label 6650 3900 0    50   ~ 0
@@ -858,13 +858,7 @@ F 3 "~" H 6000 800 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 6000 950  0    50   ~ 0
-IO-EXP-1_!RESET
-Wire Wire Line
-	5350 1700 5350 1150
-Wire Wire Line
-	5350 1150 5400 1150
-Text Label 5350 1500 0    50   ~ 0
-IO-EXP-1_RESET
+IO-EXP-1_!INTA
 Wire Wire Line
 	5350 1800 6200 1800
 Wire Wire Line
@@ -873,10 +867,10 @@ Wire Wire Line
 	5350 2000 6200 2000
 Wire Wire Line
 	5350 2100 6200 2100
-Text Notes 4050 1100 0    50   ~ 0
-GPIO16 is high at boot. This shall \nput the IO expander in reset \ncondition and disable its interrupt \noutputs. If the interrupt output \nINTB is high at boot (at GPIO15), \nthen the device will not boot.
+Text Notes 4600 1000 0    40   ~ 0
+The interrupt signals of the\nIO-expander are default high.\nThis conflicts with GPIO15 \nas this must not be high\nat boot. Thus the inverter.
 Wire Wire Line
-	6600 4100 7300 4100
+	7150 4100 7300 4100
 $Comp
 L Device:C C1
 U 1 1 608E87F3
@@ -941,4 +935,9 @@ Text Label 9750 4200 0    50   ~ 0
 VDD
 Text Label 9750 4500 2    50   ~ 0
 GND
+Text Label 4800 1150 0    50   ~ 0
+IO-EXP-1_INTA
+Wire Wire Line
+	4800 1150 5400 1150
+NoConn ~ 5350 1700
 $EndSCHEMATC
