@@ -2,20 +2,35 @@
 #define ROBOT_CONTROL_SRC_PIN_HPP_
 
 #include "GpioInterface.hpp"
-#include <cstdint>
+#include <Arduino.h>
 
+template<std::uint8_t pin>
 class Pin: public GpioInterface {
-private:
-	const std::uint8_t pinNumber;
-	static std::uint8_t modeToInt(const Mode);
-	static int interruptModeToInt(const InterruptMode);
 public:
-	Pin(const std::uint8_t pinNumber);
-	virtual ~Pin();
-	virtual void write(const bool high) override;
-	virtual void setMode(const GpioInterface::Mode) override;
-	virtual bool isHigh() override;
-	virtual void attachInterrupt(void (*const interruptServiceRoutine)(void), const InterruptMode interruptMode) override;
+	virtual int read() override
+	{
+		return readS();
+	}
+	virtual void setMode(const std::uint8_t mode) override
+	{
+		setModeS(mode);
+	}
+	virtual void write(const std::uint8_t value) override
+	{
+		writeS(value);
+	}
+	static int readS()
+	{
+		return digitalRead(pin);
+	}
+	static void setModeS(const std::uint8_t mode)
+	{
+		pinMode(pin, mode);
+	}
+	static void writeS(const std::uint8_t value)
+	{
+		digitalWrite(pin, value);
+	}
 };
 
 #endif /* ROBOT_CONTROL_SRC_PIN_HPP_ */
