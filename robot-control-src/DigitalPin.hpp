@@ -21,6 +21,10 @@ public:
 	{
 		writeS(value);
 	}
+	void setDutyCycle(const int dutyCycle) const
+	{
+		setDutyCycleS(dutyCycle);
+	}
 	static int readS()
 	{
 		return digitalRead(pin);
@@ -32,6 +36,10 @@ public:
 	static void writeS(const std::uint8_t value)
 	{
 		digitalWrite(pin, value);
+	}
+	static void setDutyCycleS(const int dutyCycle)
+	{
+		analogWrite(pin, dutyCycle);
 	}
 };
 
