@@ -1,16 +1,28 @@
 #include "Drives.hpp"
+#include "board.hpp"
+
+#include <cmath>
+
+#undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
+
+template<typename MOTORCONTROL, typename DIRECTIONPIN, typename ODOPIN>
+static drives::Drive<MOTORCONTROL, DIRECTIONPIN, ODOPIN> makeDrive(MOTORCONTROL& motorControlPin, DIRECTIONPIN& directionPin, ODOPIN& odoPin)
+{
+	return drives::Drive<MOTORCONTROL, DIRECTIONPIN, ODOPIN>(motorControlPin, directionPin, odoPin);
+}
 
 namespace drives
 {
+static auto l = makeDrive(board::leftMotor, board::leftBackwards, board::leftOdoSignal);
+static auto r = makeDrive(board::rightMotor, board::rightBackwards, board::rightOdoSignal);
 
-template<int A, int B, int C> std::uint16_t volatile Drive<A, B, C>::counter = 0;
-template<int A, int B, int C> std::uint16_t Drive<A, B, C>::target = 0;
-template<int A, int B, int C> bool Drive<A, B, C>::isIdle = true;
+DriveInterface& leftDrive = l;
+DriveInterface& rightDrive = r;
 
-ICACHE_RAM_ATTR void odometryCounter()
+IRAM_ATTR void odometryCounter()
 {
-  LeftDrive::evaluateInterval();
-  RightDrive::evaluateInterval();
+  leftDrive.evaluateInterval();
+  rightDrive.evaluateInterval();
 }
 
 /**
@@ -45,14 +57,14 @@ static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
-  LeftDrive::drive(steps, amplitude, !clockwise);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), clockwise);
+  leftDrive.drive(steps, amplitude, !clockwise);
+  rightDrive.drive(steps, calcRightSpeed(amplitude), clockwise);
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
-  LeftDrive::drive(steps, amplitude, backwards);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
+  leftDrive.drive(steps, amplitude, backwards);
+  rightDrive.drive(steps, calcRightSpeed(amplitude), backwards);
 }
 
 void rotate(const float deg, const Amplitude amplitude, bool const clockwise)
@@ -68,4 +80,14 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
   const Counter steps = distance * stepsPerMm;
   driveCounter(steps, amplitude, backwards);
 }
+
+DriveInterface::DriveInterface() :
+		counter(0), target(0), isIdle(true) {
 }
+
+DriveInterface::~DriveInterface() {
+}
+
+}
+
+

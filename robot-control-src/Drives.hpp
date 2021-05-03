@@ -2,8 +2,9 @@
 #define DRIVES_HPP
 
 #include "board.hpp"
+#include <algorithm>
 #include <cstdint>
-#include <cmath>
+#include <Arduino.h>
 
 namespace drives
 {
@@ -15,64 +16,87 @@ constexpr Amplitude cruiseSpeed = maxAmplitude / 2;
 
 void odometryCounter();
 
-template<int MotorControl, int DirectionPin, int OdoPin>
-struct Drive
+class DriveInterface
 {
-  
-  static Counter volatile counter;
-  static Counter target;
-  static bool isIdle;
+public:
+	Counter volatile counter;
+	Counter target;
+	bool isIdle;
 
-  static void init()
-  {
-    target = counter = 0;
-    pinMode(OdoPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(OdoPin), odometryCounter, CHANGE);
-    
-    //pinMode(MotorControl, OUTPUT);
-    analogWrite(MotorControl, 0);
-    pinMode(DirectionPin, OUTPUT);
-  }
-  
-  static void evaluateInterval()
-  {
-    const bool isContact = digitalRead(OdoPin) == LOW;
-    static bool wasContact = isContact;
-    static Milliseconds intervalStart = millis(); 
-  
-    if(wasContact && !isContact) // start interval 
-    {
-      intervalStart = millis();
-    }
-    else if(!wasContact && isContact && (millis() - intervalStart) > board::odoMinIntervalDuration)
-    {
-      // valid interval end
-      counter++;
-      if(counter>=target) stop();
-    }
-    
-    wasContact = isContact;
-  }
+	DriveInterface();
+	virtual void init() = 0;
+	virtual void evaluateInterval() = 0;
+	virtual void stop() = 0;
+	virtual void drive(const Counter distance, const Amplitude amplitude, const bool backwards) = 0;
 
-  static void stop()
-  {
-    analogWrite(MotorControl, 0);  
-    isIdle = true;  
-  }
-
-  static void drive(const Counter distance, const Amplitude amplitude, const bool backwards)
-  {
-    counter = 0;
-    target = distance;
-    isIdle = false;
-    digitalWrite(DirectionPin, backwards ? LOW : HIGH);
-    analogWrite(MotorControl, std::min(maxAmplitude, amplitude));
-  }
-
+	virtual ~DriveInterface();
 };
 
-using LeftDrive = Drive<board::leftMotor, board::leftBackwards, board::leftOdoSignal>;
-using RightDrive = Drive<board::rightMotor, board::rightBackwards, board::rightOdoSignal>;
+template<typename MOTORCONTROL, typename DIRECTIONPIN, typename ODOPIN>
+class Drive : public DriveInterface
+{
+public:
+
+	Drive(MOTORCONTROL& motorControlPin, DIRECTIONPIN& directionPin, ODOPIN& odoPin) :
+			motorControlpin(motorControlPin), directionPin(directionPin), odoPin(odoPin) {
+
+	}
+
+	virtual void init() override
+	{
+		target = counter = 0;
+		pinMode(odoPin, INPUT);
+		attachInterrupt(digitalPinToInterrupt(odoPin), odometryCounter, CHANGE);
+
+		analogWrite(motorControlpin, 0);
+		pinMode(directionPin, OUTPUT);
+	}
+
+	virtual void evaluateInterval() override
+	{
+		const bool isContact = digitalRead(odoPin) == LOW;
+		static bool wasContact = isContact;
+		static Milliseconds intervalStart = millis();
+
+		if (wasContact && !isContact) // start interval
+				{
+			intervalStart = millis();
+		} else if (!wasContact && isContact && (millis() - intervalStart) > board::odoMinIntervalDuration) {
+			// valid interval end
+			counter++;
+			if (counter >= target)
+				stop();
+		}
+
+		wasContact = isContact;
+	}
+
+	virtual void stop() override
+	{
+		analogWrite(motorControlpin, 0);
+		isIdle = true;
+	}
+
+	virtual void drive(const Counter distance, const Amplitude amplitude, const bool backwards) override
+	{
+		counter = 0;
+		target = distance;
+		isIdle = false;
+		digitalWrite(directionPin, backwards ? LOW : HIGH);
+		analogWrite(motorControlpin, std::min(maxAmplitude, amplitude));
+	}
+
+	virtual ~Drive() {
+	}
+
+private:
+	MOTORCONTROL &motorControlpin;
+	DIRECTIONPIN &directionPin;
+	ODOPIN &odoPin;
+};
+
+extern DriveInterface& leftDrive;
+extern DriveInterface& rightDrive;
 
 void rotateCounter(const Counter deg, const Amplitude amplitude, bool const clockwise);
 void rotate(const float deg, const Amplitude amplitude, bool const clockwise);
