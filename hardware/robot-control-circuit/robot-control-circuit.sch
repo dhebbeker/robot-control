@@ -714,9 +714,9 @@ GND
 Text Label 2500 3100 0    50   ~ 0
 VDD
 Text Label 8750 3800 0    50   ~ 0
-BUMPER_RIGHT
-Text Label 8750 3900 0    50   ~ 0
 BUMPER_LEFT
+Text Label 8750 3900 0    50   ~ 0
+BUMPER_RIGHT
 Wire Wire Line
 	9450 3000 8750 3000
 Wire Wire Line
