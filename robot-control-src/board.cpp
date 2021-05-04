@@ -2,11 +2,10 @@
 #include <Arduino.h>
 
 namespace board {
-decltype(leftOdoSignal) leftOdoSignal;
-decltype(rightOdoSignal) rightOdoSignal;
-decltype(rightBackwards) rightBackwards;
-decltype(leftBackwards) leftBackwards;
-decltype(leftMotor) leftMotor = D1;
-decltype(rightMotor) rightMotor = D2;
-decltype(debugLed) debugLed = D0;
+constexpr std::uint8_t ioExpander1Address = 0x00;
+MCP23017 ioExpander1(ioExpander1Address);
+MCP23017Pin leftBackwards(ioExpander1, 8+0);
+MCP23017Pin rightBackwards(ioExpander1, 8+1);
+MCP23017Pin leftBumper(ioExpander1, 8+6);
+MCP23017Pin rightBumper(ioExpander1, 8+7);
 };
