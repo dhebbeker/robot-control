@@ -1,7 +1,4 @@
-#include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include <PCF8574.h>
-#include <DHTesp.h>
 #include "wifi_ap.hpp"
 
 #include "board.hpp"
