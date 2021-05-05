@@ -81,8 +81,15 @@ void setup()
   Serial.printf("\n begin program '%s'\n", __FILE__);
   Wire.begin(board::sda, board::scl);
   board::ioExpander1.init();
+  
+  // initialize pins
   pinMode(board::debugLed, OUTPUT);
   digitalWrite(board::debugLed, LOW);
+  pinMode(board::ioExpanderIntB, INPUT_PULLUP);
+  pinMode(board::ioExpanderIntAInv, INPUT);
+  pinMode(board::leftBumper, INPUT_PULLUP);
+  pinMode(board::rightBumper, INPUT_PULLUP);
+  
   drives::leftDrive.init();
   drives::rightDrive.init();
 
