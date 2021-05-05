@@ -82,6 +82,7 @@ void setup()
   Serial.flush();
   delay(100);
   Serial.printf("\n begin program '%s'\n", __FILE__);
+  Wire.begin(board::sda, board::scl);
   board::ioExpander1.init();
   pinMode(board::debugLed, OUTPUT);
   digitalWrite(board::debugLed, LOW);
