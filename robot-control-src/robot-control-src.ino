@@ -1,10 +1,10 @@
-#include <ESP8266WebServer.h>
-#include "wifi_ap.hpp"
-
 #include "board.hpp"
 #include "Drives.hpp"
+#include "wifi_ap.hpp"
+#include <ESP8266WebServer.h>
 
 static ESP8266WebServer server(80);
+
 static struct
 {
   bool isTargetNew = false;
