@@ -7,7 +7,7 @@
 #include <MCP23017.h>
 
 typedef decltype(millis()) Milliseconds;
-constexpr auto pi = std::acos(-1);
+constexpr auto pi = M_PI;
 
 namespace board
 {
