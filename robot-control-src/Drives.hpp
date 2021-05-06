@@ -104,6 +104,8 @@ void rotate(const float deg, const Amplitude amplitude, bool const clockwise);
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
 
+void stopDrives();
+
 };
 
 #endif // DRIVES_HPP

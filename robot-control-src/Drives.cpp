@@ -88,6 +88,11 @@ DriveInterface::DriveInterface() :
 DriveInterface::~DriveInterface() {
 }
 
+IRAM_ATTR void stopDrives() {
+	leftDrive.stop();
+	rightDrive.stop();
+}
+
 }
 
 
