@@ -5,25 +5,15 @@
 
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
 
-template<typename MOTORCONTROL, typename DIRECTIONPIN, typename ODOPIN>
-static drives::Drive<MOTORCONTROL, DIRECTIONPIN, ODOPIN> makeDrive(MOTORCONTROL& motorControlPin, DIRECTIONPIN& directionPin, ODOPIN& odoPin)
-{
-	return drives::Drive<MOTORCONTROL, DIRECTIONPIN, ODOPIN>(motorControlPin, directionPin, odoPin);
-}
-
 namespace drives
 {
-static auto l = makeDrive(board::leftMotor, board::leftBackwards, board::leftOdoSignal);
-static auto r = makeDrive(board::rightMotor, board::rightBackwards, board::rightOdoSignal);
 
-DriveInterface& leftDrive = l;
-DriveInterface& rightDrive = r;
-
-IRAM_ATTR void odometryCounter()
-{
-  leftDrive.evaluateInterval();
-  rightDrive.evaluateInterval();
-}
+template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
+std::uint16_t volatile Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::counter = 0;
+template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
+std::uint16_t Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::target = 0;
+template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
+bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::isIdle = true;
 
 /**
  * The right drive tends to be faster than the left. In order to compensate a factor 
@@ -57,14 +47,14 @@ static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
-  leftDrive.drive(steps, amplitude, !clockwise);
-  rightDrive.drive(steps, calcRightSpeed(amplitude), clockwise);
+  LeftDrive::drive(steps, amplitude, !clockwise);
+  RightDrive::drive(steps, calcRightSpeed(amplitude), clockwise);
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
-  leftDrive.drive(steps, amplitude, backwards);
-  rightDrive.drive(steps, calcRightSpeed(amplitude), backwards);
+  LeftDrive::drive(steps, amplitude, backwards);
+  RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
 }
 
 void rotate(const float deg, const Amplitude amplitude, bool const clockwise)
@@ -81,16 +71,9 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
   driveCounter(steps, amplitude, backwards);
 }
 
-DriveInterface::DriveInterface() :
-		counter(0), target(0), isIdle(true) {
-}
-
-DriveInterface::~DriveInterface() {
-}
-
 IRAM_ATTR void stopDrives() {
-	leftDrive.stop();
-	rightDrive.stop();
+	LeftDrive::stop();
+	RightDrive::stop();
 }
 
 }

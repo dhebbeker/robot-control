@@ -90,8 +90,8 @@ void setup()
   pinMode(board::leftBumper, INPUT_PULLUP);
   pinMode(board::rightBumper, INPUT_PULLUP);
   
-  drives::leftDrive.init();
-  drives::rightDrive.init();
+  drives::LeftDrive::init();
+  drives::RightDrive::init();
 
   Serial.printf("connect to wifi %s ", ssid);
   WiFi.begin(ssid, password);
@@ -110,8 +110,8 @@ void setup()
 void loop()
 {
   server.handleClient();
-  //Serial.printf("left: \t%3u, right: \t%3u\n", drives::leftDrive.counter, drives::rightDrive.counter);
-  if(drives::leftDrive.isIdle && drives::rightDrive.isIdle && newTarget.isTargetNew)
+  //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
+  if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle && newTarget.isTargetNew)
   {
     if(newTarget.newDrive!=0)
     {
