@@ -33,16 +33,18 @@ bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, od
  * cycle of the right motor control.
  * 
  * The calibration fraction is defined as follows: It has been observed, that when the 
- * duty cycle of the left is 350/1023, then the right should be 325/1023 in order for the
+ * duty cycle of the left is x/1023, then the right should be y/1023 in order for the
  * drives to be equally fast. The linear functions is such that the difference is 0 with 
  * a duty cycle of 100%.
  */
 static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
-  constexpr double calibrationFraction = 25.0 / (maxAmplitude - 350.0);
-  constexpr float a = 1.0 + calibrationFraction;
-  constexpr float b = maxAmplitude * calibrationFraction;
-  return a*leftSpeed - b;
+	constexpr Amplitude leftAmplitude = 350; // x
+	constexpr Amplitude rightMatchingAmplitude = 290; // y
+	constexpr double calibrationFraction = (leftAmplitude
+			- rightMatchingAmplitude)
+			/ static_cast<double>(maxAmplitude - leftAmplitude);
+	return leftSpeed - calibrationFraction * (maxAmplitude - leftSpeed);
 }
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
