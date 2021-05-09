@@ -26,7 +26,18 @@ extern MCP23017Pin rightBackwards;
 extern MCP23017Pin leftBumper;
 extern MCP23017Pin rightBumper;
 
+/**
+ * Maximum robot velocity.
+ *
+ * According to [this wiki](https://rn-wissen.de/wiki/index.php/CCRP5#Technische_Daten).
+ */
 constexpr auto maxVelocity = 220; //!< [mm/s]
+/**
+ * distance of one outer wheel turn U = d*pi
+ * diameter of outer wheel d = 50 mm
+ * fraction of one odometry interval to outer wheel f = 6/25
+ * distance of one odometry interval = f*U
+ */
 constexpr float odoIntervalLength = 12*pi; //!< [mm]
 //! Minimum time with buffer factor [ms]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
