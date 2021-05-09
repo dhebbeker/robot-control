@@ -28,6 +28,8 @@ extern MCP23017Pin rightBumper;
 
 constexpr auto maxVelocity = 220; //!< [mm/s]
 constexpr float odoIntervalLength = 12*pi; //!< [mm]
+//! Minimum time with buffer factor [ms]
+constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
 };
 
 #endif // BOARD_HPP
