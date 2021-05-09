@@ -26,7 +26,7 @@ public:
 	{
 		target = counter = 0;
 		pinMode(odoPin, INPUT);
-		attachInterrupt(digitalPinToInterrupt(odoPin), evaluateInterval, FALLING);
+		attachInterrupt(digitalPinToInterrupt(odoPin), evaluateInterval, RISING);
 
 		analogWrite(motorControlpin, 0);
 		pinMode(directionPin, OUTPUT);
@@ -34,9 +34,15 @@ public:
 
 	IRAM_ATTR static void evaluateInterval()
 	{
-		if (++counter >= target)
+		const Milliseconds now = millis();
+		static Milliseconds riseTime = now;
+		if(now - riseTime > board::odoMinIntervalDuration)
 		{
-			stop();
+			if (++counter >= target)
+			{
+				stop();
+			}
+			riseTime = now;
 		}
 	}
 

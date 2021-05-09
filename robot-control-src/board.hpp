@@ -41,6 +41,8 @@ constexpr auto maxVelocity = 220; //!< [mm/s]
 constexpr float odoIntervalLength = 12*pi; //!< [mm]
 //! Minimum time with buffer factor [ms]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
+static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");
+static_assert(odoMinIntervalDuration < 142, "threshold must be smaller than shortest odometry interval between pulses (measured at highest speed)");
 };
 
 #endif // BOARD_HPP
