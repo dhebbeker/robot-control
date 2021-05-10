@@ -81,6 +81,8 @@ void setup()
   Serial.printf("\n begin program '%s'\n", __FILE__);
   Wire.begin(board::sda, board::scl);
   board::ioExpander1.init();
+  board::ioExpander1.interruptMode(MCP23017InterruptMode::Separated);
+  board::ioExpander1.interrupt(MCP23017Port::B, FALLING);
   
   // initialize pins
   pinMode(board::debugLed, OUTPUT);
@@ -92,6 +94,8 @@ void setup()
   
   drives::LeftDrive::init();
   drives::RightDrive::init();
+  
+  attachInterrupt(board::ioExpanderIntB, drives::stopDrives, FALLING);
 
   Serial.printf("connect to wifi %s ", ssid);
   WiFi.begin(ssid, password);
