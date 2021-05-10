@@ -1,6 +1,7 @@
 #include "board.hpp"
 #include "Drives.hpp"
 #include "wifi_ap.hpp"
+#include <assert.h>
 #include <ESP8266WebServer.h>
 
 static ESP8266WebServer server(80);
@@ -13,6 +14,10 @@ static struct
   drives::Counter newRotate = 0;
   bool clockwise = true;
 } newTarget;
+
+static constexpr std::size_t numberOfPositions = 50;
+static Position positions[numberOfPositions] = { {0,0} };
+static std::size_t positionIndex = 0;
 
 constexpr auto htmlSource = 
     "<!DOCTYPE html>\n"
@@ -68,7 +73,24 @@ static void handleRoot()
     newTarget.isTargetNew = true;
     Serial.printf("Got right by %u!\n", newTarget.newRotate);
   }
-  server.send(200, "text/html", htmlSource);
+  if(server.hasArg("positions"))
+  {
+	  constexpr std::size_t charPerEntry = (5+1)*2;
+	  constexpr std::size_t bufferLength = charPerEntry*numberOfPositions+1; 
+	  char positionStringBuffer[bufferLength] = { 0 };
+	  std::size_t charPos = 0;
+	  for(std::size_t i=0; i<positionIndex; i++)
+	  {
+		  const int writtenCharacters = snprintf(&(positionStringBuffer[charPos]), charPerEntry+1, "%i;%i;", positions[i].x, positions[i].y);
+		  assert(writtenCharacters>0);
+		  charPos += writtenCharacters;	  
+	  }
+	  server.send(200, "text/plain", positionStringBuffer);
+  }
+  else
+  {
+	  server.send(200, "text/html", htmlSource);
+  }
   digitalWrite(board::debugLed, HIGH);
 }
 
@@ -117,6 +139,8 @@ void loop()
   //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
   if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle && newTarget.isTargetNew)
   {
+	  positions[positionIndex++] = drives::flushCurrentPosition();
+	  positionIndex %= numberOfPositions;
     if(newTarget.newDrive!=0)
     {
       drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);

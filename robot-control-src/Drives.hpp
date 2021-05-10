@@ -6,6 +6,12 @@
 #include <cstdint>
 #include <Arduino.h>
 
+using Distance = std::int16_t; //!< in [mm]
+struct Position
+{
+	Distance x, y;
+};
+
 namespace drives
 {
 
@@ -72,6 +78,8 @@ void rotate(const float deg, const Amplitude amplitude, bool const clockwise);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
+
+Position flushCurrentPosition();
 
 void stopDrives();
 
