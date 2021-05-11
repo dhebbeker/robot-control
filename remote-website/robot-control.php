@@ -2,9 +2,7 @@
 $image = imagecreatetruecolor(1000, 1000);
 $default_color = imagecolorallocate($image, 0xFF, 0xFF, 0xFF);
 
-$data_server = "http://kps32.ddns.net/?positions";
-$positionString = file_get_contents($data_server);
-
+$positionString = $_GET["positions"];
 
 $positions = array();
 if($positionString === FALSE) {
