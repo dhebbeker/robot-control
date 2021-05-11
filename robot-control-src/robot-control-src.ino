@@ -160,15 +160,17 @@ void loop()
 		}
 		if(newTarget.isTargetNew)
 		{
-			if(newTarget.newDrive!=0)
+      const bool bumperIsPressed = digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
+			if(newTarget.newDrive!=0 && (!newTarget.forward || !bumperIsPressed))
 			{
 			  drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);
+			  newTarget = { };
 			}
-			else if(newTarget.newRotate!=0)
+			else if(newTarget.newRotate!=0 && !bumperIsPressed)
 			{
 			  drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
+			  newTarget = { };
 			}
-			newTarget = { };
 		}
 	}
 }
