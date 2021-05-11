@@ -28,6 +28,7 @@ static constexpr char htmlSourceTemplate[] =
 		"    <title>Robot Control</title>\n"
 		"    <meta charset=\"utf-8\" />\n"
 		"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.6\">\n"
+		"    <meta http-equiv=\"refresh\" content=\"5\">\n"
 		"  </head>\n"
 		"  <body>\n"
 		"  <main>\n"
@@ -58,7 +59,7 @@ void updateHtmlSource()
 	char * const backBuffer = (htmlSourceFrontBuffer.load() == htmlSourceBackBufferA) ? htmlSourceBackBufferB : htmlSourceBackBufferA;
 	char positionStringBuffer[positionsStringMaxLength] = { 0 };
 	std::size_t charPos = 0;
-	for(std::size_t i=0; i<positionIndex; i++)
+	for(std::size_t i=0; i<=positionIndex; i++)
 	{
 	  const int writtenCharacters = snprintf(&(positionStringBuffer[charPos]), maxCharPerPosition+1, "%i;%i;", positions[i].x, positions[i].y);
 	  assert(writtenCharacters>0);
@@ -100,10 +101,7 @@ static void handleRoot()
     newTarget.isTargetNew = true;
     Serial.printf("Got right by %u!\n", newTarget.newRotate);
   }
-  else
-  {
-	  server.send(200, "text/html", htmlSourceFrontBuffer.load());
-  }
+	server.send(200, "text/html", htmlSourceFrontBuffer.load());
   digitalWrite(board::debugLed, HIGH);
 }
 
@@ -144,25 +142,33 @@ void setup()
   server.begin();
   Serial.printf("webserver has IP %s\n", WiFi.localIP().toString().c_str());
   server.on("/", handleRoot);
+	updateHtmlSource();
 }
 
 void loop()
 {
-  server.handleClient();
-  //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
-  if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle && newTarget.isTargetNew)
-  {
-	  positions[positionIndex++] = drives::flushCurrentPosition();
-	  positionIndex %= numberOfPositions;
-    if(newTarget.newDrive!=0)
-    {
-      drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);
-    }
-    else if(newTarget.newRotate!=0)
-    {
-      drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
-    }
-    newTarget = { };
-  }
-  updateHtmlSource();
+	server.handleClient();
+	//Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
+	if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle)
+	{
+		const Position newPositionCandidate = drives::flushCurrentPosition();
+		if(positions[positionIndex] != newPositionCandidate)
+		{
+			positions[++positionIndex] = newPositionCandidate;
+			positionIndex %= numberOfPositions;
+	    updateHtmlSource();
+		}
+		if(newTarget.isTargetNew)
+		{
+			if(newTarget.newDrive!=0)
+			{
+			  drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);
+			}
+			else if(newTarget.newRotate!=0)
+			{
+			  drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
+			}
+			newTarget = { };
+		}
+	}
 }
