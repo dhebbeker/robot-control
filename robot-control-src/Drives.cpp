@@ -13,7 +13,7 @@ static constexpr float stepsPerRad = stepsPerDeg / ((2*pi)/360);
 
 static enum class Action
 {
-	STRAIGHTFORWARD, TURN_LEFT, TURN_RIGHT
+	FORWARD, BACKWARD, TURN_LEFT, TURN_RIGHT
 } lastAction;
 
 Position lastKnownPosition = {0,0};
@@ -67,7 +67,7 @@ void rotateCounter(const Counter steps, const Amplitude amplitude, bool const cl
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
-	lastAction = Action::STRAIGHTFORWARD;
+	lastAction = backwards ? Action::BACKWARD : Action::FORWARD;
   LeftDrive::drive(steps, amplitude, backwards);
   RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
 }
@@ -88,10 +88,12 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
 Position flushCurrentPosition()
 {
 	switch (lastAction) {
-		case Action::STRAIGHTFORWARD:
+		case Action::FORWARD:
+		case Action::BACKWARD:
 		{
-			lastKnownPosition.x += LeftDrive::counter * board::odoIntervalLength * std::cos(orientation);
-			lastKnownPosition.y += LeftDrive::counter * board::odoIntervalLength * std::sin(orientation);
+			const std::int8_t reversed = (lastAction == Action::BACKWARD) ? -1 : 1;
+			lastKnownPosition.x += LeftDrive::counter * board::odoIntervalLength * std::cos(orientation) * reversed;
+			lastKnownPosition.y += LeftDrive::counter * board::odoIntervalLength * std::sin(orientation) * reversed;
 			break;
 		}
 		case Action::TURN_LEFT:
