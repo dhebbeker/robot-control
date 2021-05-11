@@ -63,7 +63,7 @@ public:
 		counter = 0;
 		target = distance;
 		isIdle = false;
-		digitalWrite(directionPin, backwards ? LOW : HIGH);
+		digitalWrite(directionPin, !backwards ? LOW : HIGH);
 		analogWrite(motorControlpin, std::min(maxAmplitude, amplitude));
 	}
 };
