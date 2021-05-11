@@ -8,6 +8,17 @@
 namespace drives
 {
 
+static constexpr float stepsPerDeg = 100/(4.8*360);
+static constexpr float stepsPerRad = stepsPerDeg / ((2*pi)/360);
+
+static enum class Action
+{
+	FORWARD, BACKWARD, TURN_LEFT, TURN_RIGHT
+} lastAction;
+
+Position lastKnownPosition = {0,0};
+static float orientation = 0; // in radians
+
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
 Counter volatile Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::counter = 0;
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
@@ -49,19 +60,20 @@ static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
-  LeftDrive::drive(steps, amplitude, !clockwise);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), clockwise);
+	lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
+  LeftDrive::drive(steps, amplitude, clockwise);
+  RightDrive::drive(steps, calcRightSpeed(amplitude), !clockwise);
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
+	lastAction = backwards ? Action::BACKWARD : Action::FORWARD;
   LeftDrive::drive(steps, amplitude, backwards);
   RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
 }
 
 void rotate(const float deg, const Amplitude amplitude, bool const clockwise)
 {
-  constexpr float stepsPerDeg = 100/(4.8*360);
   const Counter steps = std::round(deg * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
 }
@@ -73,7 +85,37 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
   driveCounter(steps, amplitude, backwards);
 }
 
-IRAM_ATTR void stopDrives() {
+Position flushCurrentPosition()
+{
+	switch (lastAction) {
+		case Action::FORWARD:
+		case Action::BACKWARD:
+		{
+			const std::int8_t reversed = (lastAction == Action::BACKWARD) ? -1 : 1;
+			lastKnownPosition.x += LeftDrive::counter * board::odoIntervalLength * std::cos(orientation) * reversed;
+			lastKnownPosition.y += LeftDrive::counter * board::odoIntervalLength * std::sin(orientation) * reversed;
+			break;
+		}
+		case Action::TURN_LEFT:
+		{
+			orientation -= LeftDrive::counter / stepsPerRad;
+			break;
+		}
+		case Action::TURN_RIGHT:
+		{
+			orientation += LeftDrive::counter / stepsPerRad;
+			break;
+		}
+		default:
+			break;
+	}
+	LeftDrive::counter = 0;
+	RightDrive::counter = 0;
+	return lastKnownPosition;
+}
+
+IRAM_ATTR void stopDrives()
+{
 	LeftDrive::stop();
 	RightDrive::stop();
 }

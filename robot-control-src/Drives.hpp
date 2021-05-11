@@ -6,6 +6,20 @@
 #include <cstdint>
 #include <Arduino.h>
 
+using Distance = std::int16_t; //!< in [mm]
+struct Position
+{
+	Distance x, y;
+	bool operator==(const Position& rhs) const
+	{
+		return x == rhs.x && y == rhs.y;
+	}
+	bool operator!=(const Position& rhs) const
+	{
+		return !(*this == rhs);
+	}
+};
+
 namespace drives
 {
 
@@ -57,7 +71,7 @@ public:
 		counter = 0;
 		target = distance;
 		isIdle = false;
-		digitalWrite(directionPin, backwards ? LOW : HIGH);
+		digitalWrite(directionPin, !backwards ? LOW : HIGH);
 		analogWrite(motorControlpin, std::min(maxAmplitude, amplitude));
 	}
 };
@@ -72,6 +86,8 @@ void rotate(const float deg, const Amplitude amplitude, bool const clockwise);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
+
+Position flushCurrentPosition();
 
 void stopDrives();
 
