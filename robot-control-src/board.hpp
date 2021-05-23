@@ -1,7 +1,7 @@
 #if !defined(BOARD_HPP)
 #define BOARD_HPP
-#include "DigitalPin.hpp"
 #include "MCP23017Pin.hpp"
+#include "VL53L1GpioInterface.hpp"
 #include <Arduino.h>
 #include <cmath>
 #include <MCP23017.h>
@@ -21,10 +21,19 @@ extern std::uint8_t leftOdoSignal;
 extern std::uint8_t ioExpanderIntB;
 extern std::uint8_t ioExpanderIntAInv;
 extern MCP23017 ioExpander1;
+extern MCP23017Pin VL53L1_1_INT;
+extern MCP23017Pin VL53L1_1_XSHUT;
+extern MCP23017Pin VL53L1_2_INT;
+extern MCP23017Pin VL53L1_2_XSHUT;
+extern MCP23017Pin VL53L1_3_INT;
+extern MCP23017Pin VL53L1_3_XSHUT;
+extern MCP23017Pin VL53L1_4_INT;
+extern MCP23017Pin VL53L1_4_XSHUT;
 extern MCP23017Pin leftBackwards;
 extern MCP23017Pin rightBackwards;
 extern MCP23017Pin leftBumper;
 extern MCP23017Pin rightBumper;
+extern VL53L1GpioInterface * const distanceSensors[4];
 
 /**
  * Maximum robot velocity.
