@@ -63,3 +63,4 @@ Software
 
 The source code is written in C++. It is compiled and programmed with the [Arduino IDE](https://www.arduino.cc/en/Main/Software). The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed.
 The [Arduino library VL53L1](https://github.com/stm32duino/VL53L1) must be installed.
+The [SimplyAtomic library](https://github.com/wizard97/SimplyAtomic) must be installed.
