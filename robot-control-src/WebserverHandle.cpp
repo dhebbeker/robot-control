@@ -75,7 +75,7 @@ void WebserverHandle::loop() {
   updateHtmlSource();
 }
 
-WebserverHandle::WebserverHandle(ESP8266WebServer &webserver,
+WebserverHandle::WebserverHandle(ESP8266WebServer& webserver,
     const EnvironmentRecord &environmentRecord) :
     htmlSourceFrontBuffer(htmlSourceTemplate), server(webserver), environment(
         environmentRecord) {
@@ -96,7 +96,7 @@ void WebserverHandle::setup() {
 }
 
 void WebserverHandle::updateHtmlSource() {
-  constexpr std::size_t maxCharPerPosition = (5+1)*2; //!< when serializing the position, the number of characters maximum used per position
+  constexpr std::size_t maxCharPerPosition = (5+1)*2; // when serializing the position, the number of characters maximum used per position
   constexpr std::size_t positionsStringMaxLength = maxCharPerPosition*environment.numberOfPositions+1;
 
   static char htmlSourceBackBufferA[size(htmlSourceTemplate) + positionsStringMaxLength] = {0};
