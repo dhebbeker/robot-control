@@ -2,23 +2,10 @@
 #define DRIVES_HPP
 
 #include "board.hpp"
+#include "EnvironmentRecord.hpp"
 #include <algorithm>
 #include <cstdint>
 #include <Arduino.h>
-
-using Distance = std::int16_t; //!< in [mm]
-struct Position
-{
-	Distance x, y;
-	bool operator==(const Position& rhs) const
-	{
-		return x == rhs.x && y == rhs.y;
-	}
-	bool operator!=(const Position& rhs) const
-	{
-		return !(*this == rhs);
-	}
-};
 
 namespace drives
 {
