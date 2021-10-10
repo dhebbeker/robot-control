@@ -1,9 +1,9 @@
 #if !defined(BOARD_HPP)
 #define BOARD_HPP
-#include "MCP23017Pin.hpp"
-#include "VL53L1GpioInterface.hpp"
-#include <Arduino.h>
-#include <cmath>
+#include "../device_drivers/MCP23017Pin.hpp"
+#include "../device_drivers/VL53L1GpioInterface.hpp"
+#include "../utils/arduino_helpers.hpp"
+#include "../utils/numbers.hpp"
 #include <MCP23017.h>
 
 typedef decltype(millis()) Milliseconds;
