@@ -11,15 +11,15 @@ constexpr auto pi = M_PI;
 
 namespace board
 {
-extern std::uint8_t debugLed;
-extern std::uint8_t leftMotor;
-extern std::uint8_t rightMotor;
-extern std::uint8_t scl;
-extern std::uint8_t sda;
-extern std::uint8_t rightOdoSignal;
-extern std::uint8_t leftOdoSignal;
-extern std::uint8_t ioExpanderIntB;
-extern std::uint8_t ioExpanderIntAInv;
+const extern std::uint8_t debugLed;
+const extern std::uint8_t leftMotor;
+const extern std::uint8_t rightMotor;
+const extern std::uint8_t scl;
+const extern std::uint8_t sda;
+const extern std::uint8_t rightOdoSignal;
+const extern std::uint8_t leftOdoSignal;
+const extern std::uint8_t ioExpanderIntB;
+const extern std::uint8_t ioExpanderIntAInv;
 extern MCP23017 ioExpander1;
 extern MCP23017Pin VL53L1_1_INT;
 extern MCP23017Pin VL53L1_1_XSHUT;
