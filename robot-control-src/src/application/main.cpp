@@ -78,7 +78,7 @@ void main::setup()
 
 static void printSensorStatus(VL53L1GpioInterface* const sensor)
 {
-  VL53L1_MultiRangingData_t MultiRangingData { };
+  VL53L1_MultiRangingData_t MultiRangingData = VL53L1_MultiRangingData_t();
   VL53L1_MultiRangingData_t *const pMultiRangingData = &MultiRangingData;
   uint8_t NewDataReady = 0;
   int status = sensor->VL53L1_GetMeasurementDataReady(&NewDataReady);
