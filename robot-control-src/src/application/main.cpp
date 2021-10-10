@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <functional>
 
-static EnvironmentRecord environmentRecord;
+static EnvironmentRecord environmentRecord { };
 static ESP8266WebServer server(80);
 static WebserverHandle webserverHandle(server, environmentRecord);
 
@@ -78,38 +78,36 @@ void main::setup()
 
 static void printSensorStatus(VL53L1GpioInterface* const sensor)
 {
-   VL53L1_MultiRangingData_t MultiRangingData;
-   VL53L1_MultiRangingData_t *pMultiRangingData = &MultiRangingData;
-   uint8_t NewDataReady = 0;
-   int status;
+  VL53L1_MultiRangingData_t MultiRangingData { };
+  VL53L1_MultiRangingData_t *const pMultiRangingData = &MultiRangingData;
+  uint8_t NewDataReady = 0;
+  int status = sensor->VL53L1_GetMeasurementDataReady(&NewDataReady);
 
-   status = sensor->VL53L1_GetMeasurementDataReady(&NewDataReady);
-
-   if((!status)&&(NewDataReady!=0))
-   {
-    status = sensor->VL53L1_GetMultiRangingData(pMultiRangingData);
-    const std::uint8_t no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
-    Serial.printf("VL53L1 Satellite @ %#hhx: Status=%3i, \tCount=%3hhu, \t#Objs=%3hhu", sensor->VL53L1_GetDeviceAddressValue(), status, pMultiRangingData->StreamCount, no_of_object_found);
-    if(status == VL53L1_ERROR_NONE)
+  if((!status)&&(NewDataReady!=0))
+  {
+  status = sensor->VL53L1_GetMultiRangingData(pMultiRangingData);
+  const std::uint8_t no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
+  Serial.printf("VL53L1 Satellite @ %#hhx: Status=%3i, \tCount=%3hhu, \t#Objs=%3hhu", sensor->VL53L1_GetDeviceAddressValue(), status, pMultiRangingData->StreamCount, no_of_object_found);
+  if(status == VL53L1_ERROR_NONE)
+  {
+    for(std::uint8_t j=0;j<std::min(no_of_object_found, static_cast<std::uint8_t>(VL53L1_MAX_RANGE_RESULTS));j++)
     {
-      for(std::uint8_t j=0;j<std::min(no_of_object_found, static_cast<std::uint8_t>(VL53L1_MAX_RANGE_RESULTS));j++)
-      {
-       Serial.print("\r\n                               ");
-       Serial.print("status=");
-       Serial.print(pMultiRangingData->RangeData[j].RangeStatus);
-       Serial.print(", D=");
-       Serial.print(pMultiRangingData->RangeData[j].RangeMilliMeter);
-       Serial.print("mm");
-       Serial.print(", Signal=");
-       Serial.print((float)pMultiRangingData->RangeData[j].SignalRateRtnMegaCps/65536.0);
-       Serial.print(" Mcps, Ambient=");
-       Serial.print((float)pMultiRangingData->RangeData[j].AmbientRateRtnMegaCps/65536.0);
-       Serial.print(" Mcps");
-      }
-      status = sensor->VL53L1_ClearInterruptAndStartMeasurement();
+     Serial.print("\r\n                               ");
+     Serial.print("status=");
+     Serial.print(pMultiRangingData->RangeData[j].RangeStatus);
+     Serial.print(", D=");
+     Serial.print(pMultiRangingData->RangeData[j].RangeMilliMeter);
+     Serial.print("mm");
+     Serial.print(", Signal=");
+     Serial.print((float)pMultiRangingData->RangeData[j].SignalRateRtnMegaCps/65536.0);
+     Serial.print(" Mcps, Ambient=");
+     Serial.print((float)pMultiRangingData->RangeData[j].AmbientRateRtnMegaCps/65536.0);
+     Serial.print(" Mcps");
     }
-    Serial.println("");
-   }
+    status = sensor->VL53L1_ClearInterruptAndStartMeasurement();
+  }
+  Serial.println("");
+  }
 }
 
 void main::loop()
