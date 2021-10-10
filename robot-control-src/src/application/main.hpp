@@ -1,0 +1,8 @@
+#ifndef APPLICATION_MAIN_HPP_
+#define APPLICATION_MAIN_HPP_
+
+
+
+
+
+#endif /* APPLICATION_MAIN_HPP_ */
