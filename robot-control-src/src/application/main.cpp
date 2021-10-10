@@ -3,10 +3,11 @@
 #include "Drives.hpp"
 #include "wifi_ap.hpp"
 #include "WebserverHandle.hpp"
-#include "utils/array.hpp"
+#include "../utils/array.hpp"
 #include <assert.h>
 #include <ESP8266WebServer.h>
 #include <algorithm>
+#include <cstddef>
 #include <functional>
 
 static EnvironmentRecord environmentRecord;
