@@ -6,9 +6,6 @@
 #include "../utils/numbers.hpp"
 #include <MCP23017.h>
 
-typedef decltype(millis()) Milliseconds;
-constexpr auto pi = M_PI;
-
 namespace board
 {
 const extern std::uint8_t debugLed;
@@ -47,7 +44,7 @@ constexpr auto maxVelocity = 220; //!< [mm/s]
  * fraction of one odometry interval to outer wheel f = 6/25
  * distance of one odometry interval = f*U
  */
-constexpr float odoIntervalLength = 12*pi; //!< [mm]
+constexpr float odoIntervalLength = 12*numbers::pi; //!< [mm]
 //! Minimum time with buffer factor [ms]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
 static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");

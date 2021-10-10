@@ -9,7 +9,7 @@ namespace drives
 {
 
 static constexpr float stepsPerDeg = 100/(4.8*360);
-static constexpr float stepsPerRad = stepsPerDeg / ((2*pi)/360);
+static constexpr float stepsPerRad = stepsPerDeg / ((2*numbers::pi)/360);
 
 static enum class Action
 {
