@@ -61,6 +61,15 @@ Also the IO-expander `I11` has been disconnected in order to be able to control 
 Software
 ========
 
-The source code is written in C++. It is compiled and programmed with the [Arduino IDE](https://www.arduino.cc/en/Main/Software). The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed.
-The [Arduino library VL53L1](https://github.com/stm32duino/VL53L1) must be installed.
-The [SimplyAtomic library](https://github.com/wizard97/SimplyAtomic) must be installed.
+The source code is written in C++.
+It is compiled and programmed with the [Arduino IDE][].
+
+Dependencies:
+
+ - [Arduino IDE][]. Tested with v2.0.0-beta.4 should work with 1.5.x+.
+ - The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed. Tested using version 2.7.4.
+ - The [Arduino library VL53L1 by STM32duino](https://github.com/stm32duino/VL53L1) must be installed. Tested using version 2.0.1.
+ - The [SimplyAtomic library](https://github.com/wizard97/SimplyAtomic) must be installed. Tested in version 1.0.
+ - The [MPC23017 library by Bertrand Lemasle](https://github.com/blemasle/arduino-mcp23017) must be installed. Tested in version 2.0.0.
+
+[Arduino IDE]: (https://www.arduino.cc/en/Main/Software)

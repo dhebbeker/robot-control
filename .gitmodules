@@ -1,3 +1,12 @@
 [submodule "hardware/robot-control-circuit/libraries/kicad-ESP8266"]
 	path = hardware/robot-control-circuit/libraries/kicad-ESP8266
 	url = https://github.com/MarginallyClever/kicad-ESP8266.git
+[submodule "wizard97/SimplyAtomic"]
+	path = robot-control-src/libraries/SimplyAtomic
+	url = https://github.com/wizard97/SimplyAtomic.git
+[submodule "stm32duino/VL53L1"]
+	path = robot-control-src/libraries/STM32duino_VL53L1
+	url = https://github.com/stm32duino/VL53L1.git
+[submodule "blemasle/arduino-mcp23017"]
+	path = robot-control-src/libraries/MCP23017
+	url = https://github.com/blemasle/arduino-mcp23017.git
