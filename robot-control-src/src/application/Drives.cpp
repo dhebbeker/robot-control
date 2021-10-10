@@ -14,9 +14,9 @@ static constexpr float stepsPerRad = stepsPerDeg / ((2*numbers::pi)/360);
 static enum class Action
 {
 	FORWARD, BACKWARD, TURN_LEFT, TURN_RIGHT
-} lastAction;
+} lastAction = Action::FORWARD;
 
-Position lastKnownPosition = {0,0};
+static Position lastKnownPosition = {0,0};
 static float orientation = 0; // in radians
 
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
