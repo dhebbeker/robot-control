@@ -2,7 +2,8 @@
 #define DRIVES_HPP
 
 #include "board.hpp"
-#include "EnvironmentRecord.hpp"
+#include "../middleware/EnvironmentRecord.hpp"
+#include <c_types.h>
 #include <algorithm>
 #include <cstdint>
 #include <Arduino.h>

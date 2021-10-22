@@ -1,25 +1,22 @@
 #if !defined(BOARD_HPP)
 #define BOARD_HPP
-#include "MCP23017Pin.hpp"
-#include "VL53L1GpioInterface.hpp"
-#include <Arduino.h>
-#include <cmath>
+#include "../device_drivers/MCP23017Pin.hpp"
+#include "../device_drivers/VL53L1GpioInterface.hpp"
+#include "../utils/arduino_helpers.hpp"
+#include "../utils/numbers.hpp"
 #include <MCP23017.h>
-
-typedef decltype(millis()) Milliseconds;
-constexpr auto pi = M_PI;
 
 namespace board
 {
-extern std::uint8_t debugLed;
-extern std::uint8_t leftMotor;
-extern std::uint8_t rightMotor;
-extern std::uint8_t scl;
-extern std::uint8_t sda;
-extern std::uint8_t rightOdoSignal;
-extern std::uint8_t leftOdoSignal;
-extern std::uint8_t ioExpanderIntB;
-extern std::uint8_t ioExpanderIntAInv;
+const extern std::uint8_t debugLed;
+const extern std::uint8_t leftMotor;
+const extern std::uint8_t rightMotor;
+const extern std::uint8_t scl;
+const extern std::uint8_t sda;
+const extern std::uint8_t rightOdoSignal;
+const extern std::uint8_t leftOdoSignal;
+const extern std::uint8_t ioExpanderIntB;
+const extern std::uint8_t ioExpanderIntAInv;
 extern MCP23017 ioExpander1;
 extern MCP23017Pin VL53L1_1_INT;
 extern MCP23017Pin VL53L1_1_XSHUT;
@@ -47,7 +44,7 @@ constexpr auto maxVelocity = 220; //!< [mm/s]
  * fraction of one odometry interval to outer wheel f = 6/25
  * distance of one odometry interval = f*U
  */
-constexpr float odoIntervalLength = 12*pi; //!< [mm]
+constexpr float odoIntervalLength = 12*numbers::pi; //!< [mm]
 //! Minimum time with buffer factor [ms]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
 static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");

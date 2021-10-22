@@ -1,6 +1,6 @@
 #include "Drives.hpp"
 #include "board.hpp"
-
+#include "../utils/numbers.hpp"
 #include <cmath>
 
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
@@ -9,14 +9,14 @@ namespace drives
 {
 
 static constexpr float stepsPerDeg = 100/(4.8*360);
-static constexpr float stepsPerRad = stepsPerDeg / ((2*pi)/360);
+static constexpr float stepsPerRad = stepsPerDeg / ((2*numbers::pi)/360);
 
 static enum class Action
 {
 	FORWARD, BACKWARD, TURN_LEFT, TURN_RIGHT
-} lastAction;
+} lastAction = Action::FORWARD;
 
-Position lastKnownPosition = {0,0};
+static Position lastKnownPosition = {0,0};
 static float orientation = 0; // in radians
 
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>

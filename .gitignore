@@ -2,4 +2,5 @@ fp-info-cache
 fp-lib-table
 *.sch-bak
 *.kicad_pcb-bak
-/robot-control-src/wifi_ap.hpp
+/robot-control-src/src/application/wifi_ap.hpp
+doc/html
