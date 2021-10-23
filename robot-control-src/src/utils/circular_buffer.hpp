@@ -4,20 +4,19 @@
 #include "types.hpp"
 #include <cstddef>
 #include <type_traits>
+#include <iterator>
 
 template<typename _Tp, std::size_t _N>
 class circular_buffer
 {
 public:
-
   using value_type = std::remove_const_t<_Tp>;
-  using pointer = value_type*;
-  using const_pointer = const value_type*;
   using reference = value_type&;
   using const_reference = const value_type&;
   using size_type = IntegerMinType_t<_N+1>;
+private:
   static constexpr size_type N = _N;
-
+public:
   static size_type next_index(const size_type current_index)
   {
     return static_cast<size_type>((current_index + 1) % (N + 1));
@@ -27,6 +26,11 @@ public:
   class _iterator
   {
   public:
+    using iterator_category = std::input_iterator_tag;
+    using difference_type = std::make_signed_t<size_type>;
+    using value_type = T;
+    using reference = const T&;
+    using pointer = const T*;
     using DataRef = T(&)[N];
     using _Self = _iterator<T>;
   private:
@@ -59,6 +63,7 @@ public:
 
   using iterator = _iterator<value_type>;
   using const_iterator = _iterator<const value_type>;
+  using difference_type = typename std::iterator_traits<iterator>::difference_type;
 private:
   value_type values[N]
   { };
