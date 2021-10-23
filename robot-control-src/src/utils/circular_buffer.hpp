@@ -1,10 +1,11 @@
-#ifndef UTILS_RINGBUFFER_HPP_
-#define UTILS_RINGBUFFER_HPP_
+#ifndef UTILS_CIRCULAR_BUFFER_HPP_
+#define UTILS_CIRCULAR_BUFFER_HPP_
 
+#include "types.hpp"
 #include <cstddef>
 #include <type_traits>
 
-template<typename _Tp, std::size_t N>
+template<typename _Tp, std::size_t _N>
 class circular_buffer
 {
 public:
@@ -14,10 +15,12 @@ public:
   using const_pointer = const value_type*;
   using reference = value_type&;
   using const_reference = const value_type&;
-  using size_type = std::size_t;
+  using size_type = IntegerMinType_t<_N+1>;
+  static constexpr size_type N = _N;
+
   static size_type next_index(const size_type current_index)
   {
-    return (current_index + 1) % (N + 1);
+    return static_cast<size_type>((current_index + 1) % (N + 1));
   }
 
   template<typename T>
@@ -29,17 +32,17 @@ public:
   private:
     DataRef data;
     size_type index; /* [0...N] */
-    const size_type next;
+    size_type distance_to_end;
   public:
-    _iterator(DataRef _data, const size_type _index, const size_type _head) :
-        data(_data), index(_index), next(_head)
+    _iterator(DataRef _data, const size_type _index, const size_type _distance) :
+        data(_data), index(_index), distance_to_end(_distance)
     {
 
     }
 
     friend bool operator!=(const _iterator<T> &lhs, const _iterator<T> &rhs)
     {
-      return (lhs.data != rhs.data) || (lhs.index != rhs.index) || (lhs.next != rhs.next);
+      return (lhs.data != rhs.data) || (lhs.index != rhs.index) || (lhs.distance_to_end != rhs.distance_to_end);
     }
     T operator*() const
     {
@@ -48,6 +51,7 @@ public:
     _Self& operator++()
     {
       index = next_index(index % N);
+      --distance_to_end;
       return *this;
     }
 
@@ -55,7 +59,6 @@ public:
 
   using iterator = _iterator<value_type>;
   using const_iterator = _iterator<const value_type>;
-  using difference_type = std::ptrdiff_t;
 private:
   value_type values[N]
   { };
@@ -64,7 +67,18 @@ private:
 public:
   size_type size() const
   {
-    return (next - last + N + 1) % (N + 1);
+    if (empty())
+    {
+      return 0;
+    }
+    else if (next == last)
+    {
+      return max_size();
+    }
+    else
+    {
+      return static_cast<size_type>((next - last + N + 1) % (N + 1));
+    }
   }
   constexpr size_type max_size() const
   {
@@ -90,8 +104,8 @@ public:
 
   void push_back(const_reference value)
   {
-    const auto current = next % N;
-    const auto oldLast = last % N;
+    const size_type current = next % N;
+    const size_type oldLast = last % N;
     values[current] = value;
     if (!empty() && current == oldLast)
     {
@@ -102,14 +116,14 @@ public:
 
   const_iterator begin() const
   {
-    return const_iterator(values, last, next);
+    return const_iterator(values, last, size());
   }
 
   const_iterator end() const
   {
-    return const_iterator(values, next, next);
+    return const_iterator(values, next, 0);
   }
 
 };
 
-#endif /* UTILS_RINGBUFFER_HPP_ */
+#endif /* UTILS_CIRCULAR_BUFFER_HPP_ */
