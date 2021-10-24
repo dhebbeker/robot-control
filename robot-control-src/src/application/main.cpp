@@ -108,10 +108,12 @@ static void followWall()
 {
   const Distance wallSensor = distances[3]; // wall is to the right
 
-  if (wallSensor > 0 && !isBumperPressed()) // sensor value is OK
+  if (!isBumperPressed()) // sensor value is OK
   {
+    if(wallSensor > 0)
+    {
     constexpr Distance threshold = 100; /* mm */
-    constexpr drives::Amplitude p = drives::maxAmplitude / 2 / 200;
+    constexpr drives::Amplitude p = (drives::maxAmplitude / 2) / 128;
     using Speed = std::make_signed<Distance>::type;
     const Speed deviation = threshold - wallSensor;
     const drives::Amplitude left = std::max( // @suppress("Invalid arguments")
@@ -125,6 +127,11 @@ static void followWall()
                                                       static_cast<Speed>(drives::cruiseSpeed - deviation * p)),
                                              static_cast<Speed>(0));
     drives::drive(50, left, right, false);
+    }
+    else
+    {
+      drives::rotateCounter(1, drives::cruiseSpeed, true);
+    }
   }
   else
   {
