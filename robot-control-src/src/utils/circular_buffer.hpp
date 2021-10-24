@@ -129,6 +129,12 @@ public:
     return const_iterator(values, next, 0);
   }
 
+  void clear()
+  {
+    next = 0;
+    last = 0;
+  }
+
 };
 
 #endif /* UTILS_CIRCULAR_BUFFER_HPP_ */
