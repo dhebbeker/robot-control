@@ -72,7 +72,7 @@ void main::setup()
 
   server.begin();
   Serial.printf("webserver has IP %s\n", WiFi.localIP().toString().c_str());
-  server.on("/", std::bind(&WebserverHandle::handleRoot, &webserverHandle));
+  server.on("/", std::bind(&WebserverHandle::handleRoot, &webserverHandle)); // @suppress("Invalid arguments")
   webserverHandle.setup();
 }
 
