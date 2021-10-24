@@ -1,3 +1,5 @@
+This page describes the system developed.
+
 Hardware Setup
 ==============
 
