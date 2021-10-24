@@ -87,26 +87,30 @@ static void printSensorStatus(VL53L1GpioInterface* const sensor)
   {
   status = sensor->VL53L1_GetMultiRangingData(pMultiRangingData);
   const std::uint8_t no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
-  Serial.printf("VL53L1 Satellite @ %#hhx: Status=%3i, \tCount=%3hhu, \t#Objs=%3hhu", sensor->VL53L1_GetDeviceAddressValue(), status, pMultiRangingData->StreamCount, no_of_object_found);
+  Serial.printf("VL53L1 Satellite @ %#hhx: Status=%3i, \tCount=%3hhu, \t#Objs=%3hhu\n", sensor->VL53L1_GetDeviceAddressValue(), status, pMultiRangingData->StreamCount, no_of_object_found);
   if(status == VL53L1_ERROR_NONE)
   {
     for(std::uint8_t j=0;j<std::min(no_of_object_found, static_cast<std::uint8_t>(VL53L1_MAX_RANGE_RESULTS));j++)
     {
-     Serial.print("\r\n                               ");
-     Serial.print("status=");
-     Serial.print(pMultiRangingData->RangeData[j].RangeStatus);
-     Serial.print(", D=");
-     Serial.print(pMultiRangingData->RangeData[j].RangeMilliMeter);
-     Serial.print("mm");
-     Serial.print(", Signal=");
-     Serial.print((float)pMultiRangingData->RangeData[j].SignalRateRtnMegaCps/65536.0);
-     Serial.print(" Mcps, Ambient=");
-     Serial.print((float)pMultiRangingData->RangeData[j].AmbientRateRtnMegaCps/65536.0);
-     Serial.print(" Mcps");
+     Serial.printf(" - object %hhu: \t"
+                   "count=%3hhu, \t"
+                   "status=%3hhu, \t"
+                   "distance=%4hu mm, \t"
+                   "sig. rate=%5.2f MCPS, \t"
+                   "noise rate=%5.2f MCPS, \t"
+                   "σ=%5.2f mm, \t"
+                   "\n"
+                   ,j
+                   ,pMultiRangingData->StreamCount
+                   ,pMultiRangingData->RangeData[j].RangeStatus
+                   ,pMultiRangingData->RangeData[j].RangeMilliMeter
+                   ,pMultiRangingData->RangeData[j].SignalRateRtnMegaCps/65536.0
+                   ,pMultiRangingData->RangeData[j].AmbientRateRtnMegaCps/65536.0
+                   ,pMultiRangingData->RangeData[j].SigmaMilliMeter/65536.0
+                   );
     }
     status = sensor->VL53L1_ClearInterruptAndStartMeasurement();
   }
-  Serial.println("");
   }
 }
 
