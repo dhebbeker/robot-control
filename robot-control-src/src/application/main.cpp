@@ -10,9 +10,13 @@
 #include <cstddef>
 #include <functional>
 
+using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
+
 static EnvironmentRecord environmentRecord { };
 static ESP8266WebServer server(80);
 static WebserverHandle webserverHandle(server, environmentRecord);
+
+static Distance distances[size(board::distanceSensors)] { };
 
 void main::setup()
 {
@@ -76,15 +80,17 @@ void main::setup()
   webserverHandle.setup();
 }
 
-static void printSensorStatus(VL53L1GpioInterface* const sensor)
+static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
 {
   uint8_t newDataReady = 0;
   const VL53L1_Error status_getReady = sensor->VL53L1_GetMeasurementDataReady(&newDataReady);
+  Distance newDistance = -1;
 
   if ((status_getReady == VL53L1_ERROR_NONE) && (newDataReady != 0))
   {
     VL53L1_RangingMeasurementData_t rangingMeasurement = VL53L1_RangingMeasurementData_t();
     const VL53L1_Error status_GetData = sensor->VL53L1_GetRangingMeasurementData(&rangingMeasurement);
+    sensor->VL53L1_ClearInterruptAndStartMeasurement();
     Serial.printf(
                   "VL53L1 Satellite @ %#hhx: Status=%3i\n",
                   sensor->VL53L1_GetDeviceAddressValue(),
@@ -105,16 +111,20 @@ static void printSensorStatus(VL53L1GpioInterface* const sensor)
                     rangingMeasurement.SignalRateRtnMegaCps / 65536.0,
                     rangingMeasurement.AmbientRateRtnMegaCps / 65536.0,
                     rangingMeasurement.SigmaMilliMeter / 65536.0);
-      sensor->VL53L1_ClearInterruptAndStartMeasurement();
+      if (rangingMeasurement.RangeStatus == 0)
+      {
+        newDistance = rangingMeasurement.RangeMilliMeter;
+      }
     }
   }
+  return newDistance;
 }
 
 void main::loop()
 {
   for(std::size_t i=0; i<size(board::distanceSensors); ++i)
   {
-    printSensorStatus(board::distanceSensors[i]);
+    distances[i] = retrieveSensorStatus(board::distanceSensors[i]);
   }
   server.handleClient();
   //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
