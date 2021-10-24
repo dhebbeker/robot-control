@@ -78,39 +78,35 @@ void main::setup()
 
 static void printSensorStatus(VL53L1GpioInterface* const sensor)
 {
-  VL53L1_MultiRangingData_t MultiRangingData = VL53L1_MultiRangingData_t();
-  VL53L1_MultiRangingData_t *const pMultiRangingData = &MultiRangingData;
-  uint8_t NewDataReady = 0;
-  int status = sensor->VL53L1_GetMeasurementDataReady(&NewDataReady);
+  uint8_t newDataReady = 0;
+  const VL53L1_Error status_getReady = sensor->VL53L1_GetMeasurementDataReady(&newDataReady);
 
-  if((!status)&&(NewDataReady!=0))
+  if ((status_getReady == VL53L1_ERROR_NONE) && (newDataReady != 0))
   {
-  status = sensor->VL53L1_GetMultiRangingData(pMultiRangingData);
-  const std::uint8_t no_of_object_found=pMultiRangingData->NumberOfObjectsFound;
-  Serial.printf("VL53L1 Satellite @ %#hhx: Status=%3i, \tCount=%3hhu, \t#Objs=%3hhu\n", sensor->VL53L1_GetDeviceAddressValue(), status, pMultiRangingData->StreamCount, no_of_object_found);
-  if(status == VL53L1_ERROR_NONE)
-  {
-    for(std::uint8_t j=0;j<std::min(no_of_object_found, static_cast<std::uint8_t>(VL53L1_MAX_RANGE_RESULTS));j++)
+    VL53L1_RangingMeasurementData_t rangingMeasurement = VL53L1_RangingMeasurementData_t();
+    const VL53L1_Error status_GetData = sensor->VL53L1_GetRangingMeasurementData(&rangingMeasurement);
+    Serial.printf(
+                  "VL53L1 Satellite @ %#hhx: Status=%3i\n",
+                  sensor->VL53L1_GetDeviceAddressValue(),
+                  status_GetData);
+    if (status_GetData == VL53L1_ERROR_NONE)
     {
-     Serial.printf(" - object %hhu: \t"
-                   "count=%3hhu, \t"
-                   "status=%3hhu, \t"
-                   "distance=%4hu mm, \t"
-                   "sig. rate=%5.2f MCPS, \t"
-                   "noise rate=%5.2f MCPS, \t"
-                   "σ=%5.2f mm, \t"
-                   "\n"
-                   ,j
-                   ,pMultiRangingData->StreamCount
-                   ,pMultiRangingData->RangeData[j].RangeStatus
-                   ,pMultiRangingData->RangeData[j].RangeMilliMeter
-                   ,pMultiRangingData->RangeData[j].SignalRateRtnMegaCps/65536.0
-                   ,pMultiRangingData->RangeData[j].AmbientRateRtnMegaCps/65536.0
-                   ,pMultiRangingData->RangeData[j].SigmaMilliMeter/65536.0
-                   );
+      Serial.printf(
+                    "count=%3hhu, \t"
+                    "status=%3hhu, \t"
+                    "distance=%4hu mm, \t"
+                    "sig. rate=%5.2f MCPS, \t"
+                    "noise rate=%5.2f MCPS, \t"
+                    "σ=%5.2f mm, \t"
+                    "\n",
+                    rangingMeasurement.StreamCount,
+                    rangingMeasurement.RangeStatus,
+                    rangingMeasurement.RangeMilliMeter,
+                    rangingMeasurement.SignalRateRtnMegaCps / 65536.0,
+                    rangingMeasurement.AmbientRateRtnMegaCps / 65536.0,
+                    rangingMeasurement.SigmaMilliMeter / 65536.0);
+      sensor->VL53L1_ClearInterruptAndStartMeasurement();
     }
-    status = sensor->VL53L1_ClearInterruptAndStartMeasurement();
-  }
   }
 }
 
