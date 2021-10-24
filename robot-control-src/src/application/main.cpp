@@ -1,21 +1,14 @@
 #include "main.hpp"
 #include "board.hpp"
 #include "Drives.hpp"
-#include "wifi_ap.hpp"
-#include "WebserverHandle.hpp"
 #include "../utils/array.hpp"
 #include <assert.h>
-#include <ESP8266WebServer.h>
 #include <algorithm>
 #include <cstddef>
 #include <functional>
+#include <type_traits>
 
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
-
-static EnvironmentRecord environmentRecord { };
-static ESP8266WebServer server(80);
-static WebserverHandle webserverHandle(server, environmentRecord);
-
 static Distance distances[size(board::distanceSensors)] { };
 
 void main::setup()
@@ -64,20 +57,6 @@ void main::setup()
   }
 
   attachInterrupt(board::ioExpanderIntB, drives::stopDrives, FALLING);
-
-  Serial.printf("connect to wifi %s ", ssid);
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println(" connected");
-
-  server.begin();
-  Serial.printf("webserver has IP %s\n", WiFi.localIP().toString().c_str());
-  server.on("/", std::bind(&WebserverHandle::handleRoot, &webserverHandle)); // @suppress("Invalid arguments")
-  webserverHandle.setup();
 }
 
 static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
@@ -120,35 +99,44 @@ static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
   return newDistance;
 }
 
+static bool isBumperPressed()
+{
+  return digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
+}
+
+static void followWall()
+{
+  const Distance wallSensor = distances[3]; // wall is to the right
+
+  if (wallSensor > 0 && !isBumperPressed()) // sensor value is OK
+  {
+    constexpr Distance threshold = 100; /* mm */
+    constexpr drives::Amplitude p = drives::maxAmplitude / 2 / 200;
+    using Speed = std::make_signed<Distance>::type;
+    const Speed deviation = threshold - wallSensor;
+    const drives::Amplitude left = std::max( // @suppress("Invalid arguments")
+                                            std::min( // @suppress("Invalid arguments")
+                                                     static_cast<Speed>(drives::maxAmplitude),
+                                                     static_cast<Speed>(drives::cruiseSpeed + deviation * p)),
+                                            static_cast<Speed>(0));
+    const drives::Amplitude right = std::max( // @suppress("Invalid arguments")
+                                             std::min( // @suppress("Invalid arguments")
+                                                      static_cast<Speed>(drives::maxAmplitude),
+                                                      static_cast<Speed>(drives::cruiseSpeed - deviation * p)),
+                                             static_cast<Speed>(0));
+    drives::drive(50, left, right, false);
+  }
+  else
+  {
+    drives::stopDrives();
+  }
+}
+
 void main::loop()
 {
   for(std::size_t i=0; i<size(board::distanceSensors); ++i)
   {
     distances[i] = retrieveSensorStatus(board::distanceSensors[i]);
   }
-  server.handleClient();
-  //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
-  if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle)
-  {
-    const Position newPositionCandidate = drives::flushCurrentPosition();
-    if(environmentRecord.positions[environmentRecord.positionIndex] != newPositionCandidate)
-    {
-      environmentRecord.positions[++environmentRecord.positionIndex] = newPositionCandidate;
-      environmentRecord.positionIndex %= environmentRecord.numberOfPositions;
-      webserverHandle.loop();
-    }
-    const auto newTarget = webserverHandle.flushTargetRequest();
-    if(newTarget.isTargetNew)
-    {
-      const bool bumperIsPressed = digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
-      if(newTarget.newDrive!=0 && (!newTarget.forward || !bumperIsPressed))
-      {
-        drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);
-      }
-      else if(newTarget.newRotate!=0 && !bumperIsPressed)
-      {
-        drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
-      }
-    }
-  }
+  followWall();
 }
