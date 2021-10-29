@@ -6,16 +6,16 @@
 #include <type_traits>
 #include <iterator>
 
-template<typename _Tp, std::size_t _N>
+template<typename _Tp, std::size_t N_>
 class circular_buffer
 {
 public:
   using value_type = std::remove_const_t<_Tp>;
   using reference = value_type&;
   using const_reference = const value_type&;
-  using size_type = IntegerMinType_t<_N+1>;
+  using size_type = IntegerMinType_t<N_+1>;
 private:
-  static constexpr size_type N = _N;
+  static constexpr size_type N = N_;
 public:
   static size_type next_index(const size_type current_index)
   {
