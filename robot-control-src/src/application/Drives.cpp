@@ -79,8 +79,9 @@ void driveCounter(const Counter steps, const Amplitude amplitudeLeft, const Ampl
   RightDrive::drive(steps, calcRightSpeed(amplitudeRight), backwards);
 }
 
-void rotate(const float deg, const Amplitude amplitude, bool const clockwise)
+void rotate(const float deg, const Amplitude amplitude)
 {
+  const bool clockwise = deg > 0;
   const Counter steps = std::round(deg * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
 }

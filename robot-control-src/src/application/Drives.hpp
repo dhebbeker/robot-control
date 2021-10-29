@@ -70,7 +70,13 @@ using LeftDrive = Drive<TYPEANDSYMBOL(board::leftMotor), TYPEANDSYMBOL(board::le
 using RightDrive = Drive<TYPEANDSYMBOL(board::rightMotor), TYPEANDSYMBOL(board::rightBackwards), TYPEANDSYMBOL(board::rightOdoSignal)>;
 
 void rotateCounter(const Counter deg, const Amplitude amplitude, bool const clockwise);
-void rotate(const float deg, const Amplitude amplitude, bool const clockwise);
+
+/**
+ *
+ * @param deg if negative, then counterclockwise
+ * @param amplitude speed
+ */
+void rotate(const float deg, const Amplitude amplitude);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
 void driveCounter(const Counter distance, const Amplitude amplitudeLeft, const Amplitude amplitudeRight, const bool backwards);
