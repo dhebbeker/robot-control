@@ -2,8 +2,10 @@
 #include "board.hpp"
 #include "Drives.hpp"
 #include "../utils/array.hpp"
+#include "../utils/circular_buffer.hpp"
 #include <assert.h>
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <functional>
 #include <type_traits>
@@ -106,35 +108,43 @@ static bool isBumperPressed()
 
 static void followWall()
 {
+  static circular_buffer<Distance, 2> wallDistances;
   const Distance wallSensor = distances[3]; // wall is to the right
 
-  if (!isBumperPressed()) // sensor value is OK
+  if (!isBumperPressed())
   {
-    if(wallSensor > 0)
+    if (drives::LeftDrive::isIdle && drives::RightDrive::isIdle)
     {
-    constexpr Distance threshold = 100; /* mm */
-    constexpr drives::Amplitude p = (drives::maxAmplitude / 2) / 128;
-    using Speed = std::make_signed<Distance>::type;
-    const Speed deviation = threshold - wallSensor;
-    const drives::Amplitude left = std::max( // @suppress("Invalid arguments")
-                                            std::min( // @suppress("Invalid arguments")
-                                                     static_cast<Speed>(drives::maxAmplitude),
-                                                     static_cast<Speed>(drives::cruiseSpeed + deviation * p)),
-                                            static_cast<Speed>(0));
-    const drives::Amplitude right = std::max( // @suppress("Invalid arguments")
-                                             std::min( // @suppress("Invalid arguments")
-                                                      static_cast<Speed>(drives::maxAmplitude),
-                                                      static_cast<Speed>(drives::cruiseSpeed - deviation * p)),
-                                             static_cast<Speed>(0));
-    drives::drive(50, left, right, false);
-    }
-    else
-    {
-      drives::rotateCounter(1, drives::cruiseSpeed, true);
+      if (wallSensor > 0) // sensor value is OK
+      {
+        constexpr float path = 80;
+        wallDistances.push_back(wallSensor);
+
+        static bool lastMoveWasTurn = false;
+        if (lastMoveWasTurn || wallDistances.size() != wallDistances.max_size())
+        {
+          drives::drive(path, drives::cruiseSpeed, false);
+          lastMoveWasTurn = false;
+        }
+        else
+        {
+          const Distance oppositeSide = wallDistances.at(wallDistances.max_size() - 1) - wallDistances.at(0);
+          const float angle = std::atan(static_cast<float>(oppositeSide) / static_cast<float>(path))
+              * numbers::pi / 180;
+          drives::rotate(angle, drives::cruiseSpeed);
+          lastMoveWasTurn = true;
+        }
+      }
+      else
+      {
+        wallDistances.clear();
+        drives::rotateCounter(1, drives::cruiseSpeed, true);
+      }
     }
   }
   else
   {
+    wallDistances.clear();
     drives::stopDrives();
   }
 }
