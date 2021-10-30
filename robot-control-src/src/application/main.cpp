@@ -157,6 +157,10 @@ static void followWall()
         drives::rotateCounter(1, drives::cruiseSpeed, true);
       }
     }
+    else
+    {
+      // wait until drives are idle
+    }
   }
   else
   {
