@@ -79,9 +79,7 @@ void rotateCounter(const Counter deg, const Amplitude amplitude, bool const cloc
 void rotate(const float deg, const Amplitude amplitude);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
-void driveCounter(const Counter distance, const Amplitude amplitudeLeft, const Amplitude amplitudeRight, const bool backwards);
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
-void drive(const float distance, const Amplitude amplitudeLeft, const Amplitude amplitudeRight, const bool backwards);
 
 Position flushCurrentPosition();
 

@@ -72,13 +72,6 @@ void driveCounter(const Counter steps, const Amplitude amplitude, const bool bac
   RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
 }
 
-void driveCounter(const Counter steps, const Amplitude amplitudeLeft, const Amplitude amplitudeRight, const bool backwards)
-{
-  lastAction = backwards ? Action::BACKWARD : Action::FORWARD;
-  LeftDrive::drive(steps, amplitudeLeft, backwards);
-  RightDrive::drive(steps, calcRightSpeed(amplitudeRight), backwards);
-}
-
 void rotate(const float deg, const Amplitude amplitude)
 {
   const bool clockwise = deg > 0;
@@ -91,13 +84,6 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
   constexpr float stepsPerMm = 1 / board::odoIntervalLength;
   const Counter steps = distance * stepsPerMm;
   driveCounter(steps, amplitude, backwards);
-}
-
-void drive(const float distance, const Amplitude amplitudeLeft, const Amplitude amplitudeRight, const bool backwards)
-{
-  constexpr float stepsPerMm = 1 / board::odoIntervalLength;
-  const Counter steps = distance * stepsPerMm;
-  driveCounter(steps, amplitudeLeft, amplitudeRight, backwards);
 }
 
 Position flushCurrentPosition()
