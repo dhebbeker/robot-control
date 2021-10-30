@@ -60,9 +60,12 @@ static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
-	lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
-  LeftDrive::drive(steps, amplitude, clockwise);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), !clockwise);
+  if (steps != 0)
+  {
+    lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
+    LeftDrive::drive(steps, amplitude, clockwise);
+    RightDrive::drive(steps, calcRightSpeed(amplitude), !clockwise);
+  }
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
