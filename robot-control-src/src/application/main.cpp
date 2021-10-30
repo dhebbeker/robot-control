@@ -140,7 +140,7 @@ static void followWall()
         {
           const Distance oppositeSide = wallDistances.at(wallDistances.max_size() - 1) - wallDistances.at(0);
           const float angle = std::atan(static_cast<float>(oppositeSide) / static_cast<float>(path))
-              * numbers::pi / 180;
+              * numbers::pi / 180.0;
           drives::rotate(angle, drives::cruiseSpeed);
           lastMoveWasTurn = true;
 #if defined(DEBUG_WALL)
