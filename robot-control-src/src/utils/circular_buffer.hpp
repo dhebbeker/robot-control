@@ -10,7 +10,7 @@ template<typename _Tp, std::size_t N_>
 class circular_buffer
 {
 public:
-  using value_type = std::remove_const_t<_Tp>;
+  using value_type = typename std::remove_const<_Tp>::type;
   using reference = value_type&;
   using const_reference = const value_type&;
   using size_type = IntegerMinType_t<N_+1>;
@@ -27,7 +27,7 @@ public:
   {
   public:
     using iterator_category = std::input_iterator_tag;
-    using difference_type = std::make_signed_t<size_type>;
+    using difference_type = typename std::make_signed<size_type>::type;
     using value_type = T;
     using reference = const T&;
     using pointer = const T*;
