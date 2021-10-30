@@ -10,6 +10,9 @@
 #include <functional>
 #include <type_traits>
 
+//#define DEBUG_SENSOR true
+#define DEBUG_WALL
+
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 static Distance distances[size(board::distanceSensors)] { };
 
@@ -72,12 +75,15 @@ static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
     VL53L1_RangingMeasurementData_t rangingMeasurement = VL53L1_RangingMeasurementData_t();
     const VL53L1_Error status_GetData = sensor->VL53L1_GetRangingMeasurementData(&rangingMeasurement);
     sensor->VL53L1_ClearInterruptAndStartMeasurement();
+#if defined(DEBUG_SENSOR)
     Serial.printf(
                   "VL53L1 Satellite @ %#hhx: Status=%3i\n",
                   sensor->VL53L1_GetDeviceAddressValue(),
                   status_GetData);
+#endif
     if (status_GetData == VL53L1_ERROR_NONE)
     {
+#if defined(DEBUG_SENSOR)
       Serial.printf(
                     "count=%3hhu, \t"
                     "status=%3hhu, \t"
@@ -92,6 +98,7 @@ static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
                     rangingMeasurement.SignalRateRtnMegaCps / 65536.0,
                     rangingMeasurement.AmbientRateRtnMegaCps / 65536.0,
                     rangingMeasurement.SigmaMilliMeter / 65536.0);
+#endif
       if (rangingMeasurement.RangeStatus == 0)
       {
         newDistance = rangingMeasurement.RangeMilliMeter;
@@ -125,6 +132,9 @@ static void followWall()
         {
           drives::drive(path, drives::cruiseSpeed, false);
           lastMoveWasTurn = false;
+#if defined(DEBUG_WALL)
+        Serial.printf("Drive forward by %fmm\n", path);
+#endif
         }
         else
         {
@@ -133,10 +143,16 @@ static void followWall()
               * numbers::pi / 180;
           drives::rotate(angle, drives::cruiseSpeed);
           lastMoveWasTurn = true;
+#if defined(DEBUG_WALL)
+        Serial.printf("Calculate angle with d=%fmm, b=%imm, angle=%f° and turn.\n", path, oppositeSide, angle);
+#endif
         }
       }
       else
       {
+#if defined(DEBUG_WALL)
+        Serial.printf("Invalid wall sensor value: %i\n", wallSensor);
+#endif
         wallDistances.clear();
         drives::rotateCounter(1, drives::cruiseSpeed, true);
       }
