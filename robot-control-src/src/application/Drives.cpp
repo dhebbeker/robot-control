@@ -4,6 +4,9 @@
 #include <cmath>
 
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
+#if defined(abs)
+#undef abs // else it conflicts with std::abs
+#endif
 
 namespace drives
 {
@@ -78,7 +81,7 @@ void driveCounter(const Counter steps, const Amplitude amplitude, const bool bac
 void rotate(const float deg, const Amplitude amplitude)
 {
   const bool clockwise = deg > 0;
-  const Counter steps = std::round(deg * stepsPerDeg);
+  const Counter steps = std::round(std::abs(deg) * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
 }
 
