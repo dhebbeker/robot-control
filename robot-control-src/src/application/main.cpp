@@ -3,6 +3,7 @@
 #include "Drives.hpp"
 #include "../utils/array.hpp"
 #include "../utils/circular_buffer.hpp"
+#include "../utils/arduino_helpers.hpp"
 #include <assert.h>
 #include <algorithm>
 #include <cmath>
@@ -154,6 +155,7 @@ static void followWall()
         Serial.printf("Invalid wall sensor value: %i\n", wallSensor);
 #endif
         wallDistances.clear();
+        WAIT_AND_RETURN(1000);
         drives::rotateCounter(1, drives::cruiseSpeed, true);
       }
     }
