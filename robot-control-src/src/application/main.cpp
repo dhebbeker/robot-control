@@ -114,7 +114,7 @@ static void followWall()
   static circular_buffer<Distance, 2> wallDistances;
   const Distance wallSensor = distances[3]; // wall is to the right
 
-  if (!isBumperPressed())
+  if (!board::isBumperPressed())
   {
     if (drives::LeftDrive::isIdle && drives::RightDrive::isIdle)
     {
