@@ -119,4 +119,10 @@ void setDebugLed(const std::uint8_t value)
   digitalWrite(debugLed, value);
 }
 
+
+const Distance (&getDistances())[numberOfDistanceSensors]
+{
+  return distances;
+}
+
 }

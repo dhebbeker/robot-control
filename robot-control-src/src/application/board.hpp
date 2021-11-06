@@ -18,6 +18,7 @@ void setup(const InterruptFunctionPointer interruptForBumper = nullptr);
 void loop();
 bool isBumperPressed();
 void setDebugLed(const std::uint8_t value);
+const Distance (&getDistances())[numberOfDistanceSensors];
 }
 
 #endif // BOARD_HPP
