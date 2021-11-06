@@ -1,17 +1,16 @@
 #include "Bearing.hpp"
-#include "Drives.hpp"
 #include "board.hpp"
-#include "../utils/array.hpp"
-#include <cstdint>
-#include <limits>
+#include "Drives.hpp"
+
+using namespace drives;
 
 class Lost: public Bearing::State
 {
 private:
-  static constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
-  drives::Counter numberOfScan = 0;
-  board::Distance minDistance = std::numeric_limits<Distance>::max();
-  drives::Counter minOrientation = 0;
+  static constexpr Counter maxNumberOfScans = 360 * stepsPerDeg;
+  Counter numberOfScan = 0;
+  board::Distance minDistance = board::distanceErrorValue;
+  Counter minOrientation = 0;
 public:
   Lost(Bearing &context) :
       Bearing::State(context)
@@ -21,7 +20,7 @@ public:
   {
     if (numberOfScan<=maxNumberOfScans)
     {
-      if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle && !board::isBumperPressed())
+      if(isIdle() && !board::isBumperPressed())
       {
         // TODO measure
         const board::Distance currentMinDistance = 0; // TODO
@@ -30,7 +29,7 @@ public:
           minDistance = currentMinDistance;
           minOrientation = numberOfScan;
         }
-        drives::rotateCounter(1, drives::cruiseSpeed, true);
+        rotateCounter(1, cruiseSpeed, true);
         numberOfScan++;
       }
     }

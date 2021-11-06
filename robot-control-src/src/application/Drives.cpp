@@ -1,12 +1,21 @@
 #include "Drives.hpp"
 #include "board.hpp"
-#include "../utils/numbers.hpp"
 #include <cmath>
 
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
 #if defined(abs)
 #undef abs // else it conflicts with std::abs
 #endif
+
+namespace board
+{
+extern constexpr std::uint8_t leftMotor = D1;
+extern constexpr std::uint8_t rightMotor = D2;
+extern constexpr std::uint8_t rightOdoSignal = D5;
+extern constexpr std::uint8_t leftOdoSignal = D6;
+MCP23017Pin leftBackwards(ioExpander1, 8 + 0);
+MCP23017Pin rightBackwards(ioExpander1, 8 + 1);
+}
 
 namespace drives
 {
@@ -19,7 +28,11 @@ static enum class Action
 } lastAction = Action::FORWARD;
 
 static Position lastKnownPosition = {0,0};
-static float orientation = 0; // in radians
+static float orientation = 0; // in radiant
+
+#define TYPEANDSYMBOL(t) decltype(t), t
+using LeftDrive = Drive<TYPEANDSYMBOL(board::leftMotor), TYPEANDSYMBOL(board::leftBackwards), TYPEANDSYMBOL(board::leftOdoSignal)>;
+using RightDrive = Drive<TYPEANDSYMBOL(board::rightMotor), TYPEANDSYMBOL(board::rightBackwards), TYPEANDSYMBOL(board::rightOdoSignal)>;
 
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
 Counter volatile Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::counter = 0;
@@ -86,7 +99,7 @@ void rotate(const float deg, const Amplitude amplitude)
 
 void drive(const float distance, const Amplitude amplitude, const bool backwards)
 {
-  constexpr float stepsPerMm = 1 / board::odoIntervalLength;
+  constexpr float stepsPerMm = 1 / odoIntervalLength;
   const Counter steps = distance * stepsPerMm;
   driveCounter(steps, amplitude, backwards);
 }
@@ -98,8 +111,8 @@ Position flushCurrentPosition()
 		case Action::BACKWARD:
 		{
 			const std::int8_t reversed = (lastAction == Action::BACKWARD) ? -1 : 1;
-			lastKnownPosition.x += LeftDrive::counter * board::odoIntervalLength * std::cos(orientation) * reversed;
-			lastKnownPosition.y += LeftDrive::counter * board::odoIntervalLength * std::sin(orientation) * reversed;
+			lastKnownPosition.x += LeftDrive::counter * odoIntervalLength * std::cos(orientation) * reversed;
+			lastKnownPosition.y += LeftDrive::counter * odoIntervalLength * std::sin(orientation) * reversed;
 			break;
 		}
 		case Action::TURN_LEFT:
@@ -124,6 +137,17 @@ IRAM_ATTR void stopDrives()
 {
 	LeftDrive::stop();
 	RightDrive::stop();
+}
+
+bool isIdle()
+{
+  return LeftDrive::isIdle && RightDrive::isIdle;
+}
+
+void initDrives()
+{
+  LeftDrive::init();
+  RightDrive::init();
 }
 
 }

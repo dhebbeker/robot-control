@@ -4,6 +4,7 @@
 #include <Arduino.h>
 
 using Milliseconds = decltype(millis());
+using InterruptFunctionPointer = void (*)(void);
 
 /**
  * Returns the current function for given duration.

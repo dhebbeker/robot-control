@@ -32,7 +32,7 @@ static constexpr char htmlSourceTemplate[] =
 
 void WebserverHandle::handleRoot() {
   TargetRequest newTarget;
-  digitalWrite(board::debugLed, LOW);
+  board::setDebugLed(LOW);
   if(server.hasArg("forwards"))
   {
     newTarget.newDrive = server.arg("forwards").toInt();
@@ -68,7 +68,7 @@ void WebserverHandle::handleRoot() {
     pointerToHtml = htmlSourceFrontBuffer;
   }
   server.send(200, "text/html", pointerToHtml);
-  digitalWrite(board::debugLed, HIGH);
+  board::setDebugLed(HIGH);
 }
 
 void WebserverHandle::loop() {
