@@ -36,3 +36,8 @@ VL53L1GpioInterface * const distanceSensors[] = {
 		&distanceSensor4,
 	};
 };
+
+bool board::isBumperPressed()
+{
+  return digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
+}

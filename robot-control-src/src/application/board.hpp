@@ -49,6 +49,8 @@ constexpr float odoIntervalLength = 12*numbers::pi; //!< [mm]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
 static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");
 static_assert(odoMinIntervalDuration < 142, "threshold must be smaller than shortest odometry interval between pulses (measured at highest speed)");
+
+bool isBumperPressed();
 };
 
 #endif // BOARD_HPP

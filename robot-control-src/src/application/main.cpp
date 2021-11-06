@@ -109,11 +109,6 @@ static Distance retrieveSensorStatus(VL53L1GpioInterface* const sensor)
   return newDistance;
 }
 
-static bool isBumperPressed()
-{
-  return digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
-}
-
 static void followWall()
 {
   static circular_buffer<Distance, 2> wallDistances;
