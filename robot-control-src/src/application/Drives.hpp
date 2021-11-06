@@ -15,6 +15,7 @@ using Counter = std::uint16_t;
 using Amplitude = std::uint16_t;
 constexpr Amplitude maxAmplitude = 1023;
 constexpr Amplitude cruiseSpeed = maxAmplitude / 2;
+constexpr float stepsPerDeg = 100.0/(4.8*360.0);
 
 template<typename MOTORCONTROL, MOTORCONTROL& motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN& directionPin, typename ODOPIN, ODOPIN& odoPin>
 class Drive
