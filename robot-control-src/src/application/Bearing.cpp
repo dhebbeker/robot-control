@@ -10,7 +10,7 @@ class Lost: public Bearing::State
 private:
   constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
   drives::Counter numberOfScan = 0;
-  Distance minDistance = std::numeric_limits<Distance>::max();
+  board::Distance minDistance = std::numeric_limits<Distance>::max();
   drives::Counter minOrientation = 0;
 public:
   Lost(Bearing &context) :
@@ -24,7 +24,7 @@ public:
       if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle && !board::isBumperPressed())
       {
         // TODO measure
-        const Distance currentMinDistance; // TODO
+        const board::Distance currentMinDistance = 0; // TODO
         if(currentMinDistance < minDistance)
         {
           minDistance = currentMinDistance;

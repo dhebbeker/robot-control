@@ -8,6 +8,8 @@
 
 namespace board
 {
+using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
+
 const extern std::uint8_t debugLed;
 const extern std::uint8_t leftMotor;
 const extern std::uint8_t rightMotor;

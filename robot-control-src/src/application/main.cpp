@@ -14,7 +14,6 @@
 //#define DEBUG_SENSOR true
 #define DEBUG_WALL
 
-using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 static Distance distances[size(board::distanceSensors)] { };
 
 void main::setup()
