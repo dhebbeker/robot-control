@@ -8,7 +8,7 @@
 class Lost: public Bearing::State
 {
 private:
-  constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
+  static constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
   drives::Counter numberOfScan = 0;
   board::Distance minDistance = std::numeric_limits<Distance>::max();
   drives::Counter minOrientation = 0;
