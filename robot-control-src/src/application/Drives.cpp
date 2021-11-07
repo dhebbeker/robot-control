@@ -67,8 +67,8 @@ Milliseconds Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, OD
  * a duty cycle of 100%.
  */
 /**@{*/
-static float calibrationSlope = 1;
-static float calibrationIntercept = 0;
+static float calibrationSlope = 1.033708;
+static float calibrationIntercept = -34.483383;
 
 static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
