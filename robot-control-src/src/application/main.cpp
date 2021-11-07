@@ -11,13 +11,13 @@
 #include <functional>
 #include <type_traits>
 
-void main::setup()
+void main::setup(const char * const programIdentificationString)
 {
-  Serial.begin(115200);
+  Serial.begin(9600);
   delay(100);
   Serial.flush();
   delay(100);
-  Serial.printf("\n begin program '%s'\n", __FILE__);
+  Serial.printf("\n begin program '%s'\n", programIdentificationString);
   board::setup(drives::stopDrives);
 }
 
