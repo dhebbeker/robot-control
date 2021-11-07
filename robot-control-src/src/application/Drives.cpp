@@ -2,11 +2,6 @@
 #include "board.hpp"
 #include <cmath>
 
-#undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
-#if defined(abs)
-#undef abs // else it conflicts with std::abs
-#endif
-
 namespace board
 {
 extern constexpr std::uint8_t leftMotor = D1;

@@ -3,6 +3,13 @@
 
 #include <Arduino.h>
 
+#if defined(round)
+#undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
+#endif
+#if defined(abs)
+#undef abs // else it conflicts with std::abs
+#endif
+
 using Milliseconds = decltype(millis());
 using InterruptFunctionPointer = void (*)(void);
 
