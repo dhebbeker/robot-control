@@ -15,7 +15,11 @@ using Counter = std::uint16_t;
 using Amplitude = std::uint16_t;
 constexpr Amplitude maxAmplitude = 1023;
 constexpr Amplitude cruiseSpeed = maxAmplitude / 2;
-constexpr float stepsPerDeg = 100.0/(4.8*360.0);
+
+/**
+ * This was measured by rotating by 100 steps and then measuring the rotation.
+ */
+constexpr float stepsPerDeg = 100.0/(5.0*360.0 + 345.0);
 
 /**
  * Maximum robot velocity.
@@ -29,7 +33,7 @@ constexpr auto maxVelocity = 220; //!< [mm/s]
  * fraction of one odometry interval to outer wheel f = 6/25
  * distance of one odometry interval = f*U
  */
-constexpr float odoIntervalLength = 12*numbers::pi; //!< [mm]
+constexpr float odoIntervalLength = (6.0 / 25.0) * 50 * numbers::pi; //!< [mm]
 //! Minimum time with buffer factor [ms]
 constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (maxVelocity*2.0);
 static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");
