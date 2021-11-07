@@ -42,6 +42,7 @@ public:
 	static Counter volatile counter;
 	static Counter target;
 	static bool isIdle;
+	static Milliseconds lastDuration;
 
 	static void init()
 	{
@@ -62,6 +63,7 @@ public:
 			if (++counter >= target)
 			{
 				stop();
+				lastDuration = now - lastDuration;
 			}
 			riseTime = now;
 		}
@@ -78,6 +80,7 @@ public:
 		counter = 0;
 		target = distance;
 		isIdle = false;
+		lastDuration = millis();
 		digitalWrite(directionPin, !backwards ? LOW : HIGH);
 		analogWrite(motorControlpin, std::min(maxAmplitude, amplitude));
 	}
@@ -100,6 +103,8 @@ Position flushCurrentPosition();
 
 void stopDrives();
 bool isIdle();
+
+void calibrate(const float testDistance = 500);
 
 }
 

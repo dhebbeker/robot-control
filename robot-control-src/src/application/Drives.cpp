@@ -40,8 +40,11 @@ template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIO
 Counter Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::target = 0;
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
 bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::isIdle = true;
+template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
+Milliseconds Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::lastDuration = millis();
 
 /**
+ * \name Calibration
  * The right drive tends to be faster than the left. In order to compensate a factor 
  * is applied the the duty cycle of the motor control of the right drive.
  * 
@@ -63,31 +66,67 @@ bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, od
  * drives to be equally fast. The linear functions is such that the difference is 0 with 
  * a duty cycle of 100%.
  */
+/**@{*/
+static float calibrationSlope = 1;
+static float calibrationIntercept = 0;
+
 static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
-	constexpr Amplitude leftAmplitude = 350; // x
-	constexpr Amplitude rightMatchingAmplitude = 290; // y
-	constexpr double calibrationFraction = (leftAmplitude
-			- rightMatchingAmplitude)
-			/ static_cast<double>(maxAmplitude - leftAmplitude);
-	return leftSpeed - calibrationFraction * (maxAmplitude - leftSpeed);
+  return std::max(
+                  std::min(
+                           std::round(leftSpeed * calibrationSlope + calibrationIntercept),
+                           static_cast<float>(maxAmplitude)),
+                  static_cast<float>(0));
 }
+
+void calibrate(const float testDistance)
+{
+  while (!isIdle())
+  {
+    // wait
+  }
+  constexpr Amplitude testAmplitude = 350;
+  const Milliseconds startTime = millis();
+
+  // disable calibration for test
+  calibrationSlope = 1;
+  calibrationIntercept = 0;
+
+  drive(testDistance, testAmplitude, false);
+  while (!isIdle())
+  {
+    delay(1000); // wait
+  }
+  Serial.printf("left:%u, right:%u\n", LeftDrive::lastDuration, RightDrive::lastDuration);
+
+  calibrationSlope = (static_cast<double>(RightDrive::lastDuration) / LeftDrive::lastDuration * testAmplitude
+      - maxAmplitude) / (testAmplitude - maxAmplitude);
+  calibrationIntercept = maxAmplitude * (1 - calibrationSlope);
+
+  Serial.printf(
+                "Set calibrationSlope to %f and calibrationIntercept to %f\n",
+                calibrationSlope,
+                calibrationIntercept);
+}
+/**@}*/
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
   if (steps != 0)
   {
     lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
+    const Amplitude rightSpeed = calcRightSpeed(amplitude);
     LeftDrive::drive(steps, amplitude, clockwise);
-    RightDrive::drive(steps, calcRightSpeed(amplitude), !clockwise);
+    RightDrive::drive(steps, rightSpeed, !clockwise);
   }
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
 	lastAction = backwards ? Action::BACKWARD : Action::FORWARD;
+  const Amplitude rightSpeed = calcRightSpeed(amplitude);
   LeftDrive::drive(steps, amplitude, backwards);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
+  RightDrive::drive(steps, rightSpeed, backwards);
 }
 
 void rotate(const float deg, const Amplitude amplitude)
