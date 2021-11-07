@@ -33,6 +33,8 @@ AligningToWall::AligningToWall(Bearing &context, const PolarVector vectorToWall)
     Bearing::State(context), vectorToWall(vectorToWall)
 {
   Serial.printf("Vector to wall points to %f°, %imm", vectorToWall.angle, vectorToWall.length);
+  const DriveOrders newOrders({ vectorToWall });
+  context.setState(new Driving<FollowingWall>(context, newOrders));
 }
 
 void AligningToWall::operation()
@@ -104,7 +106,16 @@ void Lost::operation()
     }
     const int angle = std::round(static_cast<float>(numberOfScan) / stepsPerDeg + angleToSensor);
     const std::int8_t sign = angle < 0 ? -1 : 1;
-    const PolarVector vectorToBlip = { .angle = (std::abs(angle) % 360)*sign, .length = minDistance};
+    const PolarVector vectorToBlip = { .angle = static_cast<float>((std::abs(angle) % 360)*sign), .length = minDistance};
     context.setState(new AligningToWall(context, vectorToBlip));
   }
+}
+
+FollowingWall::FollowingWall(Bearing &context) : Bearing::State(context)
+{
+}
+
+void FollowingWall::operation()
+{
+  // TODO
 }

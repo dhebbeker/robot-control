@@ -3,6 +3,7 @@
 
 #include "Drives.hpp"
 #include "board.hpp"
+#include <queue>
 
 struct PolarVector
 {
@@ -57,6 +58,65 @@ private:
   const PolarVector vectorToWall;
 public:
   AligningToWall(Bearing &context, const PolarVector vectorToWall);
+  virtual void operation() override;
+};
+
+using DriveOrders =std::queue<PolarVector>;
+
+template<class OldState>
+class Driving: public Bearing::State
+{
+private:
+  using NextState = typename std::remove_reference<OldState>::type;
+  DriveOrders driveOrders;
+  bool rotated = false;
+public:
+  Driving(Bearing &context, const DriveOrders &orders) :
+      Bearing::State(context), driveOrders(orders)
+  {
+  }
+  virtual void operation() override
+  {
+    if (!driveOrders.empty())
+    {
+      if (drives::isIdle() && !board::isBumperPressed())
+      {
+        const auto currentOrder = driveOrders.front();
+        if (!rotated)
+        {
+          drives::rotate(currentOrder.angle, drives::cruiseSpeed);
+          rotated = true;
+        }
+        else
+        {
+          drives::drive(currentOrder.length, drives::cruiseSpeed, false);
+          driveOrders.pop();
+          rotated = false;
+        }
+      }
+      else
+      {
+        // wait for idle drives and free bumpers
+      }
+    }
+    else
+    {
+      if (drives::isIdle())
+      {
+        context.setState(new NextState(context));
+      }
+      else
+      {
+        // wait for last command to be finished
+      }
+    }
+  }
+};
+
+class FollowingWall : public Bearing::State
+{
+public:
+  FollowingWall(Bearing& context);
   virtual void operation() override;
 };
 
