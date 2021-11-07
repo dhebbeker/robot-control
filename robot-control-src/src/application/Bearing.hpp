@@ -74,6 +74,7 @@ public:
   Driving(Bearing &context, const DriveOrders &orders) :
       Bearing::State(context), driveOrders(orders)
   {
+    Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
   virtual void operation() override
   {
@@ -81,14 +82,16 @@ public:
     {
       if (drives::isIdle() && !board::isBumperPressed())
       {
-        const auto currentOrder = driveOrders.front();
+        const auto& currentOrder = driveOrders.front();
         if (!rotated)
         {
+          Serial.printf("Take order to rotate by %f\n", currentOrder.angle);
           drives::rotate(currentOrder.angle, drives::cruiseSpeed);
           rotated = true;
         }
         else
         {
+          Serial.printf("Take order to drive by %i\n", currentOrder.length);
           drives::drive(currentOrder.length, drives::cruiseSpeed, false);
           driveOrders.pop();
           rotated = false;
