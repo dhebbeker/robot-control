@@ -940,4 +940,146 @@ IO-EXP-1_INTA
 Wire Wire Line
 	4800 1150 5400 1150
 NoConn ~ 5350 1700
+$Comp
+L Device:LED D?
+U 1 1 618B38D5
+P 1550 4000
+F 0 "D?" V 1589 3883 50  0000 R CNN
+F 1 "Signal LED green" H 1500 3850 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" H 1550 4000 50  0001 C CNN
+F 3 "~" H 1550 4000 50  0001 C CNN
+	1    1550 4000
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 618B95BC
+P 1250 4000
+F 0 "R?" H 1320 4046 50  0000 L CNN
+F 1 "1k" H 1320 3955 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 1180 4000 50  0001 C CNN
+F 3 "~" H 1250 4000 50  0001 C CNN
+	1    1250 4000
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:LED D?
+U 1 1 618EC6EC
+P 1550 4350
+F 0 "D?" V 1589 4233 50  0000 R CNN
+F 1 "Signal LED yellow" H 1500 4200 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" H 1550 4350 50  0001 C CNN
+F 3 "~" H 1550 4350 50  0001 C CNN
+	1    1550 4350
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 618EC6F2
+P 1250 4350
+F 0 "R?" H 1320 4396 50  0000 L CNN
+F 1 "1k" H 1320 4305 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 1180 4350 50  0001 C CNN
+F 3 "~" H 1250 4350 50  0001 C CNN
+	1    1250 4350
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:LED D?
+U 1 1 618EF321
+P 1550 4700
+F 0 "D?" V 1589 4583 50  0000 R CNN
+F 1 "Signal LED red" H 1500 4550 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" H 1550 4700 50  0001 C CNN
+F 3 "~" H 1550 4700 50  0001 C CNN
+	1    1550 4700
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 618EF327
+P 1250 4700
+F 0 "R?" H 1320 4746 50  0000 L CNN
+F 1 "1k" H 1320 4655 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 1180 4700 50  0001 C CNN
+F 3 "~" H 1250 4700 50  0001 C CNN
+	1    1250 4700
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:LED D?
+U 1 1 618F1222
+P 1550 5050
+F 0 "D?" V 1589 4933 50  0000 R CNN
+F 1 "Signal LED blue" H 1500 4900 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm" H 1550 5050 50  0001 C CNN
+F 3 "~" H 1550 5050 50  0001 C CNN
+	1    1550 5050
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 618F1228
+P 1250 5050
+F 0 "R?" H 1320 5096 50  0000 L CNN
+F 1 "0" H 1320 5005 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical" V 1180 5050 50  0001 C CNN
+F 3 "~" H 1250 5050 50  0001 C CNN
+	1    1250 5050
+	0    1    1    0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 619002BD
+P 1800 5200
+F 0 "#PWR?" H 1800 4950 50  0001 C CNN
+F 1 "GND" H 1805 5027 50  0000 C CNN
+F 2 "" H 1800 5200 50  0001 C CNN
+F 3 "" H 1800 5200 50  0001 C CNN
+	1    1800 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1800 5200 1800 5050
+Wire Wire Line
+	1800 4000 1700 4000
+Wire Wire Line
+	1700 4350 1800 4350
+Connection ~ 1800 4350
+Wire Wire Line
+	1800 4350 1800 4000
+Wire Wire Line
+	1700 4700 1800 4700
+Connection ~ 1800 4700
+Wire Wire Line
+	1800 4700 1800 4350
+Wire Wire Line
+	1700 5050 1800 5050
+Connection ~ 1800 5050
+Wire Wire Line
+	1800 5050 1800 4700
+Wire Wire Line
+	650  4000 1100 4000
+Text Label 650  4000 0    50   ~ 0
+LED_GREEN
+Wire Wire Line
+	1100 4350 650  4350
+Wire Wire Line
+	1100 4700 650  4700
+Wire Wire Line
+	1100 5050 650  5050
+Text Label 650  4350 0    50   ~ 0
+LED_YELLOW
+Text Label 650  4700 0    50   ~ 0
+LED_RED
+Text Label 650  5050 0    50   ~ 0
+LED_BLUE
+Text Label 8750 3400 0    50   ~ 0
+LED_GREEN
+Text Label 8750 3500 0    50   ~ 0
+LED_YELLOW
+Text Label 8750 3600 0    50   ~ 0
+LED_RED
+Text Label 8750 3700 0    50   ~ 0
+LED_BLUE
 $EndSCHEMATC
