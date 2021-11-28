@@ -49,6 +49,14 @@ private:
   bool foundBlip = false;
 public:
   Lost(Bearing &context);
+
+  /**
+   * Checks if one of the distance sensors currently senses a shorter distance than previously found.
+   *
+   * Orders to rotate in case the scan is not complete.
+   *
+   * If scan is complete, the vector to the blip is calculated and passed to AligningToWall::AligningToWall().
+   */
   virtual void operation() override;
 };
 
@@ -58,6 +66,10 @@ private:
   const PolarVector vectorToWall;
 public:
   AligningToWall(Bearing &context, const PolarVector vectorToWall);
+
+  /**
+   * Orders to drive to blip and then follow the wall.
+   */
   virtual void operation() override;
 };
 
@@ -76,6 +88,17 @@ public:
   {
     Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
+
+  /**
+   * Each drive order is executed in two steps:
+   *
+   *  1. Rotate
+   *  2. Drive
+   *
+   * Orders are only executed if bumpers are free and drive idle.
+   *
+   * If all orders have been executed, the next state is created.
+   */
   virtual void operation() override
   {
     if (!driveOrders.empty())
