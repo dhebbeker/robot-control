@@ -12,6 +12,7 @@
 
 using Milliseconds = decltype(millis());
 using InterruptFunctionPointer = void (*)(void);
+using SerialCharacter = decltype(std::declval<Stream>().read());
 
 /**
  * Returns the current function for given duration.
@@ -43,5 +44,14 @@ using InterruptFunctionPointer = void (*)(void);
     return; \
   } \
 }
+
+/**
+ * Prompts the user to enter characters and ENTER.
+ * @param[out] buffer to write the read characters to
+ * @param numberOfCharacters the number of characters to read, must be not greater than the size of the buffer
+ * @param iostream the stream to write and read from
+ * @return true as long as more characters must be read
+ */
+bool readFromSerial(SerialCharacter * const buffer = nullptr, const std::size_t numberOfCharacters = 0, Stream& iostream = Serial);
 
 #endif /* UTILS_ARDUINO_HELPERS_HPP_ */
