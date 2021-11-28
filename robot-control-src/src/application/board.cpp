@@ -33,7 +33,7 @@ VL53L1GpioInterface * const distanceSensors[] = {
 		&distanceSensor3,
 		&distanceSensor4,
 	};
-static_assert(size(distanceSensors) == 4, "number of initializers incorrect");
+static_assert(size(distanceSensors) == numberOfDistanceSensors, "number of initializers incorrect");
 
 static Distance distances[size(distanceSensors)] { };
 
