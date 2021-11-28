@@ -26,4 +26,7 @@ void main::loop()
   static Bearing bearing;
   board::loop();
   bearing.loop();
+  board::setDebugLed(board::isBumperPressed(), board::DebugLeds::red);
+  board::setDebugLed(!drives::isIdle(), board::DebugLeds::yellow);
+  board::setDebugLed(drives::isIdle(), board::DebugLeds::green);
 }
