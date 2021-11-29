@@ -24,7 +24,7 @@ static MCP23017Pin VL53L1_4_XSHUT(ioExpander1, 7);
 static MCP23017Pin debugLedGreen(ioExpander1, 8+2);
 static MCP23017Pin debugLedYellow(ioExpander1, 8+3);
 static MCP23017Pin debugLedRed(ioExpander1, 8+4);
-static MCP23017Pin debugLedBlue(ioExpander1, 8+5);
+static MCP23017Pin debugLedWhite(ioExpander1, 8+5);
 static MCP23017Pin leftBumper(ioExpander1, 8+6);
 static MCP23017Pin rightBumper(ioExpander1, 8+7);
 static VL53L1GpioInterface distanceSensor1(&Wire, VL53L1_1_XSHUT);
@@ -62,15 +62,16 @@ static Distance retrieveSensorStatus(VL53L1GpioInterface& sensor)
 
 static void testDebugLeds()
 {
-  for (auto i = 0; i < 4; ++i)
+  MCP23017Pin *const debugLeds[] =
+  { &debugLedGreen, &debugLedYellow, &debugLedRed, &debugLedWhite };
+  for (auto i = 0; i < 3; ++i)
   {
-    digitalWrite(debugLedGreen, HIGH);
-    digitalWrite(debugLedRed, HIGH);
-    digitalWrite(debugLedYellow, HIGH);
-    digitalWrite(debugLedBlue, HIGH);
-    delay(250);
-    digitalWrite(debugLedGreen, LOW);
-    delay(250);
+    for (auto led : debugLeds)
+    {
+      digitalWrite(*led, HIGH);
+      delay(125);
+      digitalWrite(*led, LOW);
+    }
   }
 }
 
@@ -96,8 +97,8 @@ void setup(const InterruptFunctionPointer interruptForBumper)
   digitalWrite(debugLedYellow, LOW);
   pinMode(debugLedRed, OUTPUT);
   digitalWrite(debugLedRed, LOW);
-  pinMode(debugLedBlue, OUTPUT);
-  digitalWrite(debugLedBlue, LOW);
+  pinMode(debugLedWhite, OUTPUT);
+  digitalWrite(debugLedWhite, LOW);
   pinMode(leftBumper, INPUT_PULLUP);
   pinMode(rightBumper, INPUT_PULLUP);
 
@@ -158,7 +159,7 @@ void setDebugLed(const std::uint8_t value, const DebugLeds led)
     digitalWrite(debugLedRed, value);
     break;
   case DebugLeds::blue:
-    digitalWrite(debugLedBlue, value);
+    digitalWrite(debugLedWhite, value);
     break;
   default:
     break;
