@@ -75,6 +75,49 @@ static void testDebugLeds()
   }
 }
 
+/**
+ *
+ * @param sensor sensor to read from
+ * @param[out] returnDistance distance is written into
+ * @retval true in case distance was read without error
+ */
+static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& returnDistance)
+{
+  constexpr std::size_t maxNumberOfAttempts = 3;
+  for (std::size_t i = 0; i < maxNumberOfAttempts; ++i)
+  {
+    returnDistance = retrieveSensorStatus(sensor);
+    if (returnDistance != distanceErrorValue)
+    {
+      return true;
+    }
+    else
+    {
+      delay(100);
+    }
+  }
+  return false;
+}
+
+static void testDistanceSensors()
+{
+  Serial.print("Sensor values are: ");
+  for (std::size_t i = 0; i < size(distanceSensors); ++i)
+  {
+    Distance distance = distanceErrorValue;
+    const bool isError = !retrieveSensorStatusOrError(*distanceSensors[i], distance);
+    if (isError)
+    {
+      Serial.printf("Sensor %u = ERROR,", i);
+    }
+    else
+    {
+      Serial.printf("Sensor %u = %umm,", i, distance);
+    }
+  }
+  Serial.println("");
+}
+
 void setup(const InterruptFunctionPointer interruptForBumper)
 {
   Wire.begin(sda, scl);
@@ -127,6 +170,8 @@ void setup(const InterruptFunctionPointer interruptForBumper)
   {
     attachInterrupt(ioExpanderIntB, interruptForBumper, FALLING);
   }
+
+  testDistanceSensors();
 }
 
 void loop()
