@@ -2,6 +2,7 @@
 #define GPIOPIN_HPP_
 
 #include "GpioInterface.hpp"
+#include "../utils/arduino_helpers.hpp"
 #include <Arduino.h>
 
 /**
@@ -108,7 +109,7 @@ int constexpr digitalPinToInterrupt(const GpioPin<PIN>& gpio)
  * @tparam PIN is the Arduino pin number
  */
 template<std::uint8_t PIN>
-void attachInterrupt(const GpioPin<PIN>& gpio, void (* const interruptServiceRoutine)(void), const int mode)
+void attachInterrupt(const GpioPin<PIN>& gpio, const InterruptFunctionPointer interruptServiceRoutine, const int mode)
 {
 	attachInterrupt(digitalPinToInterrupt(gpio.pin), interruptServiceRoutine, mode);
 }

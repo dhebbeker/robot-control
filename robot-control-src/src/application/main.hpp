@@ -3,7 +3,7 @@
 
 namespace main
 {
-void setup();
+void setup(const char * const programIdentificationString);
 void loop();
 }
 

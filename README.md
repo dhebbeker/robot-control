@@ -69,7 +69,9 @@ It is compiled and programmed with the [Arduino IDE][].
 Dependencies:
 
  - [Arduino IDE][]. Tested with v2.0.0-beta.4 should work with 1.5.x+.
- - The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed. Tested using version 2.7.4.
+ - The [board support package for the ESP8266 chip](https://github.com/esp8266/Arduino) must be installed.
+   Tested using version 2.7.4.
+   Version 3.0.0, (3.0.1 not tested) and 3.0.2 do not work because of [this bug](https://github.com/espressif/esp-idf/issues/4542).
  - The [Arduino library VL53L1 by STM32duino](https://github.com/stm32duino/VL53L1) must be installed. Tested using version 2.0.1.
  - The [SimplyAtomic library](https://github.com/wizard97/SimplyAtomic) must be installed. Tested in version 1.0.
  - The [MPC23017 library by Bertrand Lemasle](https://github.com/blemasle/arduino-mcp23017) must be installed. Tested in version 2.0.0.
@@ -84,21 +86,21 @@ I case one wants to develop the software without the Arduino IDE some provisions
  - Add the following include paths
    (where `${ARDUINO_LIB_PATH}` is the path to the Arduino libraries (for example `~/Arduino/libraries`),
           `${AVR_PATH}` is the path to the AVR header files (for example `~/.arduino15/packages/arduino/tools/avr-gcc/7.3.0-atmel3.6.1-arduino7/avr/include`),
-          `${ESP8266_PATH}` is the path to the ESP8266 board support package (for example `~/.arduino15/packages/esp8266`)):
+          `${ESP8266_HARDWARE_PATH}` is the path to the hardware part of the ESP8266 board support package (for example `~/.arduino15/packages/esp8266/hardware/esp8266/2.7.4`),
+          `${ESP8266_COMPILER_PATH}` is the path to the software part of the ESP8266 board support package (for example `~/.arduino15/packages/esp8266/tools/xtensa-lx106-elf-gcc/2.5.0-4-b40a506`)):
    - `${AVR_PATH}`
    - `${ARDUINO_LIB_PATH}/MCP23017/src`
    - `${ARDUINO_LIB_PATH}/SimplyAtomic`
    - `${ARDUINO_LIB_PATH}/STM32duino_VL53L1/src`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/cores/esp8266`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/tools/sdk/include`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/tools/sdk/lwip2/include`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/variants/nodemcu`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/libraries/Wire`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/libraries/ESP8266WiFi/src`
-   - `${ESP8266_PATH}/hardware/esp8266/2.7.4/libraries/ESP8266WebServer/src`
-   - `${ESP8266_PATH}/tools/xtensa-lx106-elf-gcc/2.5.0-4-b40a506/lib/gcc/xtensa-lx106-elf/4.8.2/include`
-   - `${ESP8266_PATH}/tools/xtensa-lx106-elf-gcc/2.5.0-4-b40a506/xtensa-lx106-elf/include`
-   - `${ESP8266_PATH}/tools/xtensa-lx106-elf-gcc/2.5.0-4-b40a506/xtensa-lx106-elf/include/c++/4.8.2`
-   - `${ESP8266_PATH}/tools/xtensa-lx106-elf-gcc/2.5.0-4-b40a506/xtensa-lx106-elf/include/c++/4.8.2/xtensa-lx106-elf`
+   - `${ESP8266_HARDWARE_PATH}/cores/esp8266`
+   - `${ESP8266_HARDWARE_PATH}/tools/sdk/include`
+   - `${ESP8266_HARDWARE_PATH}/tools/sdk/lwip2/include`
+   - `${ESP8266_HARDWARE_PATH}/variants/nodemcu`
+   - `${ESP8266_HARDWARE_PATH}/libraries/Wire`
+   - `${ESP8266_HARDWARE_PATH}/libraries/ESP8266WiFi/src`
+   - `${ESP8266_HARDWARE_PATH}/libraries/ESP8266WebServer/src`
+   - `${ESP8266_COMPILER_PATH}/lib/gcc/xtensa-lx106-elf/4.8.2/include`
+   - `${ESP8266_COMPILER_PATH}/xtensa-lx106-elf/include`
+   - `${ESP8266_COMPILER_PATH}/xtensa-lx106-elf/include/c++/4.8.2`
  - Add the following preprocessor macros:
    - `ARDUINO_ARCH_ESP8266`
