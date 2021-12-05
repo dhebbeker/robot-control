@@ -1,15 +1,21 @@
 #include "Drives.hpp"
 #include "board.hpp"
-#include "../utils/numbers.hpp"
 #include <cmath>
 
-#undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
+namespace board
+{
+extern constexpr std::uint8_t leftMotor = D1;
+extern constexpr std::uint8_t rightMotor = D2;
+extern constexpr std::uint8_t rightOdoSignal = D5;
+extern constexpr std::uint8_t leftOdoSignal = D6;
+MCP23017Pin leftBackwards(ioExpander1, 8 + 0);
+MCP23017Pin rightBackwards(ioExpander1, 8 + 1);
+}
 
 namespace drives
 {
 
-static constexpr float stepsPerDeg = 100/(4.8*360);
-static constexpr float stepsPerRad = stepsPerDeg / ((2*numbers::pi)/360);
+static constexpr float stepsPerRad = stepsPerDeg / ((2.0*numbers::pi)/360.0);
 
 static enum class Action
 {
@@ -17,7 +23,11 @@ static enum class Action
 } lastAction = Action::FORWARD;
 
 static Position lastKnownPosition = {0,0};
-static float orientation = 0; // in radians
+static float orientation = 0; // in radiant
+
+#define TYPEANDSYMBOL(t) decltype(t), t
+using LeftDrive = Drive<TYPEANDSYMBOL(board::leftMotor), TYPEANDSYMBOL(board::leftBackwards), TYPEANDSYMBOL(board::leftOdoSignal)>;
+using RightDrive = Drive<TYPEANDSYMBOL(board::rightMotor), TYPEANDSYMBOL(board::rightBackwards), TYPEANDSYMBOL(board::rightOdoSignal)>;
 
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
 Counter volatile Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::counter = 0;
@@ -25,8 +35,11 @@ template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIO
 Counter Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::target = 0;
 template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
 bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::isIdle = true;
+template<typename MOTORCONTROL, MOTORCONTROL &motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN &directionPin, typename ODOPIN, ODOPIN &odoPin>
+Milliseconds Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, odoPin>::lastDuration = millis();
 
 /**
+ * \name Calibration
  * The right drive tends to be faster than the left. In order to compensate a factor 
  * is applied the the duty cycle of the motor control of the right drive.
  * 
@@ -48,39 +61,79 @@ bool Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, ODOPIN, od
  * drives to be equally fast. The linear functions is such that the difference is 0 with 
  * a duty cycle of 100%.
  */
+/**@{*/
+static float calibrationSlope = 1.033708;
+static float calibrationIntercept = -34.483383;
+
 static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
-	constexpr Amplitude leftAmplitude = 350; // x
-	constexpr Amplitude rightMatchingAmplitude = 290; // y
-	constexpr double calibrationFraction = (leftAmplitude
-			- rightMatchingAmplitude)
-			/ static_cast<double>(maxAmplitude - leftAmplitude);
-	return leftSpeed - calibrationFraction * (maxAmplitude - leftSpeed);
+  return std::max(
+                  std::min(
+                           std::round(leftSpeed * calibrationSlope + calibrationIntercept),
+                           static_cast<float>(maxAmplitude)),
+                  static_cast<float>(0));
 }
+
+void calibrate(const float testDistance)
+{
+  while (!isIdle())
+  {
+    // wait
+  }
+  constexpr Amplitude testAmplitude = 350;
+  const Milliseconds startTime = millis();
+
+  // disable calibration for test
+  calibrationSlope = 1;
+  calibrationIntercept = 0;
+
+  drive(testDistance, testAmplitude, false);
+  while (!isIdle())
+  {
+    delay(1000); // wait
+  }
+  Serial.printf("left:%u, right:%u\n", LeftDrive::lastDuration, RightDrive::lastDuration);
+
+  calibrationSlope = (static_cast<double>(RightDrive::lastDuration) / LeftDrive::lastDuration * testAmplitude
+      - maxAmplitude) / (testAmplitude - maxAmplitude);
+  calibrationIntercept = maxAmplitude * (1 - calibrationSlope);
+
+  Serial.printf(
+                "Set calibrationSlope to %f and calibrationIntercept to %f\n",
+                calibrationSlope,
+                calibrationIntercept);
+}
+/**@}*/
 
 void rotateCounter(const Counter steps, const Amplitude amplitude, bool const clockwise)
 {
-	lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
-  LeftDrive::drive(steps, amplitude, clockwise);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), !clockwise);
+  if (steps != 0)
+  {
+    lastAction = clockwise ? Action::TURN_RIGHT : Action::TURN_LEFT;
+    const Amplitude rightSpeed = calcRightSpeed(amplitude);
+    LeftDrive::drive(steps, amplitude, clockwise);
+    RightDrive::drive(steps, rightSpeed, !clockwise);
+  }
 }
 
 void driveCounter(const Counter steps, const Amplitude amplitude, const bool backwards)
 {
 	lastAction = backwards ? Action::BACKWARD : Action::FORWARD;
+  const Amplitude rightSpeed = calcRightSpeed(amplitude);
   LeftDrive::drive(steps, amplitude, backwards);
-  RightDrive::drive(steps, calcRightSpeed(amplitude), backwards);
+  RightDrive::drive(steps, rightSpeed, backwards);
 }
 
-void rotate(const float deg, const Amplitude amplitude, bool const clockwise)
+void rotate(const float deg, const Amplitude amplitude)
 {
-  const Counter steps = std::round(deg * stepsPerDeg);
+  const bool clockwise = deg > 0;
+  const Counter steps = std::round(std::abs(deg) * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
 }
 
 void drive(const float distance, const Amplitude amplitude, const bool backwards)
 {
-  constexpr float stepsPerMm = 1 / board::odoIntervalLength;
+  constexpr float stepsPerMm = 1 / odoIntervalLength;
   const Counter steps = distance * stepsPerMm;
   driveCounter(steps, amplitude, backwards);
 }
@@ -92,8 +145,8 @@ Position flushCurrentPosition()
 		case Action::BACKWARD:
 		{
 			const std::int8_t reversed = (lastAction == Action::BACKWARD) ? -1 : 1;
-			lastKnownPosition.x += LeftDrive::counter * board::odoIntervalLength * std::cos(orientation) * reversed;
-			lastKnownPosition.y += LeftDrive::counter * board::odoIntervalLength * std::sin(orientation) * reversed;
+			lastKnownPosition.x += LeftDrive::counter * odoIntervalLength * std::cos(orientation) * reversed;
+			lastKnownPosition.y += LeftDrive::counter * odoIntervalLength * std::sin(orientation) * reversed;
 			break;
 		}
 		case Action::TURN_LEFT:
@@ -118,6 +171,17 @@ IRAM_ATTR void stopDrives()
 {
 	LeftDrive::stop();
 	RightDrive::stop();
+}
+
+bool isIdle()
+{
+  return LeftDrive::isIdle && RightDrive::isIdle;
+}
+
+void initDrives()
+{
+  LeftDrive::init();
+  RightDrive::init();
 }
 
 }
