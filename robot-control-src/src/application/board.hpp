@@ -8,6 +8,9 @@
 
 namespace board
 {
+
+enum class DebugLeds { built_in, green, yellow, red, blue };
+
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 constexpr Distance distanceErrorValue = std::numeric_limits<Distance>::max();
 constexpr std::size_t numberOfDistanceSensors = 4;
@@ -17,7 +20,7 @@ extern MCP23017 ioExpander1;
 void setup(const InterruptFunctionPointer interruptForBumper = nullptr);
 void loop();
 bool isBumperPressed();
-void setDebugLed(const std::uint8_t value);
+void setDebugLed(const std::uint8_t value, const DebugLeds led = DebugLeds::built_in);
 const Distance (&getDistances())[numberOfDistanceSensors];
 }
 
