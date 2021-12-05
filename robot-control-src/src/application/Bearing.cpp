@@ -13,6 +13,8 @@ float shortenAngle(const float& angle)
   return (std::fmod(std::abs(angle) + 180, 360.0) - 180) * sign;
 }
 
+static constexpr Distance targetDistanceToWall = 100; //!< [mm]
+
 Bearing::Bearing() :
     state(new Lost(*this))
 {
@@ -43,8 +45,23 @@ AligningToWall::AligningToWall(Bearing &context, const PolarVector vectorToWall)
 
 void AligningToWall::operation()
 {
-  const DriveOrders newOrders({ vectorToWall });
+if (vectorToWall.length > targetDistanceToWall)
+{
+  const DriveOrders newOrders(
+  {
+  { .angle = vectorToWall.angle, .length = vectorToWall.length - targetDistanceToWall },
+  { .angle = -90 } });
   context.setState(new Driving<FollowingWall>(context, newOrders));
+}
+else
+{
+  const DriveOrders newOrders(
+  {
+  { .angle = shortenAngle(vectorToWall.angle + 180), .length = targetDistanceToWall - vectorToWall.length },
+  { .angle = 90 } });
+  context.setState(new Driving<FollowingWall>(context, newOrders));
+
+}
 }
 
 Bearing::State::State(Bearing &context) :
