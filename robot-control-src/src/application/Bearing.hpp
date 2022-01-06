@@ -28,7 +28,6 @@ private:
   drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
-  Lost();
 
   /**
    * Checks if one of the distance sensors currently senses a shorter distance than previously found.

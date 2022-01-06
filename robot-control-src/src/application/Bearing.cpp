@@ -49,10 +49,6 @@ else
 }
 }
 
-Lost::Lost()
-{
-}
-
 PollingStateMachine::State* Lost::operation()
 {
   if (numberOfScan <= maxNumberOfScans)
