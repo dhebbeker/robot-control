@@ -25,7 +25,6 @@ public:
 
   ~PollingStateMachine();
 
-protected:
   PollingStateMachine(State* const startState);
 
 private:
