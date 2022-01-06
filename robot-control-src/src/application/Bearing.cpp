@@ -47,6 +47,7 @@ void AligningToWall::operation()
 {
 if (vectorToWall.length > targetDistanceToWall)
 {
+  /* drive towards the wall and turn left */
   const DriveOrders newOrders(
   {
   { .angle = vectorToWall.angle, .length = vectorToWall.length - targetDistanceToWall },
@@ -55,6 +56,7 @@ if (vectorToWall.length > targetDistanceToWall)
 }
 else
 {
+  /* drive away from the wall and turn right */
   const DriveOrders newOrders(
   {
   { .angle = shortenAngle(vectorToWall.angle + 180), .length = targetDistanceToWall - vectorToWall.length },
