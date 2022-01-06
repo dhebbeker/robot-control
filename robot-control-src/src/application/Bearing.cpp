@@ -1,6 +1,7 @@
 #include "Bearing.hpp"
 #include "board.hpp"
 #include "Drives.hpp"
+#include "FollowingWallStates.hpp"
 #include "../utils/array.hpp"
 #include "../utils/arduino_helpers.hpp"
 #include <cmath>
@@ -111,6 +112,15 @@ PollingStateMachine::State* Lost::operation()
     return new AligningToWall(vectorToBlip);
   }
   return this;
+}
+
+FollowingWall::FollowingWall() : subStateMachine(new PollingStateMachine(new FollowingWallState1()))
+{
+}
+
+FollowingWall::~FollowingWall()
+{
+  delete subStateMachine;
 }
 
 PollingStateMachine::State* FollowingWall::operation()

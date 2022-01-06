@@ -121,7 +121,11 @@ public:
 class FollowingWall : public PollingStateMachine::State
 {
 public:
+  FollowingWall();
+  virtual ~FollowingWall();
   virtual PollingStateMachine::State* operation() override;
+private:
+  PollingStateMachine* subStateMachine;
 };
 
 #endif /* APPLICATION_BEARING_HPP_ */
