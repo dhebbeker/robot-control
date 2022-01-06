@@ -14,8 +14,6 @@ float shortenAngle(const float& angle)
   return (std::fmod(std::abs(angle) + 180, 360.0) - 180) * sign;
 }
 
-static constexpr Distance targetDistanceToWall = 100; //!< [mm]
-
 Bearing::Bearing() :
     PollingStateMachine(new Lost())
 {
@@ -125,5 +123,6 @@ FollowingWall::~FollowingWall()
 
 PollingStateMachine::State* FollowingWall::operation()
 {
-  // TODO
+  subStateMachine->loop();
+  return this;// TODO
 }

@@ -10,6 +10,7 @@ namespace board
 {
 
 enum class DebugLeds { built_in, green, yellow, red, blue };
+enum class DistanceSensorIndex { front_left, front_right, left, right };
 
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 constexpr Distance distanceErrorValue = std::numeric_limits<Distance>::max();

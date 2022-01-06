@@ -12,6 +12,9 @@ struct PolarVector
   Distance length; //!< in mm
 };
 
+constexpr Distance targetDistanceToWall = 100; //!< [mm]
+float shortenAngle(const float& angle);
+
 class Bearing : public PollingStateMachine
 {
 public:
