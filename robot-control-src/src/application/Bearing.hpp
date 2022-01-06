@@ -3,6 +3,7 @@
 
 #include "Drives.hpp"
 #include "board.hpp"
+#include "../utils/PollingStateMachine.hpp"
 #include <queue>
 
 struct PolarVector
@@ -11,34 +12,13 @@ struct PolarVector
   Distance length; //!< in mm
 };
 
-class Bearing
+class Bearing : public PollingStateMachine
 {
 public:
   Bearing();
-  ~Bearing();
-
-  /**
-   * Execute one cycle of the state machine.
-   */
-  void loop();
-
-  class State
-  {
-  public:
-    State(Bearing &context);
-    virtual ~State();
-    virtual void operation() = 0;
-  protected:
-    Bearing &context;
-  };
-
-  void setState(State *const nextState);
-
-private:
-  State *state;
 };
 
-class Lost: public Bearing::State
+class Lost: public PollingStateMachine::State
 {
 private:
   static constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
@@ -48,7 +28,7 @@ private:
   drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
-  Lost(Bearing &context);
+  Lost();
 
   /**
    * Checks if one of the distance sensors currently senses a shorter distance than previously found.
@@ -57,34 +37,33 @@ public:
    *
    * If scan is complete, the vector to the blip is calculated and passed to AligningToWall::AligningToWall().
    */
-  virtual void operation() override;
+  virtual PollingStateMachine::State* operation() override;
 };
 
-class AligningToWall: public Bearing::State
+class AligningToWall: public PollingStateMachine::State
 {
 private:
   const PolarVector vectorToWall;
 public:
-  AligningToWall(Bearing &context, const PolarVector vectorToWall);
+  AligningToWall(const PolarVector vectorToWall);
 
   /**
    * Orders to drive to blip and then follow the wall.
    */
-  virtual void operation() override;
+  virtual PollingStateMachine::State* operation() override;
 };
 
 using DriveOrders =std::queue<PolarVector>;
 
 template<class OldState>
-class Driving: public Bearing::State
+class Driving: public PollingStateMachine::State
 {
 private:
   using NextState = typename std::remove_reference<OldState>::type;
   DriveOrders driveOrders;
   bool rotated = false;
 public:
-  Driving(Bearing &context, const DriveOrders &orders) :
-      Bearing::State(context), driveOrders(orders)
+  Driving(const DriveOrders &orders) : driveOrders(orders)
   {
     Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
@@ -99,7 +78,7 @@ public:
    *
    * If all orders have been executed, the next state is created.
    */
-  virtual void operation() override
+  virtual PollingStateMachine::State* operation() override
   {
     if (!driveOrders.empty())
     {
@@ -129,21 +108,21 @@ public:
     {
       if (drives::isIdle())
       {
-        context.setState(new NextState(context));
+        return new NextState();
       }
       else
       {
         // wait for last command to be finished
       }
     }
+    return this;
   }
 };
 
-class FollowingWall : public Bearing::State
+class FollowingWall : public PollingStateMachine::State
 {
 public:
-  FollowingWall(Bearing& context);
-  virtual void operation() override;
+  virtual PollingStateMachine::State* operation() override;
 };
 
 #endif /* APPLICATION_BEARING_HPP_ */

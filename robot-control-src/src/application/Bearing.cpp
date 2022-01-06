@@ -16,34 +16,17 @@ float shortenAngle(const float& angle)
 static constexpr Distance targetDistanceToWall = 100; //!< [mm]
 
 Bearing::Bearing() :
-    state(new Lost(*this))
+    PollingStateMachine(new Lost())
 {
 
 }
 
-Bearing::~Bearing()
-{
-  delete state;
-}
-
-void Bearing::loop()
-{
-  state->operation();
-}
-
-void Bearing::setState(State *const nextState)
-{
-  delete state;
-  state = nextState;
-}
-
-AligningToWall::AligningToWall(Bearing &context, const PolarVector vectorToWall) :
-    Bearing::State(context), vectorToWall(vectorToWall)
+AligningToWall::AligningToWall(const PolarVector vectorToWall) : vectorToWall(vectorToWall)
 {
   Serial.printf("Vector to wall points to %f°, %imm\n", vectorToWall.angle, vectorToWall.length);
 }
 
-void AligningToWall::operation()
+PollingStateMachine::State* AligningToWall::operation()
 {
 if (vectorToWall.length > targetDistanceToWall)
 {
@@ -52,7 +35,7 @@ if (vectorToWall.length > targetDistanceToWall)
   {
   { .angle = vectorToWall.angle, .length = vectorToWall.length - targetDistanceToWall },
   { .angle = -90 } });
-  context.setState(new Driving<FollowingWall>(context, newOrders));
+  return new Driving<FollowingWall>(newOrders);
 }
 else
 {
@@ -61,25 +44,16 @@ else
   {
   { .angle = shortenAngle(vectorToWall.angle + 180), .length = targetDistanceToWall - vectorToWall.length },
   { .angle = 90 } });
-  context.setState(new Driving<FollowingWall>(context, newOrders));
+  return new Driving<FollowingWall>(newOrders);
 
 }
 }
 
-Bearing::State::State(Bearing &context) :
-    context(context)
+Lost::Lost()
 {
 }
 
-Bearing::State::~State()
-{
-}
-
-Lost::Lost(Bearing &context) : Bearing::State(context)
-{
-}
-
-void Lost::operation()
+PollingStateMachine::State* Lost::operation()
 {
   if (numberOfScan <= maxNumberOfScans)
   {
@@ -138,15 +112,12 @@ void Lost::operation()
                   rotationToMinDistance,
                   maxNumberOfScans,
                   longAngle);
-    context.setState(new AligningToWall(context, vectorToBlip));
+    return new AligningToWall(vectorToBlip);
   }
+  return this;
 }
 
-FollowingWall::FollowingWall(Bearing &context) : Bearing::State(context)
-{
-}
-
-void FollowingWall::operation()
+PollingStateMachine::State* FollowingWall::operation()
 {
   // TODO
 }
