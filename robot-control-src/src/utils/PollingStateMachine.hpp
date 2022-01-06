@@ -19,7 +19,7 @@ public:
      * \returns the next state (may be `this`)
      */
     virtual State* operation() = 0;
-  public:
+  protected:
     virtual ~State() = default;
   };
 
