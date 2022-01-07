@@ -1,6 +1,7 @@
 #include "Drives.hpp"
 #include "board.hpp"
 #include <cmath>
+#include <cassert>
 
 namespace board
 {
@@ -126,6 +127,7 @@ void driveCounter(const Counter steps, const Amplitude amplitude, const bool bac
 
 void rotate(const float deg, const Amplitude amplitude)
 {
+  assert(!std::isnan(deg));
   const bool clockwise = deg > 0;
   const Counter steps = std::round(std::abs(deg) * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
@@ -133,6 +135,7 @@ void rotate(const float deg, const Amplitude amplitude)
 
 void drive(const float distance, const Amplitude amplitude, const bool backwards)
 {
+  assert(!std::isnan(distance));
   constexpr float stepsPerMm = 1 / odoIntervalLength;
   const Counter steps = distance * stepsPerMm;
   driveCounter(steps, amplitude, backwards);

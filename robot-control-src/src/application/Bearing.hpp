@@ -6,6 +6,8 @@
 #include "../utils/PollingStateMachine.hpp"
 #include <queue>
 
+#define PRINT_CHECKPOINT() Serial.printf("\nPassing at " __FILE__ ":%u: %s\n", __LINE__, __func__)
+
 struct PolarVector
 {
   float angle; //!< in degrees
@@ -31,6 +33,8 @@ private:
   drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
+
+  Lost() { PRINT_CHECKPOINT(); }
 
   /**
    * Checks if one of the distance sensors currently senses a shorter distance than previously found.
@@ -67,6 +71,7 @@ private:
 public:
   Driving(const DriveOrders &orders) : driveOrders(orders)
   {
+    PRINT_CHECKPOINT();
     Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
 

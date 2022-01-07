@@ -22,6 +22,7 @@ Bearing::Bearing() :
 
 AligningToWall::AligningToWall(const PolarVector vectorToWall) : vectorToWall(vectorToWall)
 {
+  PRINT_CHECKPOINT();
   Serial.printf("Vector to wall points to %f°, %imm\n", vectorToWall.angle, vectorToWall.length);
 }
 
@@ -114,6 +115,7 @@ PollingStateMachine::State* Lost::operation()
 
 FollowingWall::FollowingWall() : subStateMachine(new PollingStateMachine(new FollowingWallState1()))
 {
+  PRINT_CHECKPOINT();
 }
 
 FollowingWall::~FollowingWall()
