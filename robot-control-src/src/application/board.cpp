@@ -81,9 +81,8 @@ static void testDebugLeds()
  * @param[out] returnDistance distance is written into
  * @retval true in case distance was read without error
  */
-static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& returnDistance)
+static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& returnDistance, const std::size_t maxNumberOfAttempts = 3)
 {
-  constexpr std::size_t maxNumberOfAttempts = 3;
   for (std::size_t i = 0; i < maxNumberOfAttempts; ++i)
   {
     returnDistance = retrieveSensorStatus(sensor);
@@ -97,6 +96,11 @@ static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& r
     }
   }
   return false;
+}
+
+bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts)
+{
+  return retrieveSensorStatusOrError(*distanceSensors[static_cast<std::size_t>(sensorIndex)], returnDistance, maxNumberOfAttempts);
 }
 
 static void testDistanceSensors()

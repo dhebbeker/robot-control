@@ -22,6 +22,12 @@ void setup(const InterruptFunctionPointer interruptForBumper = nullptr);
 void loop();
 bool isBumperPressed();
 void setDebugLed(const std::uint8_t value, const DebugLeds led = DebugLeds::built_in);
+/**
+ *
+ * @param[out] returnDistance measured distance will be written to
+ * @returns false on error
+ */
+bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts = 3);
 const Distance (&getDistances())[numberOfDistanceSensors];
 }
 
