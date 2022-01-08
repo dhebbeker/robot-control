@@ -5,15 +5,16 @@
 
 using FP = double;
 
+static constexpr std::size_t maxNumberMeasuringAttempts = 10;
 static constexpr Distance minDistanceBetweenPoints = 80; /*!< Distance between points P1 and P2 [mm] */
 static FP distanceToNextPoint = minDistanceBetweenPoints;
 static Distance distanceAtP1 = 0;
 
 PollingStateMachine::State* FollowingWallState1::operation()
 {
-  const auto& distances = board::getDistances();
-  const auto distanceRight = distances[static_cast<std::size_t>(board::DistanceSensorIndex::right)];
-  if(distanceRight != board::distanceErrorValue)
+  Distance distanceRight = board::distanceErrorValue;
+  const bool distanceMeasured = board::retrieveSensorStatusOrError(board::DistanceSensorIndex::right, distanceRight, maxNumberMeasuringAttempts);
+  if(distanceMeasured)
   {
     distanceAtP1 = distanceRight;
     /* drive to P2 */
@@ -24,7 +25,7 @@ PollingStateMachine::State* FollowingWallState1::operation()
   }
   else
   {
-    return this;
+    return new Lost();
   }
 }
 
@@ -32,9 +33,9 @@ PollingStateMachine::State* FollowingWallState1::operation()
 
 PollingStateMachine::State* FollowingWallState2::operation()
 {
-  const auto& distances = board::getDistances();
-  const auto distanceRight = distances[static_cast<std::size_t>(board::DistanceSensorIndex::right)];
-  if(distanceRight != board::distanceErrorValue)
+  Distance distanceRight = board::distanceErrorValue;
+  const bool distanceMeasured = board::retrieveSensorStatusOrError(board::DistanceSensorIndex::right, distanceRight, maxNumberMeasuringAttempts);
+  if(distanceMeasured)
   {
     const Distance distanceAtP2 = distanceRight;
     const Distance distanceToLastPoint = distanceToNextPoint;
@@ -44,6 +45,7 @@ PollingStateMachine::State* FollowingWallState2::operation()
     PRINT_NUMBER(alpha);
     const FP g = distanceAtP2 * std::cos(alpha);
     PRINT_NUMBER(g);
+    // if the distance to the wall (g) is too big, the travel distance must be increased
     distanceToNextPoint = std::max(static_cast<FP>(minDistanceBetweenPoints), g - targetDistanceToWall);
     PRINT_NUMBER(distanceToNextPoint);
     const FP h = g - targetDistanceToWall;
@@ -55,6 +57,7 @@ PollingStateMachine::State* FollowingWallState2::operation()
     const FP beta = radToDeg(rightAngle + alpha - w3);
     PRINT_NUMBER(beta);
 
+    // limit the distance to travel
     distanceToNextPoint = std::min(distanceToNextPoint, static_cast<FP>(targetDistanceToWall * 2));
     PRINT_NUMBER(distanceToNextPoint);
 
@@ -66,6 +69,6 @@ PollingStateMachine::State* FollowingWallState2::operation()
   }
   else
   {
-    return this;
+    return new Lost();
   }
 }
