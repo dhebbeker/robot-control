@@ -10,3 +10,9 @@
 [submodule "blemasle/arduino-mcp23017"]
 	path = robot-control-src/libraries/MCP23017
 	url = https://github.com/blemasle/arduino-mcp23017.git
+[submodule "robot-control-src/libraries/RemoteDebug"]
+	path = robot-control-src/libraries/RemoteDebug
+	url = https://github.com/jeroenst/RemoteDebug.git
+[submodule "remote-website/RemoteDebugApp"]
+	path = remote-website/RemoteDebugApp
+	url = https://github.com/JoaoLopesF/RemoteDebugApp.git
