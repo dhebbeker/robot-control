@@ -27,14 +27,10 @@ static MCP23017Pin debugLedRed(ioExpander1, 8+4);
 static MCP23017Pin debugLedWhite(ioExpander1, 8+5);
 static MCP23017Pin leftBumper(ioExpander1, 8+6);
 static MCP23017Pin rightBumper(ioExpander1, 8+7);
-static VL53L1GpioInterface distanceSensor1(&Wire, VL53L1_1_XSHUT);
 static VL53L1GpioInterface distanceSensor2(&Wire, VL53L1_2_XSHUT);
-static VL53L1GpioInterface distanceSensor3(&Wire, VL53L1_3_XSHUT);
 static VL53L1GpioInterface distanceSensor4(&Wire, VL53L1_4_XSHUT);
 VL53L1GpioInterface * const distanceSensors[] = {
-		&distanceSensor1,
 		&distanceSensor2,
-		&distanceSensor3,
 		&distanceSensor4,
 	};
 static_assert(size(distanceSensors) == numberOfDistanceSensors, "number of initializers incorrect");
