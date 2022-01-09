@@ -104,3 +104,15 @@ I case one wants to develop the software without the Arduino IDE some provisions
    - `${ESP8266_COMPILER_PATH}/xtensa-lx106-elf/include/c++/4.8.2`
  - Add the following preprocessor macros:
    - `ARDUINO_ARCH_ESP8266`
+
+Configuration
+-------------
+
+In order to reduce dynamic memory usage, one may reduce the maximum number of range data produced by the VL53L1 library.
+In order to achive that, add the following line to the [`platform.local.txt`](https://arduino.github.io/arduino-cli/0.20/platform-specification/#platformlocaltxt) file.
+That file must be in `${ESP8266_HARDWARE_PATH}`.
+Create it if not existent.
+
+    compiler.cpp.extra_flags=-DVL53L1_MAX_RANGE_RESULTS=1
+
+This defines a predefined macro which sets the number of maximum range data to 1.
