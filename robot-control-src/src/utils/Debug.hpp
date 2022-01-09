@@ -51,6 +51,16 @@ struct DebugOutputStream
 #if defined(DEBUG_ESP_PORT)
   DebugLevel static debugLevelSerial;
 #endif
+
+  /**
+   * \pre For use with WiFi the connection must be initialized first.
+   *       wiFiStream must be initialized (see documentation of library RemoteDebug)
+   * @tparam Args further parameter types for arguments passed to printf()
+   * @param debugLevel will be compared to current active debug level
+   * @param format pointer to a null-terminated multibyte string specifying how to interpret the data
+   * @param a arguments specifying data to print.
+   * @returns number of characters written
+   */
   template <class... Args>
   static std::size_t printf(const DebugLevel debugLevel, const char * format, Args&&... a)
   {
