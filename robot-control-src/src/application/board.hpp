@@ -10,11 +10,15 @@ namespace board
 {
 
 enum class DebugLeds { built_in, green, yellow, red, blue };
-enum class DistanceSensorIndex { front_left, front_right, left, right };
+/**
+ * Index to match distanceSensors[].
+ * Does not necessarily match the numbers written on the devices.
+ */
+enum class DistanceSensorIndex { front_left, front_right, left, right, count };
 
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 constexpr Distance distanceErrorValue = std::numeric_limits<Distance>::max();
-constexpr std::size_t numberOfDistanceSensors = 4;
+constexpr std::size_t numberOfDistanceSensors = static_cast<std::size_t>(DistanceSensorIndex::count);
 
 extern MCP23017 ioExpander1;
 
