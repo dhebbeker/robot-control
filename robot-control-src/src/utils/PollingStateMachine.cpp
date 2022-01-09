@@ -1,4 +1,5 @@
 #include "PollingStateMachine.hpp"
+#include "arduino_helpers.hpp"
 
 PollingStateMachine::PollingStateMachine(State* const startState) : currentState(startState)
 {
@@ -11,10 +12,20 @@ PollingStateMachine::~PollingStateMachine()
 
 void PollingStateMachine::loop()
 {
-  State * const newState = currentState->operation();
-  if(newState != currentState)
+  static bool waiting = false;
+  if(!waiting)
+    {
+    State * const newState = currentState->operation();
+    if(newState != currentState)
+    {
+      delete currentState;
+      currentState = newState;
+      waiting = true;
+    }
+  }
+  if(waiting)
   {
-    delete currentState;
-    currentState = newState;
+    WAIT_AND_RETURN(10*1000);
+    waiting = false;
   }
 }
