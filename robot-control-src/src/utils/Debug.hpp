@@ -27,9 +27,9 @@
 #include <Arduino.h>
 
 #if defined(DEBUG_ESP_PORT)
-#define SERIAL DEBUG_ESP_PORT
+#define SERIAL_DEBUG_PORT DEBUG_ESP_PORT
 #else
-#define SERIAL Serial
+#define SERIAL_DEBUG_PORT Serial
 #endif
 
 #endif /* #if DEBUG_VIA_SERIAL*/
@@ -90,7 +90,7 @@ struct DebugOutputStream
 #if DEBUG_VIA_SERIAL
     if(debugLevel>=debugLevelSerial)
     {
-      charPrinted += SERIAL.printf(format, std::forward<Args>(a)...);
+      charPrinted += SERIAL_DEBUG_PORT.printf(format, std::forward<Args>(a)...);
     }
 #endif /* defined(DEBUG_ESP_PORT) */
 #if DEBUG_VIA_WIFI
