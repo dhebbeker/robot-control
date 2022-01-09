@@ -7,7 +7,7 @@
 #include "../utils/Debug.hpp"
 #include <queue>
 
-#define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("\nPassing at " __FILE__ ":%u: %s\n", __LINE__, __func__)
+#define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("Passing at " __FILE__ ":%u", __LINE__)
 
 struct PolarVector
 {
@@ -95,13 +95,13 @@ public:
         const auto& currentOrder = driveOrders.front();
         if (!rotated)
         {
-          Serial.printf("Take order to rotate by %f\n", currentOrder.angle);
+          DEBUG_MSG_VERBOSE("Take order to rotate by %f°", currentOrder.angle);
           drives::rotate(currentOrder.angle, drives::cruiseSpeed);
           rotated = true;
         }
         else
         {
-          Serial.printf("Take order to drive by %i\n", currentOrder.length);
+          DEBUG_MSG_VERBOSE("Take order to drive by %imm", currentOrder.length);
           drives::drive(currentOrder.length, drives::cruiseSpeed, false);
           driveOrders.pop();
           rotated = false;

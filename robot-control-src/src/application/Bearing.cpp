@@ -23,7 +23,7 @@ Bearing::Bearing() :
 AligningToWall::AligningToWall(const PolarVector vectorToWall) : vectorToWall(vectorToWall)
 {
   PRINT_CHECKPOINT();
-  Serial.printf("Vector to wall points to %f°, %imm\n", vectorToWall.angle, vectorToWall.length);
+  DEBUG_MSG_VERBOSE("Vector to wall points to %f°, %imm", vectorToWall.angle, vectorToWall.length);
 }
 
 PollingStateMachine::State* AligningToWall::operation()
