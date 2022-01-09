@@ -29,7 +29,7 @@ PollingStateMachine::State* FollowingWallState1::operation()
   }
 }
 
-#define PRINT_NUMBER( x ) Serial.printf("\nNumber %s = %f\n", #x, x)
+#define PRINT_NUMBER( x ) DEBUG_MSG_VERBOSE("\nNumber %s = %f\n", #x, x)
 
 PollingStateMachine::State* FollowingWallState2::operation()
 {

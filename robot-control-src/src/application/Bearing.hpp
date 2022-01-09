@@ -4,9 +4,10 @@
 #include "Drives.hpp"
 #include "board.hpp"
 #include "../utils/PollingStateMachine.hpp"
+#include "../utils/Debug.hpp"
 #include <queue>
 
-#define PRINT_CHECKPOINT() Serial.printf("\nPassing at " __FILE__ ":%u: %s\n", __LINE__, __func__)
+#define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("\nPassing at " __FILE__ ":%u: %s\n", __LINE__, __func__)
 
 struct PolarVector
 {
