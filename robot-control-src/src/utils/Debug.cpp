@@ -3,6 +3,6 @@
 #if DEBUG_VIA_WIFI
 RemoteDebug DebugOutputStream::wiFiStream;
 #endif
-#if defined(DEBUG_ESP_PORT)
+#if DEBUG_VIA_SERIAL
 DebugOutputStream::DebugLevel DebugOutputStream::debugLevelSerial = DebugOutputStream::DebugLevel::PROFILER;
 #endif

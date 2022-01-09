@@ -1,16 +1,38 @@
 #pragma once
 
-#include <Arduino.h>
 #include <cstddef>
 #include <cstdint>
 #include <utility>
 
 #if defined(NDEBUG)
-#if defined(DEBUG_ESP_PORT)
-#undef DEBUG_ESP_PORT
-#endif
 #define DEBUG_VIA_WIFI false
+#define DEBUG_VIA_SERIAL false
 #endif
+
+/*
+ * define DISABLE_DEBUG_VIA_SERIAL or ENABLE_DEBUG_VIA_SERIAL for all compilation units
+ * in order to disable or enable the usage of serial communication for debugging
+ */
+#if !defined(DEBUG_VIA_SERIAL)
+#if   defined(DISABLE_DEBUG_VIA_SERIAL) && !defined(ENABLE_DEBUG_VIA_SERIAL)
+#define DEBUG_VIA_SERIAL false
+#elif !defined(DISABLE_DEBUG_VIA_SERIAL) && defined(ENABLE_DEBUG_VIA_SERIAL)
+#define DEBUG_VIA_SERIAL true
+#else
+#define DEBUG_VIA_SERIAL true
+#endif
+#endif
+
+#if DEBUG_VIA_SERIAL
+#include <Arduino.h>
+
+#if defined(DEBUG_ESP_PORT)
+#define SERIAL DEBUG_ESP_PORT
+#else
+#define SERIAL Serial
+#endif
+
+#endif /* #if DEBUG_VIA_SERIAL*/
 
 /*
  * define DISABLE_DEBUG_VIA_WIFI or ENABLE_DEBUG_VIA_WIFI for all compilation units
@@ -48,7 +70,7 @@ struct DebugOutputStream
 #if DEBUG_VIA_WIFI
   static RemoteDebug wiFiStream;
 #endif
-#if defined(DEBUG_ESP_PORT)
+#if DEBUG_VIA_SERIAL
   DebugLevel static debugLevelSerial;
 #endif
 
@@ -65,10 +87,10 @@ struct DebugOutputStream
   static std::size_t printf(const DebugLevel debugLevel, const char * format, Args&&... a)
   {
     std::size_t charPrinted = 0;
-#if defined(DEBUG_ESP_PORT)
+#if DEBUG_VIA_SERIAL
     if(debugLevel>=debugLevelSerial)
     {
-      charPrinted += DEBUG_ESP_PORT.printf(format, std::forward<Args>(a)...);
+      charPrinted += SERIAL.printf(format, std::forward<Args>(a)...);
     }
 #endif /* defined(DEBUG_ESP_PORT) */
 #if DEBUG_VIA_WIFI
