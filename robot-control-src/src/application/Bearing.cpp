@@ -4,6 +4,7 @@
 #include "FollowingWallStates.hpp"
 #include "../utils/array.hpp"
 #include "../utils/arduino_helpers.hpp"
+#include "../utils/lazy_creation.hpp"
 #include <cmath>
 
 using namespace drives;
@@ -28,23 +29,23 @@ AligningToWall::AligningToWall(const PolarVector vectorToWall) : vectorToWall(ve
 
 PollingStateMachine::State* AligningToWall::operation()
 {
-if (vectorToWall.length > targetDistanceToWall)
+if (vectorToWall.length > FollowingWall::targetDistanceToWall)
 {
   /* drive towards the wall and turn left */
   const DriveOrders newOrders(
   {
-  { .angle = vectorToWall.angle, .length = vectorToWall.length - targetDistanceToWall },
+  { .angle = vectorToWall.angle, .length = vectorToWall.length - FollowingWall::targetDistanceToWall },
   { .angle = -90 } });
-  return new Driving<FollowingWall>(newOrders);
+  return newDriver(newOrders, createCreatorForNewObject<FollowingWall>());
 }
 else
 {
   /* drive away from the wall and turn right */
   const DriveOrders newOrders(
   {
-  { .angle = shortenAngle(vectorToWall.angle + 180), .length = targetDistanceToWall - vectorToWall.length },
+  { .angle = shortenAngle(vectorToWall.angle + 180), .length = FollowingWall::targetDistanceToWall - vectorToWall.length },
   { .angle = 90 } });
-  return new Driving<FollowingWall>(newOrders);
+  return newDriver(newOrders, createCreatorForNewObject<FollowingWall>());
 
 }
 }

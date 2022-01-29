@@ -15,7 +15,6 @@ struct PolarVector
   Distance length; //!< in mm
 };
 
-constexpr Distance targetDistanceToWall = 100; //!< [mm]
 float shortenAngle(const float& angle);
 
 class Bearing : public PollingStateMachine
@@ -62,16 +61,22 @@ public:
 
 using DriveOrders =std::queue<PolarVector>;
 
-template<class OldState>
+template<class CreatorForNextState>
 class Driving: public PollingStateMachine::State
 {
 private:
-  using NextState = typename std::remove_reference<OldState>::type;
   DriveOrders driveOrders;
   bool rotated = false;
+  CreatorForNextState creatorForNextState;
 public:
-  Driving(const DriveOrders &orders) : driveOrders(orders)
+  Driving(const DriveOrders &orders, CreatorForNextState creator) :
+      driveOrders(orders), creatorForNextState(creator)
   {
+    using ReturnTypeOfCreator = decltype(creator());
+    static_assert(std::is_pointer<ReturnTypeOfCreator>::value, "creator must return a pointer");
+    static_assert(
+        std::is_base_of<PollingStateMachine::State, typename std::remove_pointer<ReturnTypeOfCreator>::type>::value,
+        "creator must create an object which has B as PollingStateMachine::State");
     PRINT_CHECKPOINT();
     Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
@@ -116,7 +121,7 @@ public:
     {
       if (drives::isIdle())
       {
-        return new NextState();
+        return creatorForNextState();
       }
       else
       {
@@ -127,12 +132,30 @@ public:
   }
 };
 
+/**
+ * Creates a new object of the class template Driving and applies automatic template parameter deduction.
+ *
+ * This is a wrapper around the constructor such that the template parameter of the object of the resulting
+ * class can be deduced automatically from the argument given.
+ *
+ * @tparam CreatorForNextStateType template parameter for class template Driving
+ * @param orders driving orders passed to constructor
+ * @param creator forwarding call wrapper for the constructor of the next state
+ * @return pointer to object created with `new`
+ */
+template< typename CreatorForNextStateType >
+Driving<CreatorForNextStateType>* newDriver(const DriveOrders& orders, CreatorForNextStateType creator)
+{
+  return new Driving<CreatorForNextStateType>(orders, creator);
+}
+
 class FollowingWall : public PollingStateMachine::State
 {
 public:
   FollowingWall();
   virtual ~FollowingWall();
   virtual PollingStateMachine::State* operation() override;
+  constexpr static Distance targetDistanceToWall = 100; //!< [mm]
 private:
   PollingStateMachine* subStateMachine;
 };
