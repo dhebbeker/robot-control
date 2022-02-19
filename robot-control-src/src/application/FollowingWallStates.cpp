@@ -52,7 +52,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   PRINT_NUMBER(h);
   const FP w3 = std::acos(h / distanceToNextPoint);
   PRINT_NUMBER(w3);
-  constexpr FP rightAngle = std::asin(static_cast<FP>(1));
+  constexpr FP rightAngle = numbers::pi/2.0;
   PRINT_NUMBER(rightAngle);
   const FP beta = radToDeg(rightAngle + alpha - w3);
   PRINT_NUMBER(beta);
