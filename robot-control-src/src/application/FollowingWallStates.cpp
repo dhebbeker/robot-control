@@ -28,7 +28,7 @@ PollingStateMachine::State* FollowingWallState1::operation()
     const DriveOrders newOrders(
     {
     { .angle = 0, .length = distanceToNextPoint }, });
-    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState2>(distanceToNextPoint, distanceRight));
+    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState2>(std::move(distanceToNextPoint), std::move(distanceRight)));
   }
   else
   {
@@ -76,7 +76,7 @@ PollingStateMachine::State* FollowingWallState2::operation()
     const DriveOrders newOrders(
     {
     { .angle = vectorToNextPoint.angle, .length = 0 /* use length 0 because we have to measure after turning and before proceeding */ }, });
-    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(vectorToNextPoint.length));
+    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length)));
   }
   else
   {
