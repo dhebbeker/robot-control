@@ -104,12 +104,12 @@ struct DebugOutputStream
   }
 };
 
-#define DEBUG_MSG_PROFILER(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::PROFILER, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_VERBOSE(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::VERBOSE, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_DEBUG(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::DEBUG, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_INFO(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::INFO, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_WARNING(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::WARNING, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_ERROR(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::ERROR, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
-#define DEBUG_MSG_ANY(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::ANY, "(%s) " fmt "\n", __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_PROFILER(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::PROFILER, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_VERBOSE(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::VERBOSE, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_DEBUG(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::DEBUG, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_INFO(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::INFO, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_WARNING(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::WARNING, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_ERROR(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::ERROR, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
+#define DEBUG_MSG_ANY(fmt, ...) DebugOutputStream::printf(DebugOutputStream::DebugLevel::ANY, "[" __FILE__ ":%u %s()] " fmt "\n", __LINE__, __func__, ##__VA_ARGS__)
 #define DEBUG_MSG(fmt, ...) DEBUG_MSG_ANY(fmt, ##__VA_ARGS__)
 
