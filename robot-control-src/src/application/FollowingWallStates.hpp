@@ -29,7 +29,7 @@ class FollowingWallState1 : public PollingStateMachine::State
 {
 public:
   FollowingWallState1();
-  FollowingWallState1(const Distance distanceToNextPoint) : distanceToNextPoint(distanceToNextPoint) { PRINT_CHECKPOINT(); }
+  FollowingWallState1(const Distance distanceToNextPoint);
 private:
   const Distance distanceToNextPoint;
   virtual PollingStateMachine::State* operation() override;
