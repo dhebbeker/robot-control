@@ -20,23 +20,44 @@ static void checkFront()
 
 FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetweenPoints) { PRINT_CHECKPOINT(); }
 
-PollingStateMachine::State* FollowingWallState1::operation()
+template<typename T>
+static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
 {
   Distance distanceRight = board::distanceErrorValue;
-  const bool distanceMeasured = board::retrieveSensorStatusOrError(board::DistanceSensorIndex::right, distanceRight, maxNumberMeasuringAttempts);
-  if(distanceMeasured)
+  const bool distanceRightMeasured = board::retrieveSensorStatusOrError(
+                                                                        board::DistanceSensorIndex::right,
+                                                                        distanceRight,
+                                                                        maxNumberMeasuringAttempts);
+  if (distanceRightMeasured)
+  {
+    Distance distanceFront = board::distanceErrorValue;
+    const bool distanceFrontMeasured =
+        board::retrieveSensorStatusOrError(
+                                           board::DistanceSensorIndex::front_right,
+                                           distanceFront,
+                                           maxNumberMeasuringAttempts);
+    if (!distanceFrontMeasured
+        || (distanceFrontMeasured
+            && distanceFront > FollowingWall::targetDistanceToWall + minDistanceBetweenPoints))
+    {
+      return operatorFunction(distanceRight);
+    }
+  }
+  return new Lost();
+}
+
+PollingStateMachine::State* FollowingWallState1::operation()
+{
+  return operateOnRightWall(
+    [&](const Distance distanceRight)
   {
     PRINT_NUMBER(distanceRight);
     /* drive to P2 */
     const DriveOrders newOrders(
-    {
-    { .angle = 0, .length = distanceToNextPoint }, });
+        {
+          { .angle = 0, .length = distanceToNextPoint},});
     return newDriver(newOrders, createCreatorForNewObject<FollowingWallState2>(std::move(distanceToNextPoint), std::move(distanceRight)));
-  }
-  else
-  {
-    return new Lost();
-  }
+  });
 }
 
 
@@ -88,9 +109,8 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
 
 PollingStateMachine::State* FollowingWallState2::operation()
 {
-  Distance distanceRight = board::distanceErrorValue;
-  const bool distanceMeasured = board::retrieveSensorStatusOrError(board::DistanceSensorIndex::right, distanceRight, maxNumberMeasuringAttempts);
-  if(distanceMeasured)
+  return operateOnRightWall(
+    [&](const Distance distanceRight)
   {
     const PolarVector vectorToNextPoint = calculateVectorToNextPoint(distanceRight, distanceFromLastPoint, distanceToWallAtLastPoint);
 
@@ -101,9 +121,5 @@ PollingStateMachine::State* FollowingWallState2::operation()
     PRINT_CHECKPOINT();
     PRINT_NUMBER(vectorToNextPoint.length);
     return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length)));
-  }
-  else
-  {
-    return new Lost();
-  }
+  });
 }
