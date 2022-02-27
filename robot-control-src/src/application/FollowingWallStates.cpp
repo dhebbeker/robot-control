@@ -12,12 +12,6 @@ static constexpr std::size_t maxNumberMeasuringAttempts = 10;
 static constexpr Distance minDistanceBetweenPoints = 80; /*!< Distance between points P1 and P2 [mm] */
 static constexpr Distance maxTravelDistance = FollowingWall::targetDistanceToWall * 2;
 
-static void checkFront()
-{
-  const Distance distanceFront = board::getDistances()[board::DistanceSensorIndex::front_right];
-  // TODO if too close to wall in front, "do LOST"
-}
-
 FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetweenPoints) { PRINT_CHECKPOINT(); }
 
 template<typename T>
@@ -28,18 +22,25 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
                                                                         board::DistanceSensorIndex::right,
                                                                         distanceRight,
                                                                         maxNumberMeasuringAttempts);
+  if(distanceRightMeasured) DEBUG_MSG_VERBOSE("distance at the right was found: %i", distanceRight);
+  else DEBUG_MSG_VERBOSE("distance at the right NOT was found.");
+  Distance distanceFront = board::distanceErrorValue;
+  const bool distanceFrontMeasured = board::retrieveSensorStatusOrError(
+                                                                        board::DistanceSensorIndex::front_right,
+                                                                        distanceFront,
+                                                                        maxNumberMeasuringAttempts);
+  if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront);
+  else DEBUG_MSG_VERBOSE("distance at the front NOT was found.");
+
+
   if (distanceRightMeasured)
   {
-    Distance distanceFront = board::distanceErrorValue;
-    const bool distanceFrontMeasured =
-        board::retrieveSensorStatusOrError(
-                                           board::DistanceSensorIndex::front_right,
-                                           distanceFront,
-                                           maxNumberMeasuringAttempts);
     if (!distanceFrontMeasured
         || (distanceFrontMeasured
-            && distanceFront > FollowingWall::targetDistanceToWall + minDistanceBetweenPoints))
+            && (distanceFront > FollowingWall::targetDistanceToWall + minDistanceBetweenPoints)
+            && (distanceFront > distanceRight)))
     {
+      DEBUG_MSG_VERBOSE("try to follow wall");
       return operatorFunction(distanceRight);
     }
   }
