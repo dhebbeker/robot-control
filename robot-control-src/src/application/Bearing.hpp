@@ -100,7 +100,7 @@ public:
         const auto& currentOrder = driveOrders.front();
         if (!rotated)
         {
-          DEBUG_MSG_VERBOSE("Take order to rotate by %f°", currentOrder.angle);
+          DEBUG_MSG_VERBOSE("Take order to rotate by %f degrees", currentOrder.angle);
           drives::rotate(currentOrder.angle, drives::cruiseSpeed);
           rotated = true;
         }
