@@ -99,7 +99,7 @@ bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance
   return retrieveSensorStatusOrError(*distanceSensors[static_cast<std::size_t>(sensorIndex)], returnDistance, maxNumberOfAttempts);
 }
 
-static void testDistanceSensors()
+void testDistanceSensors()
 {
   Serial.print("Sensor values are: ");
   for (std::size_t i = 0; i < size(distanceSensors); ++i)
@@ -108,11 +108,11 @@ static void testDistanceSensors()
     const bool isError = !retrieveSensorStatusOrError(*distanceSensors[i], distance);
     if (isError)
     {
-      Serial.printf("Sensor %u = ERROR,", i);
+      Serial.printf("Sensor %u = ERROR, \t", i);
     }
     else
     {
-      Serial.printf("Sensor %u = %umm,", i, distance);
+      Serial.printf("Sensor %u = %umm, \t", i, distance);
     }
   }
   Serial.println("");

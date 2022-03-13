@@ -19,7 +19,7 @@ enum DistanceSensorIndex { front_right, right, count };
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 constexpr Distance distanceErrorValue = std::numeric_limits<Distance>::max();
 constexpr std::size_t numberOfDistanceSensors = static_cast<std::size_t>(DistanceSensorIndex::count);
-
+void testDistanceSensors();
 extern MCP23017 ioExpander1;
 
 void setup(const InterruptFunctionPointer interruptForBumper = nullptr);
