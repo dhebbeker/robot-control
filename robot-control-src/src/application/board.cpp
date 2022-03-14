@@ -134,6 +134,17 @@ void setup(const InterruptFunctionPointer interruptForBumper)
   pinMode(VL53L1_2_INT, INPUT_PULLUP);
   pinMode(VL53L1_3_INT, INPUT_PULLUP);
   pinMode(VL53L1_4_INT, INPUT_PULLUP);
+
+  // shut down all distance sensors, especially those which are not used later
+  pinMode(VL53L1_1_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_1_XSHUT, LOW);
+  pinMode(VL53L1_2_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_2_XSHUT, LOW);
+  pinMode(VL53L1_3_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_3_XSHUT, LOW);
+  pinMode(VL53L1_4_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_4_XSHUT, LOW);
+
   pinMode(debugLedGreen, OUTPUT);
   digitalWrite(debugLedGreen, LOW);
   pinMode(debugLedYellow, OUTPUT);
