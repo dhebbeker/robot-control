@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <utility>
 
+#define DEBUG_VIA_WIFI false
+
 #if defined(NDEBUG)
 #define DEBUG_VIA_WIFI false
 #define DEBUG_VIA_SERIAL false
