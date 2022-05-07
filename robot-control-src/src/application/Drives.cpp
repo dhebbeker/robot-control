@@ -41,8 +41,10 @@ Milliseconds Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, OD
 
 /**
  * \name Calibration
- * The right drive tends to be faster than the left. In order to compensate a factor 
- * is applied the the duty cycle of the motor control of the right drive.
+ * The right drive tends to be faster than the left.
+ * The leads to the robot to drive curves.
+ * In order to compensate, a factor is applied the the duty cycle of the motor control
+ * of the right drive.
  * 
  * In order to estimate the best factor, a calibration was done as follows:
  * 
@@ -56,15 +58,60 @@ Milliseconds Drive<MOTORCONTROL, motorControlpin, DIRECTIONPIN, directionPin, OD
  * 
  * As the left drive is slower than the right, the function is only applied to the duty 
  * cycle of the right motor control.
- * 
- * The calibration fraction is defined as follows: It has been observed, that when the 
- * duty cycle of the left is x/1023, then the right should be y/1023 in order for the
- * drives to be equally fast. The linear functions is such that the difference is 0 with 
- * a duty cycle of 100%.
+ *
+ * It is assumed, that the right drive speed does deviate from the left drive speed.
+ *
+ * Also it has been observed that the deviation between the left and right drive speed does
+ * decrease down to 0 until it reaches maximum speed.
+ * Thus a linear function is assumed for the deviating speed of the right drive.
+ *
+ * Speed of the left drive:
+ *
+ * \f[
+ *    t_l = \frac{s}{v}
+ * \f]
+ *
+ * And the speed of the right drive:
+ *
+ * \f[
+ *    t_r = \frac{s}{\underbrace{m \cdot v + n}_{\textrm{linear function}}}
+ * \f]
+ *
+ * Where \f$s\f$ is the distance for which the time \f$t\f$ is measured while driving with speed \f$v\f$.
+ *
+ * Now we measure the times \f$t_r\f$ and \f$t_l\f$ while driving the same distance with two different
+ * speeds \f$v_1\f$ and \f$v_2\f$.
+ * Resulting in \f$t_{l,1}\f$, \f$t_{l,2}\f$, \f$t_{r,1}\f$, \f$t_{r,2}\f$.
+ *
+ * Now we can solve the system of the 4 equations for \f$m\f$:
+ *
+ * \f[
+ *    m = \frac{\frac{1}{t_{r,1}}-\frac{1}{t_{r,2}}}{\frac{1}{t_{l,1}}-\frac{1}{t_{l,2}}}
+ * \f]
+ *
+ * Now we define, that for the maximum speed \ref drives::maxAmplitude \f$\hat{v}\f$, the
+ * times are the same (which has been observed).
+ *
+ * \f[
+ *    \frac{s}{\hat{v}} = \frac{s}{m \cdot \hat{v} + n}
+ * \f]
+ *
+ * which can be solved for \f$n\f$:
+ *
+ * \f[
+ *    n = \hat{v} \cdot (m -1 )
+ * \f]
+ *
+ * Now \f$m\f$ (\ref calibrationSlope) and \f$n\f$ (\ref calibrationIntercept) can be used to calculate
+ * the adjusted speed of the right drive using the speed for the left drive:
+ *
+ * \f[
+ *    v_r = m \cdot v_l + n
+ * \f]
  */
 /**@{*/
-static float calibrationSlope = 1.033708;
-static float calibrationIntercept = -34.483383;
+static float calibrationSlope = 0.973500644796801;
+static float calibrationIntercept = -27.1088403728729;
 
 static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
@@ -81,23 +128,32 @@ void calibrate(const float testDistance)
   {
     // wait
   }
-  constexpr Amplitude testAmplitude = 350;
-  const Milliseconds startTime = millis();
-
   // disable calibration for test
   calibrationSlope = 1;
   calibrationIntercept = 0;
 
-  drive(testDistance, testAmplitude, false);
+  // Measure with speed 1
+  constexpr Amplitude testAmplitude1 = 350;
+  drive(testDistance, testAmplitude1, false);
   while (!isIdle())
   {
     delay(1000); // wait
   }
-  Serial.printf("left:'%lu', right:'%lu'\n", LeftDrive::lastDuration, RightDrive::lastDuration);
+  const Milliseconds tl1 = LeftDrive::lastDuration;
+  const Milliseconds tr1 = RightDrive::lastDuration;
 
-  calibrationSlope = (static_cast<double>(RightDrive::lastDuration) / LeftDrive::lastDuration * testAmplitude
-      - maxAmplitude) / (testAmplitude - maxAmplitude);
-  calibrationIntercept = maxAmplitude * (1 - calibrationSlope);
+  // Measure with speed 2
+  constexpr Amplitude testAmplitude2 = maxAmplitude;
+  drive(testDistance, testAmplitude2, true);
+  while (!isIdle())
+  {
+    delay(1000); // wait
+  }
+  const Milliseconds tl2 = LeftDrive::lastDuration;
+  const Milliseconds tr2 = RightDrive::lastDuration;
+
+  calibrationSlope = (1. / tr1 - 1. / tr2) / (1. / tl1 - 1. / tl2);
+  calibrationIntercept = testAmplitude2 * (calibrationSlope - 1.);
 
   Serial.printf(
                 "Set calibrationSlope to %f and calibrationIntercept to %f\n",

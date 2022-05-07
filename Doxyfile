@@ -10,3 +10,4 @@ HAVE_DOT               = YES
 UML_LOOK               = YES
 DIR_GRAPH_MAX_DEPTH    = 2
 DOT_IMAGE_FORMAT       = svg
+USE_MATHJAX            = YES
