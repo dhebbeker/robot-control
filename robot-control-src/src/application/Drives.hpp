@@ -17,9 +17,9 @@ constexpr Amplitude maxAmplitude = 1023;
 constexpr Amplitude cruiseSpeed = maxAmplitude / 2;
 
 /**
- * This was measured by rotating by 100 steps and then measuring the rotation.
+ * This was measured by rotating by 200 steps and then measuring the rotation.
  */
-constexpr float stepsPerDeg = 100.0/(5.0*360.0 + 345.0);
+constexpr float stepsPerDeg = 200. / (12. * 360. + 5.);
 
 /**
  * Maximum robot velocity.
