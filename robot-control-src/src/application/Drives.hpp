@@ -58,20 +58,23 @@ public:
 		pinMode(directionPin, OUTPUT);
 	}
 
-	IRAM_ATTR static void evaluateInterval()
-	{
-		const Milliseconds now = millis();
-		static Milliseconds riseTime = now;
-		if(now - riseTime > odoMinIntervalDuration)
-		{
-			if (++counter >= target)
-			{
-				stop();
-				lastDuration = now - lastDuration;
-			}
-			riseTime = now;
-		}
-	}
+  IRAM_ATTR static void evaluateInterval()
+  {
+    if (!isIdle)
+    {
+      const Milliseconds now = millis();
+      static Milliseconds riseTime = now;
+      if (now - riseTime > odoMinIntervalDuration)
+      {
+        if (++counter >= target)
+        {
+          stop();
+          lastDuration = now - lastDuration;
+        }
+        riseTime = now;
+      }
+    }
+  }
 
 	IRAM_ATTR static void stop()
 	{
