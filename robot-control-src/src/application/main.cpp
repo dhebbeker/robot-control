@@ -46,9 +46,6 @@ void main::setup(const char * const programIdentificationString)
 
 void main::loop()
 {
-  static Milliseconds mLastTime = 0;
-  static Milliseconds mTimeSeconds = 0;
-
   static Bearing bearing;
   board::loop();
   bearing.loop();
