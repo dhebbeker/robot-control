@@ -93,7 +93,7 @@ void calibrate(const float testDistance)
   {
     delay(1000); // wait
   }
-  Serial.printf("left:%u, right:%u\n", LeftDrive::lastDuration, RightDrive::lastDuration);
+  Serial.printf("left:'%lu', right:'%lu'\n", LeftDrive::lastDuration, RightDrive::lastDuration);
 
   calibrationSlope = (static_cast<double>(RightDrive::lastDuration) / LeftDrive::lastDuration * testAmplitude
       - maxAmplitude) / (testAmplitude - maxAmplitude);
