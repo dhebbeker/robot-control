@@ -101,6 +101,13 @@ void rotateCounter(const Counter deg, const Amplitude amplitude, bool const cloc
 void rotate(const float deg, const Amplitude amplitude);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
+
+/**
+ *
+ * @param distance in mm
+ * @param amplitude
+ * @param backwards `true` if driving backwards
+ */
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
 
 Position flushCurrentPosition();

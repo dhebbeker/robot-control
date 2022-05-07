@@ -24,6 +24,8 @@ using SerialCharacter = decltype(std::declval<Stream>().read());
  * When the duration is exceeded, the timer is reset and no return is executed.
  *
  * This macro can be used to implement a polling timer.
+ *
+ * \param duration time in milliseconds
  */
 #define WAIT_AND_RETURN( duration ) \
 { \
