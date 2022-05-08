@@ -26,7 +26,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
   else DEBUG_MSG_VERBOSE("distance at the right NOT was found.");
   Distance distanceFront = board::distanceErrorValue;
   const bool distanceFrontMeasured = board::retrieveSensorStatusOrError(
-                                                                        board::DistanceSensorIndex::front_right,
+                                                                        board::DistanceSensorIndex::front_left,
                                                                         distanceFront,
                                                                         maxNumberMeasuringAttempts);
   if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront);

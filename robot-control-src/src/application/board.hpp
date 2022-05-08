@@ -14,7 +14,7 @@ enum class DebugLeds { built_in, green, yellow, red, blue };
  * Index to match distanceSensors[].
  * Does not necessarily match the numbers written on the devices.
  */
-enum DistanceSensorIndex { front_right, right, count };
+enum DistanceSensorIndex { front_left, right, count };
 
 using Distance = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter);
 constexpr Distance distanceErrorValue = std::numeric_limits<Distance>::max();
