@@ -15,7 +15,10 @@ namespace lazy_creation_details
 template<typename T, typename ... Args>
 T* make_new(Args &&... args)
 {
-  return new T(std::forward<Args>(args)...);
+  new_s_pre( T(std::forward<Args>(args)...) );
+  T* const p = new T(std::forward<Args>(args)...);
+  assert(p != nullptr);
+  return p;
 }
 
 /**

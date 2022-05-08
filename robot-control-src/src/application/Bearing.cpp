@@ -109,7 +109,7 @@ PollingStateMachine::State* Lost::operation()
                   rotationToMinDistance,
                   maxNumberOfScans,
                   longAngle);
-    return new AligningToWall(vectorToBlip);
+    return new_s(AligningToWall(vectorToBlip));
   }
   return this;
 }

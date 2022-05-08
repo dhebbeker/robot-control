@@ -44,7 +44,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
       return operatorFunction(distanceRight);
     }
   }
-  return new Lost();
+  return new_s(Lost());
 }
 
 PollingStateMachine::State* FollowingWallState1::operation()
