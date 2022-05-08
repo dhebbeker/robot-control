@@ -78,6 +78,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   PRINT_NUMBER(alpha);
   const FP g = distanceToWallAtCurrentPoint * std::cos(alpha);
   PRINT_NUMBER(g);
+  yield();
 
   const FP h = g - FollowingWall::targetDistanceToWall;
   PRINT_NUMBER(h);
@@ -89,6 +90,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   // if the distance to the wall (g) is too big or too small, that is the distance to line to big, the travel distance must be increased
   FP distanceToNextPoint = std::max(_minDistanceBetweenPoints, distanceToLine);
   PRINT_NUMBER(distanceToNextPoint);
+  yield();
 
   // if the distance the 
 
@@ -98,6 +100,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   PRINT_NUMBER(rightAngle);
   const FP beta = radToDeg(rightAngle + alpha - w3);
   PRINT_NUMBER(beta);
+  yield();
 
   // limit the distance to travel
   distanceToNextPoint = std::min(distanceToNextPoint, static_cast<FP>(maxTravelDistance));
@@ -105,6 +108,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
 
   const PolarVector vectorToNextPoint = { .angle = beta, .length = distanceToNextPoint };
   PRINT_NUMBER(vectorToNextPoint.length);
+  yield();
   return vectorToNextPoint;
 }
 
