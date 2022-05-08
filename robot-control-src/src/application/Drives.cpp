@@ -117,9 +117,11 @@ static Amplitude calcRightSpeed(const Amplitude leftSpeed)
 {
   return std::max(
                   std::min(
-                           std::round(leftSpeed * calibrationSlope + calibrationIntercept),
-                           static_cast<float>(maxAmplitude)),
-                  static_cast<float>(0));
+                           static_cast<Amplitude>(std::lround(
+                                                              leftSpeed * calibrationSlope
+                                                                  + calibrationIntercept)),
+                           maxAmplitude),
+                  static_cast<Amplitude>(0U));
 }
 
 void calibrate(const float testDistance)
@@ -185,7 +187,7 @@ void rotate(const float deg, const Amplitude amplitude)
 {
   assert(!std::isnan(deg));
   const bool clockwise = deg > 0;
-  const Counter steps = std::round(std::abs(deg) * stepsPerDeg);
+  const Counter steps = std::lround(std::abs(deg) * stepsPerDeg);
   rotateCounter(steps, amplitude, clockwise);
 }
 
@@ -193,7 +195,7 @@ void drive(const float distance, const Amplitude amplitude, const bool backwards
 {
   assert(!std::isnan(distance));
   constexpr float stepsPerMm = 1 / odoIntervalLength;
-  const Counter steps = distance * stepsPerMm;
+  const Counter steps = std::lround(distance * stepsPerMm);
   driveCounter(steps, amplitude, backwards);
 }
 
