@@ -58,6 +58,13 @@ public:
 		pinMode(directionPin, OUTPUT);
 	}
 
+	/**
+	 * Evaluates the event of a rising edge.
+	 *
+	 * The function needs to debounce the signal.
+	 * Debouncing is achieved by ignoring potential rising edges which are not plausible.
+	 * Therefore the duration between two rising edges is compared to a threshold.
+	 */
   IRAM_ATTR static void evaluateInterval()
   {
     if (!isIdle)
