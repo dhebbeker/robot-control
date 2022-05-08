@@ -18,17 +18,23 @@ using SerialCharacter = decltype(std::declval<Stream>().read());
 
 #if !defined(NDEBUG)
 #include <Esp.h>
-#define new_s( T ) \
-[](){ \
+#define new_s_pre( T ) \
+  { \
     const auto sizeAvailable = ESP.getMaxFreeBlockSize(); \
     const auto sizeNeeded = sizeof(T); \
     DEBUG_MSG_PROFILER("Try to allocate '%lu' bytes ('%lu' available).", sizeNeeded, sizeAvailable); \
     assert(sizeNeeded <= sizeAvailable); \
+  }
+
+#define new_s( T ) \
+  [&](){ \
+    new_s_pre( T ) \
     const auto p = new T; \
     assert(p != nullptr); \
     return p; \
-}();
+  }();
 #else
+#define new_s_pre( T ) // empty on purpose
 #define new_s( T ) new T
 #endif
 
