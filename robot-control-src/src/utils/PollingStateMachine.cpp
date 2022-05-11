@@ -12,20 +12,10 @@ PollingStateMachine::~PollingStateMachine()
 
 void PollingStateMachine::loop()
 {
-  static bool waiting = false;
-  if(!waiting)
-    {
-    State * const newState = currentState->operation();
-    if(newState != currentState)
-    {
-      delete currentState;
-      currentState = newState;
-      waiting = true;
-    }
-  }
-  if(waiting)
+  State *const newState = currentState->operation();
+  if (newState != currentState)
   {
-    WAIT_AND_RETURN(10*1000);
-    waiting = false;
+    delete currentState;
+    currentState = newState;
   }
 }
