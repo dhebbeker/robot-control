@@ -2,8 +2,8 @@
 #include "../utils/array.hpp"
 #include "Drives.hpp"
 #include <assert.h>
-#include <cmath>
 #include <Arduino.h>
+#include <cstddef>
 
 namespace board {
 static constexpr std::uint8_t debugLed = D0;

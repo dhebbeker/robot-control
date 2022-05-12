@@ -4,6 +4,7 @@
 #include "../utils/array.hpp"
 #include "../utils/arduino_helpers.hpp"
 #include <cmath>
+#include <limits>
 
 using namespace drives;
 

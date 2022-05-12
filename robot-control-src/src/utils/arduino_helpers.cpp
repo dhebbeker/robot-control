@@ -1,4 +1,5 @@
 #include "arduino_helpers.hpp"
+#include <cstddef>
 
 bool readFromSerial(SerialCharacter *const buffer, const std::size_t numberOfCharacters, Stream &iostream)
 {
