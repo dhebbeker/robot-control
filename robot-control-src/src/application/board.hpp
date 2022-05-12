@@ -1,10 +1,11 @@
-#if !defined(BOARD_HPP)
-#define BOARD_HPP
+#pragma once
+
 #include "../device_drivers/MCP23017Pin.hpp"
 #include "../device_drivers/VL53L1GpioInterface.hpp"
 #include "../utils/arduino_helpers.hpp"
 #include <MCP23017.h>
 #include <limits>
+#include <cstddef>
 
 namespace board
 {
@@ -34,5 +35,3 @@ void setDebugLed(const std::uint8_t value, const DebugLeds led = DebugLeds::buil
 bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts = 3);
 const Distance (&getDistances())[numberOfDistanceSensors];
 }
-
-#endif // BOARD_HPP

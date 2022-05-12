@@ -6,6 +6,7 @@
 #include "../utils/arduino_helpers.hpp"
 #include "../utils/lazy_creation.hpp"
 #include <cmath>
+#include <limits>
 
 using namespace drives;
 

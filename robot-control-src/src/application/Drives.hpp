@@ -1,5 +1,4 @@
-#if !defined(DRIVES_HPP)
-#define DRIVES_HPP
+#pragma once
 
 #include "../utils/numbers.hpp"
 #include "../utils/arduino_helpers.hpp"
@@ -7,6 +6,7 @@
 #include <c_types.h>
 #include <cstdint>
 #include <Arduino.h>
+#include <algorithm>
 
 namespace drives
 {
@@ -128,5 +128,3 @@ bool isIdle();
 void calibrate(const float testDistance = 500);
 
 }
-
-#endif // DRIVES_HPP

@@ -6,6 +6,7 @@
 #include "../utils/PollingStateMachine.hpp"
 #include "../utils/Debug.hpp"
 #include <queue>
+#include <limits>
 
 #define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("Passing at " __FILE__ ":%u", __LINE__)
 

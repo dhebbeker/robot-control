@@ -4,6 +4,8 @@
 #include <Arduino.h>
 #include <cassert>
 #include "Debug.hpp"
+#include <cstddef>
+#include <utility>
 
 #if defined(round)
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231
