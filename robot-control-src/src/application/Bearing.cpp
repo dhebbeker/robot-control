@@ -1,8 +1,10 @@
 #include "Bearing.hpp"
 #include "board.hpp"
 #include "Drives.hpp"
+#include "FollowingWallStates.hpp"
 #include "../utils/array.hpp"
 #include "../utils/arduino_helpers.hpp"
+#include "../utils/lazy_creation.hpp"
 #include <cmath>
 #include <limits>
 
@@ -15,53 +17,41 @@ float shortenAngle(const float& angle)
 }
 
 Bearing::Bearing() :
-    state(new Lost(*this))
+    PollingStateMachine(new Lost())
 {
 
 }
 
-Bearing::~Bearing()
+AligningToWall::AligningToWall(const PolarVector vectorToWall) : vectorToWall(vectorToWall)
 {
-  delete state;
+  PRINT_CHECKPOINT();
+  DEBUG_MSG_VERBOSE("Vector to wall points to %f degrees, %imm", vectorToWall.angle, vectorToWall.length);
 }
 
-void Bearing::loop()
+PollingStateMachine::State* AligningToWall::operation()
 {
-  state->operation();
+if (vectorToWall.length > FollowingWall::targetDistanceToWall)
+{
+  /* drive towards the wall and turn left */
+  const DriveOrders newOrders(
+  {
+  { .angle = vectorToWall.angle, .length = vectorToWall.length - FollowingWall::targetDistanceToWall },
+  { .angle = -90 } });
+  return newDriver(newOrders, createCreatorForNewObject<FollowingWall>());
+}
+else
+{
+  /* drive away from the wall and turn right */
+  const DriveOrders newOrders(
+  {
+  { .angle = shortenAngle(vectorToWall.angle + 180), .length = FollowingWall::targetDistanceToWall - vectorToWall.length },
+  { .angle = 90 } });
+  return newDriver(newOrders, createCreatorForNewObject<FollowingWall>());
+
+}
 }
 
-void Bearing::setState(State *const nextState)
-{
-  delete state;
-  state = nextState;
-}
-
-AligningToWall::AligningToWall(Bearing &context, const PolarVector vectorToWall) :
-    Bearing::State(context), vectorToWall(vectorToWall)
-{
-  Serial.printf("Vector to wall points to %f°, %imm\n", vectorToWall.angle, vectorToWall.length);
-}
-
-void AligningToWall::operation()
-{
-  const DriveOrders newOrders({ vectorToWall });
-  context.setState(new Driving<FollowingWall>(context, newOrders));
-}
-
-Bearing::State::State(Bearing &context) :
-    context(context)
-{
-}
-
-Bearing::State::~State()
-{
-}
-
-Lost::Lost(Bearing &context) : Bearing::State(context)
-{
-}
-
-void Lost::operation()
+PollingStateMachine::State* Lost::operation()
 {
   if (numberOfScan <= maxNumberOfScans)
   {
@@ -120,15 +110,23 @@ void Lost::operation()
                   rotationToMinDistance,
                   maxNumberOfScans,
                   longAngle);
-    context.setState(new AligningToWall(context, vectorToBlip));
+    return new_s(AligningToWall(vectorToBlip));
   }
+  return this;
 }
 
-FollowingWall::FollowingWall(Bearing &context) : Bearing::State(context)
+FollowingWall::FollowingWall() : subStateMachine(new PollingStateMachine(new FollowingWallState1()))
 {
+  PRINT_CHECKPOINT();
 }
 
-void FollowingWall::operation()
+FollowingWall::~FollowingWall()
 {
-  // TODO
+  delete subStateMachine;
+}
+
+PollingStateMachine::State* FollowingWall::operation()
+{
+  subStateMachine->loop();
+  return this;// TODO
 }

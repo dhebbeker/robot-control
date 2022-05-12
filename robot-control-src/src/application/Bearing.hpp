@@ -3,8 +3,12 @@
 
 #include "Drives.hpp"
 #include "board.hpp"
+#include "../utils/PollingStateMachine.hpp"
+#include "../utils/Debug.hpp"
 #include <queue>
 #include <limits>
+
+#define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("Passing at " __FILE__ ":%u", __LINE__)
 
 struct PolarVector
 {
@@ -12,34 +16,15 @@ struct PolarVector
   Distance length; //!< in mm
 };
 
-class Bearing
+float shortenAngle(const float& angle);
+
+class Bearing : public PollingStateMachine
 {
 public:
   Bearing();
-  ~Bearing();
-
-  /**
-   * Execute one cycle of the state machine.
-   */
-  void loop();
-
-  class State
-  {
-  public:
-    explicit State(Bearing &context);
-    virtual ~State();
-    virtual void operation() = 0;
-  protected:
-    Bearing &context;
-  };
-
-  void setState(State *const nextState);
-
-private:
-  State *state;
 };
 
-class Lost: public Bearing::State
+class Lost: public PollingStateMachine::State
 {
 private:
   static constexpr drives::Counter maxNumberOfScans = 360 * drives::stepsPerDeg;
@@ -49,7 +34,8 @@ private:
   drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
-  explicit Lost(Bearing &context);
+
+  Lost() { PRINT_CHECKPOINT(); }
 
   /**
    * Checks if one of the distance sensors currently senses a shorter distance than previously found.
@@ -58,35 +44,41 @@ public:
    *
    * If scan is complete, the vector to the blip is calculated and passed to AligningToWall::AligningToWall().
    */
-  virtual void operation() override;
+  virtual PollingStateMachine::State* operation() override;
 };
 
-class AligningToWall: public Bearing::State
+class AligningToWall: public PollingStateMachine::State
 {
 private:
   const PolarVector vectorToWall;
 public:
-  AligningToWall(Bearing &context, const PolarVector vectorToWall);
+  AligningToWall(const PolarVector vectorToWall);
 
   /**
    * Orders to drive to blip and then follow the wall.
    */
-  virtual void operation() override;
+  virtual PollingStateMachine::State* operation() override;
 };
 
 using DriveOrders =std::queue<PolarVector>;
 
-template<class OldState>
-class Driving: public Bearing::State
+template<class CreatorForNextState>
+class Driving: public PollingStateMachine::State
 {
 private:
-  using NextState = typename std::remove_reference<OldState>::type;
   DriveOrders driveOrders;
   bool rotated = false;
+  CreatorForNextState creatorForNextState;
 public:
-  Driving(Bearing &context, const DriveOrders &orders) :
-      Bearing::State(context), driveOrders(orders)
+  Driving(const DriveOrders &orders, CreatorForNextState creator) :
+      driveOrders(orders), creatorForNextState(creator)
   {
+    using ReturnTypeOfCreator = decltype(creator());
+    static_assert(std::is_pointer<ReturnTypeOfCreator>::value, "creator must return a pointer");
+    static_assert(
+        std::is_base_of<PollingStateMachine::State, typename std::remove_pointer<ReturnTypeOfCreator>::type>::value,
+        "creator must create an object which has B as PollingStateMachine::State");
+    PRINT_CHECKPOINT();
     Serial.printf("Taking %u driving orders.\n", driveOrders.size());
   }
 
@@ -100,7 +92,7 @@ public:
    *
    * If all orders have been executed, the next state is created.
    */
-  virtual void operation() override
+  virtual PollingStateMachine::State* operation() override
   {
     if (!driveOrders.empty())
     {
@@ -109,13 +101,13 @@ public:
         const auto& currentOrder = driveOrders.front();
         if (!rotated)
         {
-          Serial.printf("Take order to rotate by %f\n", currentOrder.angle);
+          DEBUG_MSG_VERBOSE("Take order to rotate by %f degrees", currentOrder.angle);
           drives::rotate(currentOrder.angle, drives::cruiseSpeed);
           rotated = true;
         }
         else
         {
-          Serial.printf("Take order to drive by %i\n", currentOrder.length);
+          DEBUG_MSG_VERBOSE("Take order to drive by %imm", currentOrder.length);
           drives::drive(currentOrder.length, drives::cruiseSpeed, false);
           driveOrders.pop();
           rotated = false;
@@ -130,21 +122,43 @@ public:
     {
       if (drives::isIdle())
       {
-        context.setState(new NextState(context));
+        return creatorForNextState();
       }
       else
       {
         // wait for last command to be finished
       }
     }
+    return this;
   }
 };
 
-class FollowingWall : public Bearing::State
+/**
+ * Creates a new object of the class template Driving and applies automatic template parameter deduction.
+ *
+ * This is a wrapper around the constructor such that the template parameter of the object of the resulting
+ * class can be deduced automatically from the argument given.
+ *
+ * @tparam CreatorForNextStateType template parameter for class template Driving
+ * @param orders driving orders passed to constructor
+ * @param creator forwarding call wrapper for the constructor of the next state
+ * @return pointer to object created with `new`
+ */
+template< typename CreatorForNextStateType >
+Driving<CreatorForNextStateType>* newDriver(const DriveOrders& orders, CreatorForNextStateType creator)
+{
+  return new Driving<CreatorForNextStateType>(orders, creator);
+}
+
+class FollowingWall : public PollingStateMachine::State
 {
 public:
-  explicit  FollowingWall(Bearing& context);
-  virtual void operation() override;
+  FollowingWall();
+  virtual ~FollowingWall();
+  virtual PollingStateMachine::State* operation() override;
+  constexpr static Distance targetDistanceToWall = 100; //!< [mm]
+private:
+  PollingStateMachine* subStateMachine;
 };
 
 #endif /* APPLICATION_BEARING_HPP_ */

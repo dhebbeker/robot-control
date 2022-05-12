@@ -2,6 +2,8 @@
 #define UTILS_ARDUINO_HELPERS_HPP_
 
 #include <Arduino.h>
+#include <cassert>
+#include "Debug.hpp"
 #include <cstddef>
 #include <utility>
 
@@ -16,6 +18,28 @@ using Milliseconds = decltype(millis());
 using InterruptFunctionPointer = void (*)(void);
 using SerialCharacter = decltype(std::declval<Stream>().read());
 
+#if !defined(NDEBUG)
+#include <Esp.h>
+#define new_s_pre( T ) \
+  { \
+    const auto sizeAvailable = ESP.getMaxFreeBlockSize(); \
+    const auto sizeNeeded = sizeof(T); \
+    DEBUG_MSG_PROFILER("Try to allocate '%lu' bytes ('%lu' available).", sizeNeeded, sizeAvailable); \
+    assert(sizeNeeded <= sizeAvailable); \
+  }
+
+#define new_s( T ) \
+  [&](){ \
+    new_s_pre( T ) \
+    const auto p = new T; \
+    assert(p != nullptr); \
+    return p; \
+  }();
+#else
+#define new_s_pre( T ) // empty on purpose
+#define new_s( T ) new T
+#endif
+
 /**
  * Returns the current function for given duration.
  *
@@ -26,6 +50,8 @@ using SerialCharacter = decltype(std::declval<Stream>().read());
  * When the duration is exceeded, the timer is reset and no return is executed.
  *
  * This macro can be used to implement a polling timer.
+ *
+ * \param duration time in milliseconds
  */
 #define WAIT_AND_RETURN( duration ) \
 { \

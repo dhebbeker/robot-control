@@ -17,9 +17,9 @@ constexpr Amplitude maxAmplitude = 1023;
 constexpr Amplitude cruiseSpeed = maxAmplitude / 2;
 
 /**
- * This was measured by rotating by 100 steps and then measuring the rotation.
+ * This was measured by rotating by 200 steps and then measuring the rotation.
  */
-constexpr float stepsPerDeg = 100.0/(5.0*360.0 + 345.0);
+constexpr float stepsPerDeg = 200. / (12. * 360. + 5.);
 
 /**
  * Maximum robot velocity.
@@ -58,20 +58,30 @@ public:
 		pinMode(directionPin, OUTPUT);
 	}
 
-	IRAM_ATTR static void evaluateInterval()
-	{
-		const Milliseconds now = millis();
-		static Milliseconds riseTime = now;
-		if(now - riseTime > odoMinIntervalDuration)
-		{
-			if (++counter >= target)
-			{
-				stop();
-				lastDuration = now - lastDuration;
-			}
-			riseTime = now;
-		}
-	}
+	/**
+	 * Evaluates the event of a rising edge.
+	 *
+	 * The function needs to debounce the signal.
+	 * Debouncing is achieved by ignoring potential rising edges which are not plausible.
+	 * Therefore the duration between two rising edges is compared to a threshold.
+	 */
+  IRAM_ATTR static void evaluateInterval()
+  {
+    if (!isIdle)
+    {
+      const Milliseconds now = millis();
+      static Milliseconds riseTime = now;
+      if (now - riseTime > odoMinIntervalDuration)
+      {
+        if (++counter >= target)
+        {
+          stop();
+          lastDuration = now - lastDuration;
+        }
+        riseTime = now;
+      }
+    }
+  }
 
 	IRAM_ATTR static void stop()
 	{
@@ -101,6 +111,13 @@ void rotateCounter(const Counter deg, const Amplitude amplitude, bool const cloc
 void rotate(const float deg, const Amplitude amplitude);
 
 void driveCounter(const Counter distance, const Amplitude amplitude, const bool backwards);
+
+/**
+ *
+ * @param distance in mm
+ * @param amplitude
+ * @param backwards `true` if driving backwards
+ */
 void drive(const float distance, const Amplitude amplitude, const bool backwards);
 
 Position flushCurrentPosition();

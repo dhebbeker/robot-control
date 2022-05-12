@@ -28,13 +28,9 @@ static MCP23017Pin debugLedWhite(ioExpander1, 8+5);
 static MCP23017Pin leftBumper(ioExpander1, 8+6);
 static MCP23017Pin rightBumper(ioExpander1, 8+7);
 static VL53L1GpioInterface distanceSensor1(&Wire, VL53L1_1_XSHUT);
-static VL53L1GpioInterface distanceSensor2(&Wire, VL53L1_2_XSHUT);
-static VL53L1GpioInterface distanceSensor3(&Wire, VL53L1_3_XSHUT);
 static VL53L1GpioInterface distanceSensor4(&Wire, VL53L1_4_XSHUT);
 VL53L1GpioInterface * const distanceSensors[] = {
 		&distanceSensor1,
-		&distanceSensor2,
-		&distanceSensor3,
 		&distanceSensor4,
 	};
 static_assert(size(distanceSensors) == numberOfDistanceSensors, "number of initializers incorrect");
@@ -81,9 +77,8 @@ static void testDebugLeds()
  * @param[out] returnDistance distance is written into
  * @retval true in case distance was read without error
  */
-static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& returnDistance)
+static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& returnDistance, const std::size_t maxNumberOfAttempts = 3)
 {
-  constexpr std::size_t maxNumberOfAttempts = 3;
   for (std::size_t i = 0; i < maxNumberOfAttempts; ++i)
   {
     returnDistance = retrieveSensorStatus(sensor);
@@ -99,7 +94,12 @@ static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& r
   return false;
 }
 
-static void testDistanceSensors()
+bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts)
+{
+  return retrieveSensorStatusOrError(*distanceSensors[static_cast<std::size_t>(sensorIndex)], returnDistance, maxNumberOfAttempts);
+}
+
+void testDistanceSensors()
 {
   Serial.print("Sensor values are: ");
   for (std::size_t i = 0; i < size(distanceSensors); ++i)
@@ -108,11 +108,11 @@ static void testDistanceSensors()
     const bool isError = !retrieveSensorStatusOrError(*distanceSensors[i], distance);
     if (isError)
     {
-      Serial.printf("Sensor %u = ERROR,", i);
+      Serial.printf("Sensor %u = ERROR, \t", i);
     }
     else
     {
-      Serial.printf("Sensor %u = %umm,", i, distance);
+      Serial.printf("Sensor %u = %umm, \t", i, distance);
     }
   }
   Serial.println("");
@@ -134,6 +134,17 @@ void setup(const InterruptFunctionPointer interruptForBumper)
   pinMode(VL53L1_2_INT, INPUT_PULLUP);
   pinMode(VL53L1_3_INT, INPUT_PULLUP);
   pinMode(VL53L1_4_INT, INPUT_PULLUP);
+
+  // shut down all distance sensors, especially those which are not used later
+  pinMode(VL53L1_1_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_1_XSHUT, LOW);
+  pinMode(VL53L1_2_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_2_XSHUT, LOW);
+  pinMode(VL53L1_3_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_3_XSHUT, LOW);
+  pinMode(VL53L1_4_XSHUT, OUTPUT);
+  digitalWrite(VL53L1_4_XSHUT, LOW);
+
   pinMode(debugLedGreen, OUTPUT);
   digitalWrite(debugLedGreen, LOW);
   pinMode(debugLedYellow, OUTPUT);

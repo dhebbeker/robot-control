@@ -97,7 +97,7 @@ void WebserverHandle::setup() {
 
 void WebserverHandle::updateHtmlSource() {
   constexpr std::size_t maxCharPerPosition = (5+1)*2; // when serializing the position, the number of characters maximum used per position
-  constexpr std::size_t positionsStringMaxLength = maxCharPerPosition*environment.numberOfPositions+1;
+  constexpr std::size_t positionsStringMaxLength = maxCharPerPosition*EnvironmentRecord::numberOfPositions+1;
 
   static char htmlSourceBackBufferA[size(htmlSourceTemplate) + positionsStringMaxLength] = {0};
   static char htmlSourceBackBufferB[size(htmlSourceTemplate) + positionsStringMaxLength] = {0};

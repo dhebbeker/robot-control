@@ -1,0 +1,47 @@
+@startuml
+
+Title 3 intervals within loophole
+header: odometry counter
+caption total duration is 410
+footer: interval length is 140
+
+robust "interval counter" as C
+binary "sensor pulse" as S
+
+
+@0
+S is low
+C is 0
+@+10
+S is high
+@+10
+C -> S : start here
+
+@+30
+S is low
+
+@+100
+S is high
+C is 1
+S@+0 <-> @+86 : debounce
+
+@+40
+S is low
+
+@+100
+S is high
+C is 2
+
+S@+0 <-> @+86 : debounce
+
+@+40
+S is low
+
+@+100
+S is high
+C is 3
+
+C -> S : end here
+
+
+@enduml
