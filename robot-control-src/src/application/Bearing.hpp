@@ -4,6 +4,7 @@
 #include "Drives.hpp"
 #include "board.hpp"
 #include <queue>
+#include <limits>
 
 struct PolarVector
 {
@@ -25,7 +26,7 @@ public:
   class State
   {
   public:
-    State(Bearing &context);
+    explicit State(Bearing &context);
     virtual ~State();
     virtual void operation() = 0;
   protected:
@@ -48,7 +49,7 @@ private:
   drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
-  Lost(Bearing &context);
+  explicit Lost(Bearing &context);
 
   /**
    * Checks if one of the distance sensors currently senses a shorter distance than previously found.
@@ -142,7 +143,7 @@ public:
 class FollowingWall : public Bearing::State
 {
 public:
-  FollowingWall(Bearing& context);
+  explicit  FollowingWall(Bearing& context);
   virtual void operation() override;
 };
 

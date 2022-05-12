@@ -2,6 +2,8 @@
 #define UTILS_ARDUINO_HELPERS_HPP_
 
 #include <Arduino.h>
+#include <cstddef>
+#include <utility>
 
 #if defined(round)
 #undef round //see https://github.com/esp8266/Arduino/issues/5787#issuecomment-465852231

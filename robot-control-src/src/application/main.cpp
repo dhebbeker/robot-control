@@ -6,10 +6,6 @@
 #include "../utils/arduino_helpers.hpp"
 #include "../utils/Debug.hpp"
 #include "Bearing.hpp"
-#include <algorithm>
-#include <cmath>
-#include <cstddef>
-#include <functional>
 #include <type_traits>
 
 void main::setup(const char * const programIdentificationString)
