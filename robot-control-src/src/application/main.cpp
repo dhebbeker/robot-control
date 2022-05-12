@@ -7,6 +7,7 @@
 #include "Bearing.hpp"
 #include <ESP8266WebServer.h>
 #include <type_traits>
+#include <functional>
 
 static EnvironmentRecord environmentRecord { };
 static ESP8266WebServer server(80);
@@ -40,14 +41,13 @@ void main::loop()
 {
   static Bearing bearing;
   board::loop();
-  bearing.loop();
+//  bearing.loop();
   board::setDebugLed(board::isBumperPressed(), board::DebugLeds::red);
   board::setDebugLed(!drives::isIdle(), board::DebugLeds::yellow);
   board::setDebugLed(drives::isIdle(), board::DebugLeds::green);
 
   server.handleClient();
-  //Serial.printf("left: \t%3u, right: \t%3u\n", drives::LeftDrive::counter, drives::RightDrive::counter);
-  if(drives::LeftDrive::isIdle && drives::RightDrive::isIdle)
+  if(drives::isIdle())
   {
     const Position newPositionCandidate = drives::flushCurrentPosition();
     if(environmentRecord.positions[environmentRecord.positionIndex] != newPositionCandidate)
@@ -59,7 +59,7 @@ void main::loop()
     const auto newTarget = webserverHandle.flushTargetRequest();
     if(newTarget.isTargetNew)
     {
-      const bool bumperIsPressed = digitalRead(board::leftBumper) == LOW || digitalRead(board::rightBumper) == LOW;
+      const bool bumperIsPressed = board::isBumperPressed();
       if(newTarget.newDrive!=0 && (!newTarget.forward || !bumperIsPressed))
       {
         drives::driveCounter(newTarget.newDrive, drives::cruiseSpeed, !newTarget.forward);
@@ -72,5 +72,4 @@ void main::loop()
   }
 
   yield(); // Give a time for ESP
-
 }
