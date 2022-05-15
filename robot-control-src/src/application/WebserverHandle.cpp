@@ -19,7 +19,7 @@ static constexpr char htmlSourceTemplate[] =
     "  <body>\n"
     "  <main>\n"
     "  <form method=\"post\" action=\"/\">\n"
-    "    <fieldset disabled>\n"
+    "    <fieldset%s>\n"
     "      <legend>Direct control</legend>\n"
     "      <table>\n"
     "      <tbody style=\"text-align:center; vertical-align:middle;\">\n"
@@ -29,7 +29,7 @@ static constexpr char htmlSourceTemplate[] =
     "      </tbody>\n"
     "      </table>\n"
     "    </fieldset>\n"
-    "    <fieldset>\n"
+    "    <fieldset%s>\n"
     "      <legend>Follow wall</legend>\n"
     "      <button type=\"submit\" name=\"%sFW\" title=\"%s following wall\">&#x%hX;</button>\n"
     "    </fieldset>\n"
@@ -48,6 +48,7 @@ void WebserverHandle::handleRoot() {
     newTarget.newDrive = server.arg("forwards").toInt();
     newTarget.forward = true;
     newTarget.isTargetNew = true;
+    runningActivities.isManualRunning = true;
     Serial.printf("Got forwards by %u!\n", newTarget.newDrive);
   }
   if(server.hasArg("backwards"))
@@ -55,6 +56,7 @@ void WebserverHandle::handleRoot() {
     newTarget.newDrive = server.arg("backwards").toInt();
     newTarget.forward = false;
     newTarget.isTargetNew = true;
+    runningActivities.isManualRunning = true;
     Serial.printf("Got backwards by %u!\n", newTarget.newDrive);
   }
   if(server.hasArg("left"))
@@ -62,6 +64,7 @@ void WebserverHandle::handleRoot() {
     newTarget.newRotate = server.arg("left").toInt();
     newTarget.clockwise = false;
     newTarget.isTargetNew = true;
+    runningActivities.isManualRunning = true;
     Serial.printf("Got left by %u!\n", newTarget.newRotate);
   }
   if(server.hasArg("right"))
@@ -69,6 +72,7 @@ void WebserverHandle::handleRoot() {
     newTarget.newRotate = server.arg("right").toInt();
     newTarget.clockwise = true;
     newTarget.isTargetNew = true;
+    runningActivities.isManualRunning = true;
     Serial.printf("Got right by %u!\n", newTarget.newRotate);
   }
   if(server.hasArg("stopFW"))
@@ -84,6 +88,7 @@ void WebserverHandle::handleRoot() {
     DEBUG_MSG_INFO("Got: Start following wall!");
   }
   target = newTarget;
+  updateHtmlSource();
   const char * pointerToHtml = nullptr;
   ATOMIC()
   {

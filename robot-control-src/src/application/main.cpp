@@ -51,7 +51,7 @@ void main::loop()
   if(drives::isIdle())
   {
     const Position newPositionCandidate = drives::flushCurrentPosition();
-    if(environmentRecord.positions[environmentRecord.positionIndex] != newPositionCandidate)
+    if(environmentRecord.positions[environmentRecord.positionIndex] != newPositionCandidate && !runningActivities.isBearingRunning)
     {
       environmentRecord.positions[++environmentRecord.positionIndex] = newPositionCandidate;
       environmentRecord.positionIndex %= environmentRecord.numberOfPositions;
