@@ -1,15 +1,11 @@
 #include "WebserverHandle.hpp"
 #include "../utils/array.hpp"
 #include "../utils/algorithm.hpp"
+#include "../utils/Debug.hpp"
 #include "board.hpp"
 #include <assert.h>
 #include <cstddef>
 #include <SimplyAtomic.h>
-
-static constexpr char titleStart[] = "start";
-static constexpr char titleStop[] = "stop";
-static constexpr std::uint16_t unicodeIdStart = 0x25B6;
-static constexpr std::uint16_t unicodeIdStop = 0x23F9;
 
 static constexpr char htmlSourceTemplate[] =
     "<!DOCTYPE html>\n"
@@ -45,7 +41,7 @@ static constexpr char htmlSourceTemplate[] =
     "";
 
 void WebserverHandle::handleRoot() {
-  TargetRequest newTarget;
+  TargetRequest newTarget {  };
   board::setDebugLed(LOW);
   if(server.hasArg("forwards"))
   {
@@ -75,6 +71,18 @@ void WebserverHandle::handleRoot() {
     newTarget.isTargetNew = true;
     Serial.printf("Got right by %u!\n", newTarget.newRotate);
   }
+  if(server.hasArg("stopFW"))
+  {
+    newTarget.isTargetNew = false;
+    runningActivities.isBearingRunning = false;
+    DEBUG_MSG_INFO("Got: Stop following wall!");
+  }
+  if(server.hasArg("startFW"))
+  {
+    newTarget.isTargetNew = false;
+    runningActivities.isBearingRunning = true;
+    DEBUG_MSG_INFO("Got: Start following wall!");
+  }
   target = newTarget;
   const char * pointerToHtml = nullptr;
   ATOMIC()
@@ -90,9 +98,9 @@ void WebserverHandle::loop() {
 }
 
 WebserverHandle::WebserverHandle(ESP8266WebServer& webserver,
-    const EnvironmentRecord &environmentRecord) :
+    const EnvironmentRecord &environmentRecord, ActivityStates& activities) :
     htmlSourceFrontBuffer(htmlSourceTemplate), server(webserver), environment(
-        environmentRecord) {
+        environmentRecord), runningActivities(activities) {
 }
 
 WebserverHandle::TargetRequest WebserverHandle::flushTargetRequest() {
@@ -110,12 +118,18 @@ void WebserverHandle::setup() {
 }
 
 void WebserverHandle::updateHtmlSource() {
+  static constexpr char titleStart[] = "start";
+  static constexpr char titleStop[] = "stop";
+  static constexpr char disableButtons[] = " disabled";
+  static constexpr std::uint16_t unicodeIdStart = 0x25B6;
+  static constexpr std::uint16_t unicodeIdStop = 0x23F9;
+
   constexpr std::size_t maxCharPerPosition = (5+1)*2; // when serializing the position, the number of characters maximum used per position
   constexpr std::size_t positionsStringMaxLength = maxCharPerPosition*EnvironmentRecord::numberOfPositions+1;
   constexpr std::size_t extraCharactersForFollowWallButton = 2*utils::max(size(titleStart), size(titleStop)) + 2*utils::max(sizeof(unicodeIdStart), sizeof(unicodeIdStop));
 
-  static char htmlSourceBackBufferA[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + positionsStringMaxLength] = {0};
-  static char htmlSourceBackBufferB[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + positionsStringMaxLength] = {0};
+  static char htmlSourceBackBufferA[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + 2*size(disableButtons) + positionsStringMaxLength] = {0};
+  static char htmlSourceBackBufferB[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + 2*size(disableButtons) + positionsStringMaxLength] = {0};
 
   char * const backBuffer = (htmlSourceFrontBuffer == htmlSourceBackBufferA) ? htmlSourceBackBufferB : htmlSourceBackBufferA;
   char positionStringBuffer[positionsStringMaxLength] = { 0 };
@@ -126,13 +140,17 @@ void WebserverHandle::updateHtmlSource() {
     assert(writtenCharacters>0);
     charPos += writtenCharacters;
   }
+
   const int writtenCharacters = snprintf(
                                          backBuffer,
                                          size(htmlSourceBackBufferA),
                                          htmlSourceTemplate,
-                                         titleStart,
-                                         titleStart,
-                                         unicodeIdStart,
+                                         (runningActivities.isManualRunning
+                                             || runningActivities.isBearingRunning) ? disableButtons : "",
+                                         runningActivities.isManualRunning ? disableButtons : "",
+                                         runningActivities.isBearingRunning ? titleStop : titleStart,
+                                         runningActivities.isBearingRunning ? titleStop : titleStart,
+                                         runningActivities.isBearingRunning ? unicodeIdStop : unicodeIdStart,
                                          positionStringBuffer);
   assert(writtenCharacters>0);
   htmlSourceFrontBuffer = backBuffer;

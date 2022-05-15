@@ -2,13 +2,14 @@
 #define ROBOT_CONTROL_SRC_WEBSERVERHANDLE_HPP_
 
 #include "Drives.hpp"
+#include "ActivityControl.hpp"
 #include "../middleware/EnvironmentRecord.hpp"
 #include <ESP8266WebServer.h>
 
 class WebserverHandle {
 public:
 
-  WebserverHandle(ESP8266WebServer& webserver, const EnvironmentRecord& environmentRecord);
+  WebserverHandle(ESP8266WebServer& webserver, const EnvironmentRecord& environmentRecord, ActivityStates& activities);
 
   /**
    * Does handle web client requests to root path.
@@ -43,6 +44,7 @@ private:
   TargetRequest target;
   ESP8266WebServer& server;
   const EnvironmentRecord& environment;
+  ActivityStates& runningActivities;
 };
 
 #endif /* ROBOT_CONTROL_SRC_WEBSERVERHANDLE_HPP_ */
