@@ -1,9 +1,15 @@
 #include "WebserverHandle.hpp"
 #include "../utils/array.hpp"
+#include "../utils/algorithm.hpp"
 #include "board.hpp"
 #include <assert.h>
 #include <cstddef>
 #include <SimplyAtomic.h>
+
+static constexpr char titleStart[] = "start";
+static constexpr char titleStop[] = "stop";
+static constexpr std::uint16_t unicodeIdStart = 0x25B6;
+static constexpr std::uint16_t unicodeIdStop = 0x23F9;
 
 static constexpr char htmlSourceTemplate[] =
     "<!DOCTYPE html>\n"
@@ -17,18 +23,26 @@ static constexpr char htmlSourceTemplate[] =
     "  <body>\n"
     "  <main>\n"
     "  <form method=\"post\" action=\"/\">\n"
-    "    <table>\n"
-    "    <tbody align=center valign=middle>\n"
-    "      <tr><td></td><td><button type=\"submit\" name=\"forwards\" value=\"10\" title=\"+37,70mm\">&#8593;</button></td><td></td></tr>\n"
-    "      <tr><td><button type=\"submit\" name=\"left\" value=\"5\" title=\"-86,4&deg;\">&#8634;</button></td><td>&#x1F916;</td><td><button type=\"submit\" name=\"right\" value=\"5\" title=\"+86,4&deg;\">&#8635;</button></td></tr>\n"
-    "      <tr><td></td><td><button type=\"submit\" name=\"backwards\" value=\"10\" title=\"-37,70mm\">&#8595;</button></td><td></td></tr>\n"
-    "    </tbody>\n"
-    "    </table>\n"
+    "    <fieldset disabled>\n"
+    "      <legend>Direct control</legend>\n"
+    "      <table>\n"
+    "      <tbody style=\"text-align:center; vertical-align:middle;\">\n"
+    "        <tr><td></td><td><button type=\"submit\" name=\"forwards\" value=\"10\" title=\"+37,70mm\">&#8593;</button></td><td></td></tr>\n"
+    "        <tr><td><button type=\"submit\" name=\"left\" value=\"5\" title=\"-86,4&deg;\">&#8634;</button></td><td>&#x1F916;</td><td><button type=\"submit\" name=\"right\" value=\"5\" title=\"+86,4&deg;\">&#8635;</button></td></tr>\n"
+    "        <tr><td></td><td><button type=\"submit\" name=\"backwards\" value=\"10\" title=\"-37,70mm\">&#8595;</button></td><td></td></tr>\n"
+    "      </tbody>\n"
+    "      </table>\n"
+    "    </fieldset>\n"
+    "    <fieldset>\n"
+    "      <legend>Follow wall</legend>\n"
+    "      <button type=\"submit\" name=\"%sFW\" title=\"%s following wall\">&#x%hX;</button>\n"
+    "    </fieldset>\n"
     "  </form>\n"
-    "  <img style=\"max-width:90vw; max-height:100vh;\" src=\"https://david.hebbeker.info/robot-control.php?positions=%s\" />\n"
+    "  <img style=\"max-width:90vw; max-height:100vh; border-style:solid;\" src=\"https://david.hebbeker.info/robot-control.php?positions=%s\" alt=\"Outline of driven route\" />\n"
     "  </main>\n"
     "  </body>\n"
-    "</html>";
+    "</html>\n"
+    "";
 
 void WebserverHandle::handleRoot() {
   TargetRequest newTarget;
@@ -98,9 +112,10 @@ void WebserverHandle::setup() {
 void WebserverHandle::updateHtmlSource() {
   constexpr std::size_t maxCharPerPosition = (5+1)*2; // when serializing the position, the number of characters maximum used per position
   constexpr std::size_t positionsStringMaxLength = maxCharPerPosition*EnvironmentRecord::numberOfPositions+1;
+  constexpr std::size_t extraCharactersForFollowWallButton = 2*utils::max(size(titleStart), size(titleStop)) + 2*utils::max(sizeof(unicodeIdStart), sizeof(unicodeIdStop));
 
-  static char htmlSourceBackBufferA[size(htmlSourceTemplate) + positionsStringMaxLength] = {0};
-  static char htmlSourceBackBufferB[size(htmlSourceTemplate) + positionsStringMaxLength] = {0};
+  static char htmlSourceBackBufferA[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + positionsStringMaxLength] = {0};
+  static char htmlSourceBackBufferB[size(htmlSourceTemplate) + extraCharactersForFollowWallButton + positionsStringMaxLength] = {0};
 
   char * const backBuffer = (htmlSourceFrontBuffer == htmlSourceBackBufferA) ? htmlSourceBackBufferB : htmlSourceBackBufferA;
   char positionStringBuffer[positionsStringMaxLength] = { 0 };
@@ -111,7 +126,14 @@ void WebserverHandle::updateHtmlSource() {
     assert(writtenCharacters>0);
     charPos += writtenCharacters;
   }
-  const int writtenCharacters = snprintf(backBuffer, size(htmlSourceBackBufferA), htmlSourceTemplate, positionStringBuffer);
+  const int writtenCharacters = snprintf(
+                                         backBuffer,
+                                         size(htmlSourceBackBufferA),
+                                         htmlSourceTemplate,
+                                         titleStart,
+                                         titleStart,
+                                         unicodeIdStart,
+                                         positionStringBuffer);
   assert(writtenCharacters>0);
   htmlSourceFrontBuffer = backBuffer;
 }
