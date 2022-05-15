@@ -9,9 +9,10 @@
 #include <type_traits>
 #include <functional>
 
+static ActivityStates runningActivities { };
 static EnvironmentRecord environmentRecord { };
 static ESP8266WebServer server(80);
-static WebserverHandle webserverHandle(server, environmentRecord);
+static WebserverHandle webserverHandle(server, environmentRecord, runningActivities);
 
 void main::setup(const char * const programIdentificationString)
 {
@@ -41,7 +42,7 @@ void main::loop()
 {
   static Bearing bearing;
   board::loop();
-//  bearing.loop();
+  bearing.loop();
   board::setDebugLed(board::isBumperPressed(), board::DebugLeds::red);
   board::setDebugLed(!drives::isIdle(), board::DebugLeds::yellow);
   board::setDebugLed(drives::isIdle(), board::DebugLeds::green);
@@ -54,11 +55,11 @@ void main::loop()
     {
       environmentRecord.positions[++environmentRecord.positionIndex] = newPositionCandidate;
       environmentRecord.positionIndex %= environmentRecord.numberOfPositions;
-      webserverHandle.loop();
     }
     const auto newTarget = webserverHandle.flushTargetRequest();
     if(newTarget.isTargetNew)
     {
+      assert(!runningActivities.isBearingRunning);
       const bool bumperIsPressed = board::isBumperPressed();
       if(newTarget.newDrive!=0 && (!newTarget.forward || !bumperIsPressed))
       {
@@ -68,8 +69,32 @@ void main::loop()
       {
         drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
       }
+      runningActivities.isManualRunning = true;
+    }
+    else
+    {
+      runningActivities.isManualRunning = false;
+    }
+    static bool bearingBefore = false;
+    if (runningActivities.isBearingRunning)
+    {
+      assert(!newTarget.isTargetNew);
+      if (!bearingBefore)
+      {
+        bearing.begin();
+        bearingBefore = true;
+      }
+    }
+    else
+    {
+      if (bearingBefore)
+      {
+        bearing.stop();
+        bearingBefore = false;
+      }
     }
   }
+  webserverHandle.loop();
 
   yield(); // Give a time for ESP
 }
