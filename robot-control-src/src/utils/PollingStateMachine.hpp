@@ -26,8 +26,10 @@ public:
   ~PollingStateMachine();
 
   PollingStateMachine(State* const startState);
+  void setForcedNextState(State * const forcedNextState);
 
 private:
+  State* forcedNextState;
   State* currentState;
 };
 

@@ -22,6 +22,16 @@ class Bearing : public PollingStateMachine
 {
 public:
   Bearing();
+  void begin();
+  void stop();
+};
+
+class StopBearing : public PollingStateMachine::State
+{
+public:
+  StopBearing();
+private:
+  virtual PollingStateMachine::State* operation() override;
 };
 
 class Lost: public PollingStateMachine::State
