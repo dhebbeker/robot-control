@@ -17,7 +17,7 @@ float shortenAngle(const float& angle)
 }
 
 Bearing::Bearing() :
-    PollingStateMachine(new Lost())
+    PollingStateMachine(new StopBearing())
 {
 
 }
@@ -129,4 +129,24 @@ PollingStateMachine::State* FollowingWall::operation()
 {
   subStateMachine->loop();
   return this;// TODO
+}
+
+void Bearing::begin()
+{
+  setForcedNextState(new Lost());
+}
+
+void Bearing::stop()
+{
+  setForcedNextState(new StopBearing());
+}
+
+StopBearing::StopBearing()
+{
+  PRINT_CHECKPOINT();
+}
+
+PollingStateMachine::State* StopBearing::operation()
+{
+  return this;
 }
