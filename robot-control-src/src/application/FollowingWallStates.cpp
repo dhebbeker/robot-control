@@ -1,6 +1,7 @@
 #include "FollowingWallStates.hpp"
 #include "Bearing.hpp"
 #include "board.hpp"
+#include "Drives.hpp"
 #include "../utils/numeric.hpp"
 #include "../utils/lazy_creation.hpp"
 
@@ -9,8 +10,14 @@
 using FP = double;
 
 static constexpr std::size_t maxNumberMeasuringAttempts = 10;
-static constexpr Distance minDistanceBetweenPoints = 80; /*!< Distance between points P1 and P2 [mm] */
-static constexpr Distance maxTravelDistance = FollowingWall::targetDistanceToWall * 2;
+/**
+ * Distance between points P1 and P2 [mm].
+ *
+ * This distance is calculated as multiple of the odoInterval length.
+ * As only this can be actually achieved by the robot.
+ */
+static constexpr Distance minDistanceBetweenPoints = drives::roundDownToOdoIntervalMultiple(80);
+static constexpr Distance maxTravelDistance = drives::roundDownToOdoIntervalMultiple(FollowingWall::targetDistanceToWall * 2);
 
 FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetweenPoints) { PRINT_CHECKPOINT(); }
 
@@ -89,6 +96,7 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   PRINT_NUMBER(distanceToLine);
   // if the distance to the wall (g) is too big or too small, that is the distance to line to big, the travel distance must be increased
   FP distanceToNextPoint = std::max(_minDistanceBetweenPoints, distanceToLine);
+  distanceToNextPoint = drives::roundDownToOdoIntervalMultiple(distanceToNextPoint);
   PRINT_NUMBER(distanceToNextPoint);
   yield();
 
