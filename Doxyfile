@@ -1,13 +1,27 @@
+PROJECT_NAME           = Robot Control
 OUTPUT_DIRECTORY       = doc
 EXTENSION_MAPPING      = ino=C++
 EXTRACT_ALL            = YES
 INPUT                 += .
+# Use git submodules only as preprocessor input
+EXCLUDE               += hardware/robot-control-circuit/libraries/kicad-ESP8266
+EXCLUDE               += robot-control-src/libraries/SimplyAtomic
+EXCLUDE               += robot-control-src/libraries/STM32duino_VL53L1
+EXCLUDE               += robot-control-src/libraries/MCP23017
+INCLUDE_PATH          += hardware/robot-control-circuit/libraries/kicad-ESP8266
+INCLUDE_PATH          += robot-control-src/libraries/SimplyAtomic
+INCLUDE_PATH          += robot-control-src/libraries/STM32duino_VL53L1
+INCLUDE_PATH          += robot-control-src/libraries/MCP23017
 FILE_PATTERNS         += *.ino
 RECURSIVE              = YES
 USE_MDFILE_AS_MAINPAGE = ./README.md
 GENERATE_LATEX         = NO
-HAVE_DOT               = YES
 UML_LOOK               = YES
 DIR_GRAPH_MAX_DEPTH    = 2
 DOT_IMAGE_FORMAT       = svg
 USE_MATHJAX            = YES
+HTML_TIMESTAMP         = YES
+JAVADOC_AUTOBRIEF      = YES
+DOT_IMAGE_FORMAT       = svg
+HTML_FILE_EXTENSION    = .xhtml
+IMAGE_PATH            += doc/
