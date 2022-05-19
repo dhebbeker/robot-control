@@ -14,7 +14,7 @@ static constexpr char htmlSourceTemplate[] =
     "    <title>Robot Control</title>\n"
     "    <meta charset=\"utf-8\" />\n"
     "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.6\">\n"
-    "    <meta http-equiv=\"refresh\" content=\"5\">\n"
+    "    <meta http-equiv=\"refresh\" content=\"2\">\n"
     "  </head>\n"
     "  <body>\n"
     "  <main>\n"

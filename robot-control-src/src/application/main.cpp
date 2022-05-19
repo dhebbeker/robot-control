@@ -69,7 +69,6 @@ void main::loop()
       {
         drives::rotateCounter(newTarget.newRotate, drives::cruiseSpeed, newTarget.clockwise);
       }
-      runningActivities.isManualRunning = true;
     }
     else
     {
