@@ -9,6 +9,11 @@ FollowingWallState1::FollowingWallState1()
   PRINT_CHECKPOINT();
 }
 
+/**
+ * Do not control the output while turning.
+ * Turning will potentially increase the perceived distance even though the actual distance is not increased.
+ * @return
+ */
 PollingStateMachine::State* FollowingWallState1::operation()
 {
   return this;
