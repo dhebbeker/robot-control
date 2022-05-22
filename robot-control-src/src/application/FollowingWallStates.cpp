@@ -4,6 +4,7 @@
 #include "Drives.hpp"
 #include "../utils/numeric.hpp"
 #include "../utils/lazy_creation.hpp"
+#include <cmath>
 
 #define PRINT_NUMBER( x ) DEBUG_MSG_VERBOSE("Number %s = %f", #x, static_cast<double>(x))
 
@@ -16,7 +17,7 @@ static constexpr std::size_t maxNumberMeasuringAttempts = 10;
  * This distance is calculated as multiple of the odoInterval length.
  * As only this can be actually achieved by the robot.
  */
-static constexpr Distance minDistanceBetweenPoints = drives::roundDownToOdoIntervalMultiple(80);
+static constexpr Distance minDistanceBetweenPoints = drives::roundDownToOdoIntervalMultiple(100);
 static constexpr Distance maxTravelDistance = drives::roundDownToOdoIntervalMultiple(FollowingWall::targetDistanceToWall * 2);
 
 FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetweenPoints) { PRINT_CHECKPOINT(); }
@@ -127,12 +128,17 @@ PollingStateMachine::State* FollowingWallState2::operation()
   {
     const PolarVector vectorToNextPoint = calculateVectorToNextPoint(distanceRight, distanceFromLastPoint, distanceToWallAtLastPoint);
 
-    /* drive to next P1 */
-    const DriveOrders newOrders(
+    if(!std::isnan(vectorToNextPoint.angle))
     {
-    { .angle = vectorToNextPoint.angle, .length = 0 /* use length 0 because we have to measure after turning and before proceeding */ }, });
-    PRINT_CHECKPOINT();
-    PRINT_NUMBER(vectorToNextPoint.length);
-    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length)));
+      /* drive to next P1 */
+      const DriveOrders newOrders(
+          {
+            { .angle = vectorToNextPoint.angle, .length = 0 /* use length 0 because we have to measure after turning and before proceeding */},});
+      PRINT_CHECKPOINT();
+      PRINT_NUMBER(vectorToNextPoint.length);
+      return static_cast<PollingStateMachine::State*>(newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length))));
+    }
+    else
+    { return static_cast<PollingStateMachine::State*>(new Lost());}
   });
 }
