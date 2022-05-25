@@ -27,12 +27,20 @@ PollingStateMachine::State* FollowingWallState1::operation()
   const bool distanceValid = board::retrieveSensorStatusOrError(board::DistanceSensorIndex::right, currentDistance);
   constexpr Distance distanceBetweenPoints = drives::odoIntervalLength;
 
-  if(!distanceValid) return new Lost();
-
   static bool controllerActive = false;
   // Specify the links and initial tuning parameters
   constexpr double Kp = 0.15, Ki = 0, Kd = 0;
   static PID_v2 controller(Kp, Ki, Kd, PID::Reverse);
+
+  if(board::getDistances()[board::DistanceSensorIndex::front_left] < currentDistance)
+  {
+    const DriveOrders toNextStop({{ .angle = -90, .length = 0 }});
+    controller.SetOutputLimits(0,0);
+    controllerActive = false;
+    return newDriver(toNextStop, createCreatorForNewObject<FollowingWallState1>());
+  }
+
+  if(!distanceValid) return new Lost();
   if(!controllerActive)
   {
     constexpr Distance targetDistance = 200; //< [mm]
