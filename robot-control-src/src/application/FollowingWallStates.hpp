@@ -8,11 +8,8 @@ class FollowingWallState1 : public PollingStateMachine::State
 {
 public:
   FollowingWallState1();
-  FollowingWallState1(const Distance distanceAtLastPoint);
 private:
+  typedef decltype(((PID_v2*)nullptr)->Run(0)) ControllerOutput;
+  inline static float reactionToDegree(const ControllerOutput reaction);
   virtual PollingStateMachine::State* operation() override;
-  Distance distanceAtLastPoint;
-  const bool distanceValid;
-  static PID_v2 controller;
-  static bool controllerActive;
 };
