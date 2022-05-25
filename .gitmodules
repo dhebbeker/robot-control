@@ -11,5 +11,5 @@
 	path = robot-control-src/libraries/MCP23017
 	url = https://github.com/blemasle/arduino-mcp23017.git
 [submodule "imax9000/Arduino-PID-Library"]
-	path = robot-control-src/libraries/Arduino-PID-Library
+	path = robot-control-src/libraries/PID_v2
 	url = https://github.com/imax9000/Arduino-PID-Library.git
