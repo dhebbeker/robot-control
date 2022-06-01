@@ -40,19 +40,38 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
   if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront);
   else DEBUG_MSG_VERBOSE("distance at the front NOT was found.");
 
-
-  if (distanceRightMeasured)
+  if (distanceFrontMeasured
+      && (distanceFront
+          < FollowingWall::targetDistanceToWall + std::sqrt(std::pow(minDistanceBetweenPoints, 2) / 2.0)
+          || (distanceRightMeasured && distanceFront < distanceRight)))
   {
-    if (!distanceFrontMeasured
-        || (distanceFrontMeasured
-            && (distanceFront > FollowingWall::targetDistanceToWall + minDistanceBetweenPoints)
-            && (distanceFront > distanceRight)))
+    if (distanceFront < FollowingWall::targetDistanceToWall)
     {
-      DEBUG_MSG_VERBOSE("try to follow wall");
-      return operatorFunction(distanceRight);
+      const DriveOrders newOrders(
+      {
+      { .angle = 180, .length = FollowingWall::targetDistanceToWall - distanceFront },
+      { .angle = 90, .length = 0 }, });
+      return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
+
+    }
+    else
+    {
+      const DriveOrders newOrders(
+      {
+      { .angle = 0, .length = distanceFront - FollowingWall::targetDistanceToWall },
+      { .angle = -90, .length = 0 }, });
+      return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
     }
   }
-  return new_s(Lost());
+  else if (distanceRightMeasured)
+  {
+    DEBUG_MSG_VERBOSE("try to follow wall");
+    return operatorFunction(distanceRight);
+  }
+  else
+  {
+    return new_s(Lost());
+  }
 }
 
 PollingStateMachine::State* FollowingWallState1::operation()
