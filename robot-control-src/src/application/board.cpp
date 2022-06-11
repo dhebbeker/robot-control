@@ -6,6 +6,13 @@
 #include <cstddef>
 
 namespace board {
+
+struct DistanceSensor
+{
+  VL53L1GpioInterface sensor;
+  float angle; //!< clockwise positive in degrees
+};
+
 static constexpr std::uint8_t debugLed = D0;
 static constexpr std::uint8_t scl = D3;
 static constexpr std::uint8_t sda = D4;
@@ -27,15 +34,15 @@ static MCP23017Pin debugLedRed(ioExpander1, 8+4);
 static MCP23017Pin debugLedWhite(ioExpander1, 8+5);
 static MCP23017Pin leftBumper(ioExpander1, 8+6);
 static MCP23017Pin rightBumper(ioExpander1, 8+7);
-static VL53L1GpioInterface distanceSensor1(&Wire, VL53L1_1_XSHUT);
-static VL53L1GpioInterface distanceSensor4(&Wire, VL53L1_4_XSHUT);
-VL53L1GpioInterface * const distanceSensors[] = {
+static DistanceSensor distanceSensor1 = { .sensor=VL53L1GpioInterface(&Wire, VL53L1_1_XSHUT), .angle=0 };
+static DistanceSensor distanceSensor4 = { .sensor=VL53L1GpioInterface(&Wire, VL53L1_4_XSHUT), .angle=90};
+DistanceSensor* const distanceSensors[] = {
 		&distanceSensor1,
 		&distanceSensor4,
 	};
 static_assert(size(distanceSensors) == numberOfDistanceSensors, "number of initializers incorrect");
 
-static Distance distances[size(distanceSensors)] { };
+static PolarVector distances[size(distanceSensors)] { };
 
 static Distance retrieveSensorStatus(VL53L1GpioInterface& sensor)
 {
@@ -94,9 +101,11 @@ static bool retrieveSensorStatusOrError(VL53L1GpioInterface& sensor, Distance& r
   return false;
 }
 
-bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts)
+bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, PolarVector& returnDistance, const std::size_t maxNumberOfAttempts)
 {
-  return retrieveSensorStatusOrError(*distanceSensors[static_cast<std::size_t>(sensorIndex)], returnDistance, maxNumberOfAttempts);
+  auto& distanceSensor = *distanceSensors[static_cast<std::size_t>(sensorIndex)];
+  returnDistance.angle = distanceSensor.angle;
+  return retrieveSensorStatusOrError(distanceSensor.sensor, returnDistance.length, maxNumberOfAttempts);
 }
 
 void testDistanceSensors()
@@ -105,7 +114,7 @@ void testDistanceSensors()
   for (std::size_t i = 0; i < size(distanceSensors); ++i)
   {
     Distance distance = distanceErrorValue;
-    const bool isError = !retrieveSensorStatusOrError(*distanceSensors[i], distance);
+    const bool isError = !retrieveSensorStatusOrError(distanceSensors[i]->sensor, distance);
     if (isError)
     {
       Serial.printf("Sensor %u = ERROR, \t", i);
@@ -162,19 +171,19 @@ void setup(const InterruptFunctionPointer interruptForBumper)
   // initialize distance measurement sensors
   for(std::size_t i=0; i<size(distanceSensors); i++)
   {
-    distanceSensors[i]->begin();
-    distanceSensors[i]->VL53L1_Off();
+    distanceSensors[i]->sensor.begin();
+    distanceSensors[i]->sensor.VL53L1_Off();
   }
   for(std::size_t i=0; i<size(distanceSensors); i++)
   {
     Serial.printf("Initialize distance sensor %u...", i);
-    assert(distanceSensors[i]->initSensorWithAddressValue(VL53L1GpioInterface::defaultAddressValue + 1 + i) == VL53L1_ERROR_NONE);
+    assert(distanceSensors[i]->sensor.initSensorWithAddressValue(VL53L1GpioInterface::defaultAddressValue + 1 + i) == VL53L1_ERROR_NONE);
     Serial.printf("Done.\n");
   }
   for(std::size_t i=0; i<size(distanceSensors); i++)
   {
-    distanceSensors[i]->VL53L1_SetPresetMode(VL53L1_PRESETMODE_RANGING);
-    distanceSensors[i]->VL53L1_ClearInterruptAndStartMeasurement();
+    distanceSensors[i]->sensor.VL53L1_SetPresetMode(VL53L1_PRESETMODE_RANGING);
+    distanceSensors[i]->sensor.VL53L1_ClearInterruptAndStartMeasurement();
   }
 
   if(interruptForBumper != nullptr)
@@ -189,7 +198,8 @@ void loop()
 {
   for(std::size_t i=0; i<size(distanceSensors); ++i)
   {
-    distances[i] = retrieveSensorStatus(*distanceSensors[i]);
+    distances[i].angle = distanceSensors[i]->angle;
+    distances[i].length = retrieveSensorStatus(distanceSensors[i]->sensor);
   }
 }
 
@@ -223,7 +233,7 @@ void setDebugLed(const std::uint8_t value, const DebugLeds led)
 }
 
 
-const Distance (&getDistances())[numberOfDistanceSensors]
+const PolarVector (&getDistances())[numberOfDistanceSensors]
 {
   return distances;
 }

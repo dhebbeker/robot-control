@@ -25,31 +25,31 @@ FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetwe
 template<typename T>
 static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
 {
-  Distance distanceRight = board::distanceErrorValue;
+  PolarVector distanceRight = { .angle=0, .length=board::distanceErrorValue };
   const bool distanceRightMeasured = board::retrieveSensorStatusOrError(
                                                                         board::DistanceSensorIndex::right,
                                                                         distanceRight,
                                                                         maxNumberMeasuringAttempts);
-  if(distanceRightMeasured) DEBUG_MSG_VERBOSE("distance at the right was found: %i", distanceRight);
+  if(distanceRightMeasured) DEBUG_MSG_VERBOSE("distance at the right was found: %i", distanceRight.length);
   else DEBUG_MSG_VERBOSE("distance at the right NOT was found.");
-  Distance distanceFront = board::distanceErrorValue;
+  PolarVector distanceFront = { .angle=0, .length=board::distanceErrorValue };
   const bool distanceFrontMeasured = board::retrieveSensorStatusOrError(
                                                                         board::DistanceSensorIndex::front_left,
                                                                         distanceFront,
                                                                         maxNumberMeasuringAttempts);
-  if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront);
+  if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront.length);
   else DEBUG_MSG_VERBOSE("distance at the front NOT was found.");
 
   if (distanceFrontMeasured
-      && (distanceFront
+      && (distanceFront.length
           < FollowingWall::targetDistanceToWall + std::sqrt(std::pow(minDistanceBetweenPoints, 2) / 2.0)
-          || (distanceRightMeasured && distanceFront < distanceRight)))
+          || (distanceRightMeasured && distanceFront.length < distanceRight.length)))
   {
-    if (distanceFront < FollowingWall::targetDistanceToWall)
+    if (distanceFront.length < FollowingWall::targetDistanceToWall)
     {
       const DriveOrders newOrders(
       {
-      { .angle = 180, .length = FollowingWall::targetDistanceToWall - distanceFront },
+      { .angle = 180, .length = FollowingWall::targetDistanceToWall - distanceFront.length },
       { .angle = 90, .length = 0 }, });
       return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
 
@@ -58,7 +58,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
     {
       const DriveOrders newOrders(
       {
-      { .angle = 0, .length = distanceFront - FollowingWall::targetDistanceToWall },
+      { .angle = 0, .length = distanceFront.length - FollowingWall::targetDistanceToWall },
       { .angle = -90, .length = 0 }, });
       return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
     }
@@ -66,7 +66,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
   else if (distanceRightMeasured)
   {
     DEBUG_MSG_VERBOSE("try to follow wall");
-    return operatorFunction(distanceRight);
+    return operatorFunction(distanceRight.length);
   }
   else
   {

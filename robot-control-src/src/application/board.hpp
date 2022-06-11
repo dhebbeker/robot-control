@@ -3,6 +3,7 @@
 #include "../device_drivers/MCP23017Pin.hpp"
 #include "../device_drivers/VL53L1GpioInterface.hpp"
 #include "../utils/arduino_helpers.hpp"
+#include "../middleware/EnvironmentRecord.hpp"
 #include <MCP23017.h>
 #include <limits>
 #include <cstddef>
@@ -32,6 +33,6 @@ void setDebugLed(const std::uint8_t value, const DebugLeds led = DebugLeds::buil
  * @param[out] returnDistance measured distance will be written to
  * @returns false on error
  */
-bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, Distance& returnDistance, const std::size_t maxNumberOfAttempts = 3);
-const Distance (&getDistances())[numberOfDistanceSensors];
+bool retrieveSensorStatusOrError(const DistanceSensorIndex sensorIndex, PolarVector& returnDistance, const std::size_t maxNumberOfAttempts = 3);
+const PolarVector (&getDistances())[numberOfDistanceSensors];
 }

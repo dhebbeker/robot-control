@@ -18,6 +18,12 @@ struct Position
   }
 };
 
+struct PolarVector
+{
+  float angle; //!< in degrees
+  Distance length; //!< in mm
+};
+
 struct EnvironmentRecord {
   static constexpr std::size_t numberOfPositions = 50;
   Position positions[numberOfPositions] = { {0,0} };
