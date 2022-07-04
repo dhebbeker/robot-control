@@ -51,6 +51,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
   {
     if (distanceFront.length < FollowingWall::targetDistanceToWall)
     {
+      DEBUG_MSG_VERBOSE("drive outbound and align to wall in front");
       const DriveOrders newOrders(
       {
       { .angle = 180, .length = FollowingWall::targetDistanceToWall - distanceFront.length },
@@ -60,6 +61,7 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
     }
     else
     {
+      DEBUG_MSG_VERBOSE("drive inbound and align to wall in front");
       const DriveOrders newOrders(
       {
       { .angle = 0, .length = distanceFront.length - FollowingWall::targetDistanceToWall },
