@@ -40,9 +40,13 @@ static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
   if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront.length);
   else DEBUG_MSG_VERBOSE("distance at the front NOT was found.");
 
+  // in order to arrive at the target distance with max 45°, the vector to the target point
+  // defines an isosceles triangle, thus the shorter sides can be calculated as (Pythagorean Theorem)
+  constexpr auto maxDistanceFor45Deg = std::sqrt(std::pow(minDistanceBetweenPoints, 2) / 2.0);
+
   if (distanceFrontMeasured
       && (distanceFront.length
-          < FollowingWall::targetDistanceToWall + std::sqrt(std::pow(minDistanceBetweenPoints, 2) / 2.0)
+          < FollowingWall::targetDistanceToWall + maxDistanceFor45Deg
           || (distanceRightMeasured && distanceFront.length < distanceRight.length)))
   {
     if (distanceFront.length < FollowingWall::targetDistanceToWall)
