@@ -39,6 +39,11 @@ constexpr Milliseconds odoMinIntervalDuration = (odoIntervalLength * 1000.0) / (
 static_assert(odoMinIntervalDuration > 38, "threshold must be greater than longest pulse of photoelectric sensor (measured at slowest speed)");
 static_assert(odoMinIntervalDuration < 142, "threshold must be smaller than shortest odometry interval between pulses (measured at highest speed)");
 
+inline constexpr Distance roundDownToOdoIntervalMultiple(const Distance d)
+{
+  return odoIntervalLength * static_cast<Counter>(d / odoIntervalLength);
+}
+
 template<typename MOTORCONTROL, MOTORCONTROL& motorControlpin, typename DIRECTIONPIN, DIRECTIONPIN& directionPin, typename ODOPIN, ODOPIN& odoPin>
 class Drive
 {

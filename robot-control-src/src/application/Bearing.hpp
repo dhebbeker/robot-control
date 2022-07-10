@@ -10,12 +10,6 @@
 
 #define PRINT_CHECKPOINT() DEBUG_MSG_DEBUG("Passing at " __FILE__ ":%u", __LINE__)
 
-struct PolarVector
-{
-  float angle; //!< in degrees
-  Distance length; //!< in mm
-};
-
 float shortenAngle(const float& angle);
 
 class Bearing : public PollingStateMachine
@@ -41,7 +35,7 @@ private:
   drives::Counter numberOfScan = 0;
   board::Distance minDistance = std::numeric_limits<board::Distance>::max();
   drives::Counter rotationToMinDistance = 0; //!< relates to the rotation counter
-  drives::Counter orientationToMinDistance = 0; //!< relates to the orientation of the sensor
+  float orientationToMinDistance = 0; //!< relates to the orientation of the sensor
   bool foundBlip = false;
 public:
 

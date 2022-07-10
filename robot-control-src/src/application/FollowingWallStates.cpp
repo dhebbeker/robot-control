@@ -1,50 +1,83 @@
 #include "FollowingWallStates.hpp"
 #include "Bearing.hpp"
 #include "board.hpp"
+#include "Drives.hpp"
 #include "../utils/numeric.hpp"
 #include "../utils/lazy_creation.hpp"
+#include <cmath>
 
 #define PRINT_NUMBER( x ) DEBUG_MSG_VERBOSE("Number %s = %f", #x, static_cast<double>(x))
 
 using FP = double;
 
 static constexpr std::size_t maxNumberMeasuringAttempts = 10;
-static constexpr Distance minDistanceBetweenPoints = 80; /*!< Distance between points P1 and P2 [mm] */
-static constexpr Distance maxTravelDistance = FollowingWall::targetDistanceToWall * 2;
+/**
+ * Distance between points P1 and P2 [mm].
+ *
+ * This distance is calculated as multiple of the odoInterval length.
+ * As only this can be actually achieved by the robot.
+ */
+static constexpr Distance minDistanceBetweenPoints = drives::roundDownToOdoIntervalMultiple(100);
+static constexpr Distance maxTravelDistance = drives::roundDownToOdoIntervalMultiple(FollowingWall::targetDistanceToWall * 2);
 
 FollowingWallState1::FollowingWallState1(): distanceToNextPoint(minDistanceBetweenPoints) { PRINT_CHECKPOINT(); }
 
 template<typename T>
 static PollingStateMachine::State* operateOnRightWall(const T operatorFunction)
 {
-  Distance distanceRight = board::distanceErrorValue;
+  PolarVector distanceRight = { .angle=0, .length=board::distanceErrorValue };
   const bool distanceRightMeasured = board::retrieveSensorStatusOrError(
                                                                         board::DistanceSensorIndex::right,
                                                                         distanceRight,
                                                                         maxNumberMeasuringAttempts);
-  if(distanceRightMeasured) DEBUG_MSG_VERBOSE("distance at the right was found: %i", distanceRight);
+  if(distanceRightMeasured) DEBUG_MSG_VERBOSE("distance at the right was found: %i", distanceRight.length);
   else DEBUG_MSG_VERBOSE("distance at the right NOT was found.");
-  Distance distanceFront = board::distanceErrorValue;
+  PolarVector distanceFront = { .angle=0, .length=board::distanceErrorValue };
   const bool distanceFrontMeasured = board::retrieveSensorStatusOrError(
                                                                         board::DistanceSensorIndex::front_left,
                                                                         distanceFront,
                                                                         maxNumberMeasuringAttempts);
-  if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront);
+  if(distanceFrontMeasured) DEBUG_MSG_VERBOSE("distance at the front was found: %i", distanceFront.length);
   else DEBUG_MSG_VERBOSE("distance at the front NOT was found.");
 
+  // in order to arrive at the target distance with max 45°, the vector to the target point
+  // defines an isosceles triangle, thus the shorter sides can be calculated as (Pythagorean Theorem)
+  constexpr auto maxDistanceFor45Deg = std::sqrt(std::pow(minDistanceBetweenPoints, 2) / 2.0);
 
-  if (distanceRightMeasured)
+  if (distanceFrontMeasured
+      && (distanceFront.length
+          < FollowingWall::targetDistanceToWall + maxDistanceFor45Deg
+          || (distanceRightMeasured && distanceFront.length < distanceRight.length)))
   {
-    if (!distanceFrontMeasured
-        || (distanceFrontMeasured
-            && (distanceFront > FollowingWall::targetDistanceToWall + minDistanceBetweenPoints)
-            && (distanceFront > distanceRight)))
+    if (distanceFront.length < FollowingWall::targetDistanceToWall)
     {
-      DEBUG_MSG_VERBOSE("try to follow wall");
-      return operatorFunction(distanceRight);
+      DEBUG_MSG_VERBOSE("drive outbound and align to wall in front");
+      const DriveOrders newOrders(
+      {
+      { .angle = 180, .length = FollowingWall::targetDistanceToWall - distanceFront.length },
+      { .angle = 90, .length = 0 }, });
+      return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
+
+    }
+    else
+    {
+      DEBUG_MSG_VERBOSE("drive inbound and align to wall in front");
+      const DriveOrders newOrders(
+      {
+      { .angle = 0, .length = distanceFront.length - FollowingWall::targetDistanceToWall },
+      { .angle = -90, .length = 0 }, });
+      return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>());
     }
   }
-  return new_s(Lost());
+  else if (distanceRightMeasured)
+  {
+    DEBUG_MSG_VERBOSE("try to follow wall");
+    return operatorFunction(distanceRight.length);
+  }
+  else
+  {
+    return new_s(Lost());
+  }
 }
 
 PollingStateMachine::State* FollowingWallState1::operation()
@@ -89,12 +122,13 @@ PolarVector FollowingWallState2::calculateVectorToNextPoint(const Distance dista
   PRINT_NUMBER(distanceToLine);
   // if the distance to the wall (g) is too big or too small, that is the distance to line to big, the travel distance must be increased
   FP distanceToNextPoint = std::max(_minDistanceBetweenPoints, distanceToLine);
+  distanceToNextPoint = drives::roundDownToOdoIntervalMultiple(distanceToNextPoint);
   PRINT_NUMBER(distanceToNextPoint);
   yield();
 
   // if the distance the 
 
-  const FP w3 = std::acos(h / distanceToNextPoint);
+  const FP w3 = std::acos(drives::roundDownToOdoIntervalMultiple(h) / distanceToNextPoint);
   PRINT_NUMBER(w3);
   constexpr FP rightAngle = numbers::pi/2.0;
   PRINT_NUMBER(rightAngle);
@@ -119,12 +153,17 @@ PollingStateMachine::State* FollowingWallState2::operation()
   {
     const PolarVector vectorToNextPoint = calculateVectorToNextPoint(distanceRight, distanceFromLastPoint, distanceToWallAtLastPoint);
 
-    /* drive to next P1 */
-    const DriveOrders newOrders(
+    if(!std::isnan(vectorToNextPoint.angle))
     {
-    { .angle = vectorToNextPoint.angle, .length = 0 /* use length 0 because we have to measure after turning and before proceeding */ }, });
-    PRINT_CHECKPOINT();
-    PRINT_NUMBER(vectorToNextPoint.length);
-    return newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length)));
+      /* drive to next P1 */
+      const DriveOrders newOrders(
+          {
+            { .angle = vectorToNextPoint.angle, .length = 0 /* use length 0 because we have to measure after turning and before proceeding */},});
+      PRINT_CHECKPOINT();
+      PRINT_NUMBER(vectorToNextPoint.length);
+      return static_cast<PollingStateMachine::State*>(newDriver(newOrders, createCreatorForNewObject<FollowingWallState1>(std::move(vectorToNextPoint.length))));
+    }
+    else
+    { return static_cast<PollingStateMachine::State*>(new Lost());}
   });
 }
