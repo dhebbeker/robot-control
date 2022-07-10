@@ -70,6 +70,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
@@ -78,6 +79,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structboard_1_1DistanceSensor.xhtml">DistanceSensor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a7d36f0cae16d6e9df499202919361650"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a> = decltype(VL53L1_RangingMeasurementData_t::RangeMilliMeter)</td></tr>
@@ -106,8 +112,8 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a4627890239e156e84960fdec59318470"><td class="memItemLeft" align="right" valign="top">MCP23017&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a4627890239e156e84960fdec59318470">ioExpander1</a> (ioExpander1Address)</td></tr>
 <tr class="separator:a4627890239e156e84960fdec59318470"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a73b0aa485452fcb46e6e490c2adc0b5a">retrieveSensorStatusOrError</a> (const <a class="el" href="namespaceboard.xhtml#a675c679652eabd3c8a3aedac384d47b0">DistanceSensorIndex</a> sensorIndex, <a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
-<tr class="separator:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d8eadc452dfaeb85209f1685b367acc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a0d8eadc452dfaeb85209f1685b367acc">retrieveSensorStatusOrError</a> (const <a class="el" href="namespaceboard.xhtml#a675c679652eabd3c8a3aedac384d47b0">DistanceSensorIndex</a> sensorIndex, <a class="el" href="structPolarVector.xhtml">PolarVector</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
+<tr class="separator:a0d8eadc452dfaeb85209f1685b367acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee61e533cbd327b3259e0a17265d6361"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#aee61e533cbd327b3259e0a17265d6361">testDistanceSensors</a> ()</td></tr>
 <tr class="separator:aee61e533cbd327b3259e0a17265d6361"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae87f3ebcee2ac92c70d1c21053502587"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#ae87f3ebcee2ac92c70d1c21053502587">setup</a> (const <a class="el" href="arduino__helpers_8hpp.xhtml#a276390435f8f238655cb4b091e073f99">InterruptFunctionPointer</a> interruptForBumper)</td></tr>
@@ -118,13 +124,13 @@ Functions</h2></td></tr>
 <tr class="separator:ab48d1402797a8b98490b6cc1eb494bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adddabdea663eabe807c5dc6ffe242d42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#adddabdea663eabe807c5dc6ffe242d42">setDebugLed</a> (const std::uint8_t value, const <a class="el" href="namespaceboard.xhtml#a9dbfac1924f1abc9d1459b0e18841fd0">DebugLeds</a> led)</td></tr>
 <tr class="separator:adddabdea663eabe807c5dc6ffe242d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a5782a4a50e8e18fcee022c8991fdae8f">getDistances</a> ())[<a class="el" href="namespaceboard.xhtml#a6637f508978fe84f05fa4efd5359059e">numberOfDistanceSensors</a>]</td></tr>
-<tr class="separator:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structPolarVector.xhtml">PolarVector</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a2eebeab88e1976fa6a7efaef1fbf0ca5">getDistances</a> ())[<a class="el" href="namespaceboard.xhtml#a6637f508978fe84f05fa4efd5359059e">numberOfDistanceSensors</a>]</td></tr>
+<tr class="separator:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af5ea67cd41255d11fecec3bcc818a096"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVL53L1GpioInterface.xhtml">VL53L1GpioInterface</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#af5ea67cd41255d11fecec3bcc818a096">distanceSensors</a> []</td></tr>
-<tr class="separator:af5ea67cd41255d11fecec3bcc818a096"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6ee8f483fb5846bc3f6f19f1b7f8f4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structboard_1_1DistanceSensor.xhtml">DistanceSensor</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a9d6ee8f483fb5846bc3f6f19f1b7f8f4">distanceSensors</a> []</td></tr>
+<tr class="separator:a9d6ee8f483fb5846bc3f6f19f1b7f8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e6ea3fee5e40dac8c8ee5b42397bb1f"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a8e6ea3fee5e40dac8c8ee5b42397bb1f">distanceErrorValue</a> = std::numeric_limits&lt;<a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a>&gt;::max()</td></tr>
 <tr class="separator:a8e6ea3fee5e40dac8c8ee5b42397bb1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6637f508978fe84f05fa4efd5359059e"><td class="memItemLeft" align="right" valign="top">constexpr std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a6637f508978fe84f05fa4efd5359059e">numberOfDistanceSensors</a> = static_cast&lt;std::size_t&gt;(DistanceSensorIndex::count)</td></tr>
@@ -212,14 +218,14 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a5782a4a50e8e18fcee022c8991fdae8f" name="a5782a4a50e8e18fcee022c8991fdae8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5782a4a50e8e18fcee022c8991fdae8f">&#9670;&nbsp;</a></span>getDistances()</h2>
+<a id="a2eebeab88e1976fa6a7efaef1fbf0ca5" name="a2eebeab88e1976fa6a7efaef1fbf0ca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2eebeab88e1976fa6a7efaef1fbf0ca5">&#9670;&nbsp;</a></span>getDistances()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a>(&amp; board::getDistances </td>
+          <td class="memname">const <a class="el" href="structPolarVector.xhtml">PolarVector</a>(&amp; board::getDistances </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td>)[numberOfDistanceSensors]</td>
@@ -281,8 +287,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a73b0aa485452fcb46e6e490c2adc0b5a" name="a73b0aa485452fcb46e6e490c2adc0b5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73b0aa485452fcb46e6e490c2adc0b5a">&#9670;&nbsp;</a></span>retrieveSensorStatusOrError()</h2>
+<a id="a0d8eadc452dfaeb85209f1685b367acc" name="a0d8eadc452dfaeb85209f1685b367acc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d8eadc452dfaeb85209f1685b367acc">&#9670;&nbsp;</a></span>retrieveSensorStatusOrError()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -296,7 +302,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespaceboard.xhtml#a7d36f0cae16d6e9df499202919361650">Distance</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="structPolarVector.xhtml">PolarVector</a> &amp;&#160;</td>
           <td class="paramname"><em>returnDistance</em>, </td>
         </tr>
         <tr>
@@ -408,14 +414,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="af5ea67cd41255d11fecec3bcc818a096" name="af5ea67cd41255d11fecec3bcc818a096"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5ea67cd41255d11fecec3bcc818a096">&#9670;&nbsp;</a></span>distanceSensors</h2>
+<a id="a9d6ee8f483fb5846bc3f6f19f1b7f8f4" name="a9d6ee8f483fb5846bc3f6f19f1b7f8f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d6ee8f483fb5846bc3f6f19f1b7f8f4">&#9670;&nbsp;</a></span>distanceSensors</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classVL53L1GpioInterface.xhtml">VL53L1GpioInterface</a>* const board::distanceSensors[]</td>
+          <td class="memname"><a class="el" href="structboard_1_1DistanceSensor.xhtml">DistanceSensor</a>* const board::distanceSensors[]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -617,7 +623,7 @@ Variables</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 19 2022 09:32:00 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 10 2022 16:26:03 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>

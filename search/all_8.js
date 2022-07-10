@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['getdistances_0',['getDistances',['../namespaceboard.xhtml#a5782a4a50e8e18fcee022c8991fdae8f',1,'board']]],
+  ['getdistances_0',['getDistances',['../namespaceboard.xhtml#a2eebeab88e1976fa6a7efaef1fbf0ca5',1,'board']]],
   ['gpiointerface_1',['GpioInterface',['../classGpioInterface.xhtml',1,'']]],
   ['gpiointerface_2ecpp_2',['GpioInterface.cpp',['../GpioInterface_8cpp.xhtml',1,'']]],
   ['gpiointerface_2ehpp_3',['GpioInterface.hpp',['../GpioInterface_8hpp.xhtml',1,'']]],

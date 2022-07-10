@@ -7,7 +7,7 @@ var searchData=
   ['aligningtowall_4',['AligningToWall',['../classAligningToWall.xhtml',1,'AligningToWall'],['../classAligningToWall.xhtml#a2b2cc2ed7967f4f98e9f3e0ea9c5728e',1,'AligningToWall::AligningToWall()']]],
   ['amplitude_5',['Amplitude',['../namespacedrives.xhtml#a589c47ef9d6f21c620159d82e4d92fac',1,'drives']]],
   ['analogwrite_6',['analogWrite',['../GpioPin_8hpp.xhtml#affab782c5ee6662dd2e5d0c48aae4777',1,'GpioPin.hpp']]],
-  ['angle_7',['angle',['../structPolarVector.xhtml#a9ee459f626b003de05316679b7a8e4ba',1,'PolarVector']]],
+  ['angle_7',['angle',['../structboard_1_1DistanceSensor.xhtml#ad483914efa5bb255d1e2cb062e160916',1,'board::DistanceSensor::angle()'],['../structPolarVector.xhtml#a9ee459f626b003de05316679b7a8e4ba',1,'PolarVector::angle()']]],
   ['any_8',['ANY',['../namespaceDebugOutputStream.xhtml#a4a5439a3e66c32b71253ca6f462c11cdac445bb897a569eab48d2bfce6752795d',1,'DebugOutputStream']]],
   ['arduino_5fhelpers_2ecpp_9',['arduino_helpers.cpp',['../arduino__helpers_8cpp.xhtml',1,'']]],
   ['arduino_5fhelpers_2ehpp_10',['arduino_helpers.hpp',['../arduino__helpers_8hpp.xhtml',1,'']]],

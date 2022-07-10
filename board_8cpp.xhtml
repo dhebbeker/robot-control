@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -87,6 +88,11 @@ $(function() {
 <code>#include &lt;Arduino.h&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structboard_1_1DistanceSensor.xhtml">board::DistanceSensor</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespaceboard"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml">board</a></td></tr>
@@ -96,8 +102,8 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a4627890239e156e84960fdec59318470"><td class="memItemLeft" align="right" valign="top">MCP23017&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a4627890239e156e84960fdec59318470">board::ioExpander1</a> (ioExpander1Address)</td></tr>
 <tr class="separator:a4627890239e156e84960fdec59318470"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a73b0aa485452fcb46e6e490c2adc0b5a">board::retrieveSensorStatusOrError</a> (const DistanceSensorIndex sensorIndex, <a class="el" href="EnvironmentRecord_8hpp.xhtml#a3174d7717e273f4886b9ef5773d2309a">Distance</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
-<tr class="separator:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d8eadc452dfaeb85209f1685b367acc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a0d8eadc452dfaeb85209f1685b367acc">board::retrieveSensorStatusOrError</a> (const DistanceSensorIndex sensorIndex, <a class="el" href="structPolarVector.xhtml">PolarVector</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
+<tr class="separator:a0d8eadc452dfaeb85209f1685b367acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee61e533cbd327b3259e0a17265d6361"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#aee61e533cbd327b3259e0a17265d6361">board::testDistanceSensors</a> ()</td></tr>
 <tr class="separator:aee61e533cbd327b3259e0a17265d6361"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae87f3ebcee2ac92c70d1c21053502587"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#ae87f3ebcee2ac92c70d1c21053502587">board::setup</a> (const <a class="el" href="arduino__helpers_8hpp.xhtml#a276390435f8f238655cb4b091e073f99">InterruptFunctionPointer</a> interruptForBumper)</td></tr>
@@ -108,18 +114,18 @@ Functions</h2></td></tr>
 <tr class="separator:ab48d1402797a8b98490b6cc1eb494bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adddabdea663eabe807c5dc6ffe242d42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#adddabdea663eabe807c5dc6ffe242d42">board::setDebugLed</a> (const std::uint8_t value, const DebugLeds led)</td></tr>
 <tr class="separator:adddabdea663eabe807c5dc6ffe242d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="EnvironmentRecord_8hpp.xhtml#a3174d7717e273f4886b9ef5773d2309a">Distance</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a5782a4a50e8e18fcee022c8991fdae8f">board::getDistances</a> ())[numberOfDistanceSensors]</td></tr>
-<tr class="separator:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structPolarVector.xhtml">PolarVector</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a2eebeab88e1976fa6a7efaef1fbf0ca5">board::getDistances</a> ())[numberOfDistanceSensors]</td></tr>
+<tr class="separator:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:af5ea67cd41255d11fecec3bcc818a096"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classVL53L1GpioInterface.xhtml">VL53L1GpioInterface</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#af5ea67cd41255d11fecec3bcc818a096">board::distanceSensors</a> []</td></tr>
-<tr class="separator:af5ea67cd41255d11fecec3bcc818a096"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6ee8f483fb5846bc3f6f19f1b7f8f4"><td class="memItemLeft" align="right" valign="top">DistanceSensor *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a9d6ee8f483fb5846bc3f6f19f1b7f8f4">board::distanceSensors</a> []</td></tr>
+<tr class="separator:a9d6ee8f483fb5846bc3f6f19f1b7f8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 19 2022 09:32:00 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 10 2022 16:26:03 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>

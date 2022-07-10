@@ -7,7 +7,7 @@ var searchData=
   ['readme_2emd_4',['README.md',['../robot-control-src_2src_2middleware_2README_8md.xhtml',1,'(Global Namespace)'],['../robot-control-src_2src_2device__drivers_2README_8md.xhtml',1,'(Global Namespace)'],['../robot-control-src_2src_2application_2README_8md.xhtml',1,'(Global Namespace)'],['../README_8md.xhtml',1,'(Global Namespace)'],['../robot-control-src_2src_2utils_2README_8md.xhtml',1,'(Global Namespace)']]],
   ['red_5',['red',['../namespaceboard.xhtml#a9dbfac1924f1abc9d1459b0e18841fd0abda9643ac6601722a28f238714274da4',1,'board']]],
   ['reference_6',['reference',['../classcircular__buffer.xhtml#a04b5fdb24db3b6bcf0632b932afea704',1,'circular_buffer::reference()'],['../classcircular__buffer_1_1__iterator.xhtml#aaf9d2234b874d51994b29fb21662c1db',1,'circular_buffer::_iterator::reference()']]],
-  ['retrievesensorstatusorerror_7',['retrieveSensorStatusOrError',['../namespaceboard.xhtml#a73b0aa485452fcb46e6e490c2adc0b5a',1,'board']]],
+  ['retrievesensorstatusorerror_7',['retrieveSensorStatusOrError',['../namespaceboard.xhtml#a0d8eadc452dfaeb85209f1685b367acc',1,'board']]],
   ['right_8',['right',['../namespaceboard.xhtml#a675c679652eabd3c8a3aedac384d47b0a1d408b3efdba0cad53a59c3d4a0e5cde',1,'board']]],
   ['rightbackwards_9',['rightBackwards',['../namespaceboard.xhtml#aec4c85a4dcdedd2cb49cf0eea8341ed7',1,'board']]],
   ['rightdrive_10',['RightDrive',['../namespacedrives.xhtml#a7a87e9f631f4e89c5f5979c211a88b50',1,'drives']]],
@@ -17,5 +17,6 @@ var searchData=
   ['robot_2dcontrol_2dsrc_2eino_14',['robot-control-src.ino',['../robot-control-src_8ino.xhtml',1,'']]],
   ['robot_2dcontrol_2ephp_15',['robot-control.php',['../robot-control_8php.xhtml',1,'']]],
   ['rotate_16',['rotate',['../namespacedrives.xhtml#a24f745263d30a64444076e93f20c0d40',1,'drives']]],
-  ['rotatecounter_17',['rotateCounter',['../namespacedrives.xhtml#a7b773dd5e49167b0aa61b673cf3772e3',1,'drives']]]
+  ['rotatecounter_17',['rotateCounter',['../namespacedrives.xhtml#a7b773dd5e49167b0aa61b673cf3772e3',1,'drives']]],
+  ['rounddowntoodointervalmultiple_18',['roundDownToOdoIntervalMultiple',['../namespacedrives.xhtml#a2d6416368900532b143a0bb8dd3e5378',1,'drives']]]
 ];

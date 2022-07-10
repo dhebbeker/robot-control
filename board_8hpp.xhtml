@@ -85,6 +85,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="MCP23017Pin_8hpp_source.xhtml">../device_drivers/MCP23017Pin.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="VL53L1GpioInterface_8hpp_source.xhtml">../device_drivers/VL53L1GpioInterface.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="arduino__helpers_8hpp_source.xhtml">../utils/arduino_helpers.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EnvironmentRecord_8hpp_source.xhtml">../middleware/EnvironmentRecord.hpp</a>&quot;</code><br />
 <code>#include &lt;MCP23017.h&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
@@ -132,10 +133,10 @@ Functions</h2></td></tr>
 <tr class="separator:ab48d1402797a8b98490b6cc1eb494bbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adddabdea663eabe807c5dc6ffe242d42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#adddabdea663eabe807c5dc6ffe242d42">board::setDebugLed</a> (const std::uint8_t value, const DebugLeds led)</td></tr>
 <tr class="separator:adddabdea663eabe807c5dc6ffe242d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a73b0aa485452fcb46e6e490c2adc0b5a">board::retrieveSensorStatusOrError</a> (const DistanceSensorIndex sensorIndex, <a class="el" href="EnvironmentRecord_8hpp.xhtml#a3174d7717e273f4886b9ef5773d2309a">Distance</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
-<tr class="separator:a73b0aa485452fcb46e6e490c2adc0b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="EnvironmentRecord_8hpp.xhtml#a3174d7717e273f4886b9ef5773d2309a">Distance</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a5782a4a50e8e18fcee022c8991fdae8f">board::getDistances</a> ())[numberOfDistanceSensors]</td></tr>
-<tr class="separator:a5782a4a50e8e18fcee022c8991fdae8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d8eadc452dfaeb85209f1685b367acc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a0d8eadc452dfaeb85209f1685b367acc">board::retrieveSensorStatusOrError</a> (const DistanceSensorIndex sensorIndex, <a class="el" href="structPolarVector.xhtml">PolarVector</a> &amp;returnDistance, const std::size_t maxNumberOfAttempts)</td></tr>
+<tr class="separator:a0d8eadc452dfaeb85209f1685b367acc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structPolarVector.xhtml">PolarVector</a>(&amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceboard.xhtml#a2eebeab88e1976fa6a7efaef1fbf0ca5">board::getDistances</a> ())[numberOfDistanceSensors]</td></tr>
+<tr class="separator:a2eebeab88e1976fa6a7efaef1fbf0ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -149,7 +150,7 @@ Variables</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Thu May 19 2022 09:32:00 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
+Generated on Sun Jul 10 2022 16:26:03 for Robot Control by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.4
 </small></address>
 </body>
 </html>

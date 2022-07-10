@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['drive_0',['Drive',['../classdrives_1_1Drive.xhtml',1,'drives']]],
-  ['driving_1',['Driving',['../classDriving.xhtml',1,'']]]
+  ['distancesensor_0',['DistanceSensor',['../structboard_1_1DistanceSensor.xhtml',1,'board']]],
+  ['drive_1',['Drive',['../classdrives_1_1Drive.xhtml',1,'drives']]],
+  ['driving_2',['Driving',['../classDriving.xhtml',1,'']]]
 ];

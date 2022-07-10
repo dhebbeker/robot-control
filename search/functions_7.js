@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['getdistances_0',['getDistances',['../namespaceboard.xhtml#a5782a4a50e8e18fcee022c8991fdae8f',1,'board']]]
+  ['getdistances_0',['getDistances',['../namespaceboard.xhtml#a2eebeab88e1976fa6a7efaef1fbf0ca5',1,'board']]]
 ];
