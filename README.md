@@ -224,3 +224,16 @@ But usually the shape of the object is unknown.
 
 This effects complicates the task to follow the shape of objects.
 Especially using a simple PID controller.
+
+Coarse odometry sensor
+----------------------
+
+Movements of the robot (driving, turning, rotation) are performed in increments which are captured by an optical light barrier.
+That light barrier is triggered when a cog in the transmission of the drives is at certain angles.
+Using the information of the direction in which a motor turns, this information is used to calculate the movement of the robot.
+
+Conversely movements of the robot must be in full increments of the slots in the cog.
+As the transmission of that cog to the ground is not very high, or the slots are too distant, the minimum distance driven by one chain drive in one increment is approximately 38mm.
+
+Movements by multiples of such big increments makes the control of the robot position difficult.
+Especially as the robot can not adjust its orientation by small angles.
