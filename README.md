@@ -200,3 +200,27 @@ This defines a predefined macro which sets the number of maximum range data to 1
 
 Issues
 ======
+
+Distance measurement depends on orientation
+-------------------------------------------
+
+A major issue with the system design is, that the shortest distance measured to another object depends considerably on the orientation of the robot to that object.
+This is due to the fact that the distance is measured at fixed directions with a tight beam.
+The robot measures the distance at some angles.
+The measurement is done with a tight beam and does not take into account variations within a circular sector.
+
+The result is, that in order to determine the shortest distance to an object, the robot must rotate such that full sweep around the robot is performed.
+
+This also has the following effect.
+If the robot tries to align to a straight wall, it will turn in order to adjust its distance to the wall.
+Turning will result in a changed perceived distance to the straight wall.
+For example in case the robot is aligned to the wall but the distance is to short.
+The robot will turn away from the wall in order to increase its actual distance to the wall.
+By turning away from the wall the sensor which was previously directed to the wall (parallel to the normal vector) will now not hit the wall with a right angle.
+Thus the measured distance by that sensor will increase.
+Even though the actual distance did not really increase.
+This effect could be counted back only if the shape of the object is known (for example a straight wall).
+But usually the shape of the object is unknown.
+
+This effects complicates the task to follow the shape of objects.
+Especially using a simple PID controller.
