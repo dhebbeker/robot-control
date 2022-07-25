@@ -197,3 +197,6 @@ Create it if not existent.
     compiler.cpp.extra_flags=-DVL53L1_MAX_RANGE_RESULTS=1
 
 This defines a predefined macro which sets the number of maximum range data to 1.
+
+Issues
+======
